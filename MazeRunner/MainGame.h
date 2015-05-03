@@ -23,6 +23,7 @@ private:
 	GameEngine3D::ShaderProgram _shaderProgram;
 	int _screenWidth;
 	int _screenHeight;
+	float rotation_angle;
 	GameState _gameState;
 
 };
