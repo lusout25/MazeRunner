@@ -1,5 +1,6 @@
 #include "MainGame.h"
 #include <GameEngine3D\GameEngine3D.h>
+#include <glm\glm.hpp>
 
 MainGame::MainGame()
 {
@@ -32,6 +33,7 @@ void MainGame::initShaders()
 {
 	_shaderProgram.compileShaders("Shaders/colorShading.vert", "Shaders/colorShading.frag");
 	_shaderProgram.addAttribute("vertexPosition");
+	_shaderProgram.addAttribute("vertexColor");
 	_shaderProgram.linkShaders();
 }
 
@@ -41,22 +43,53 @@ void MainGame::gameLoop()
 	{
 		0.0f, 0.5f, 0.0f,
 		0.5f, -0.5f, 0.0f,
-		-0.5f, -0.5f, 0.0f
+		-0.5f, -0.5f, 0.0f,
+
+		0.0f, 0.5f, 0.0f,
+		-0.5f, -0.5f, 0.0f,
+		0.0f, -0.5f, 0.5f,
+
+		0.0f, 0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f,
+		0.0f, -0.5f, 0.5f
+	};
+
+	float colors[] =
+	{
+		1.0f, 0.0f, 0.0f, 1.0f,
+		1.0f, 0.0f, 0.0f, 1.0f,
+		1.0f, 0.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 0.0f, 1.0f,
+		0.0f, 1.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f, 1.0f,
+		0.0f, 0.0f, 1.0f, 1.0f,
+		0.0f, 0.0f, 1.0f, 1.0f,
 	};
 
 	while (_gameState != GameState::EXIT)
 	{
+
 		GLuint vbo = 0;
 		glGenBuffers(1, &vbo);
+
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, (27+36) * sizeof(float), NULL, GL_STATIC_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, 27 * sizeof(float), points);
+		glBufferSubData(GL_ARRAY_BUFFER, 27 * sizeof(float), 36 * sizeof(float), colors);
 
 		GLuint vao = 0;
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
+
 		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*) (27 * sizeof(float)));
+
+		//update the camera model-view-projection matrix
+		_camera.Update(); 
 
 		draw();
 	}
@@ -70,7 +103,14 @@ void MainGame::draw()
 
 	_shaderProgram.use();
 
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	//locate the location of "MVP" in the shader
+	GLint mvpLocation = _shaderProgram.getUniformLocation("MVP");
+
+	//pass the camera matrix to the shader
+	glm::mat4 cameraMatrix = _camera.getCameraMatrix();
+	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
+
+	glDrawArrays(GL_TRIANGLES, 0, 9);
 
 	_shaderProgram.unuse();
 
