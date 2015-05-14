@@ -25,7 +25,7 @@ private:
 	GameEngine3D::Camera _camera;
 	int _screenWidth;
 	int _screenHeight;
-	float rotation_angle;
+	float _rotation_angle;
 	GameState _gameState;
 
 };

@@ -6,7 +6,6 @@ MainGame::MainGame()
 {
 	_screenWidth = 1024;
 	_screenHeight = 768;
-	rotation_angle = 0.0f;
 	_gameState = GameState::PLAY;
 }
 
@@ -28,8 +27,6 @@ void MainGame::initSystems()
 	_window.create("Maze Runner", _screenWidth, _screenHeight);
 
 	initShaders();
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 }
 
 void MainGame::initShaders()
@@ -103,9 +100,8 @@ void MainGame::draw()
 {
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glRotatef(rotation_angle, 0.0f, 1.0f, 0.0f);
 
-	//_shaderProgram.use();
+	_shaderProgram.use();
 
 	//locate the location of "MVP" in the shader
 	GLint mvpLocation = _shaderProgram.getUniformLocation("MVP");
@@ -116,12 +112,7 @@ void MainGame::draw()
 
 	glDrawArrays(GL_TRIANGLES, 0, 9);
 
-	//_shaderProgram.unuse();
-
-	for (int i = 0; i < 100000000; ++i )
-	{}
-
-	rotation_angle = rotation_angle + .05f;
+	_shaderProgram.unuse();
 
 	_window.swapBuffer();
 }
