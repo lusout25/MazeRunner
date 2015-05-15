@@ -14,13 +14,24 @@ namespace GameEngine3D {
 		~Camera();
 
 		void Update();
-		glm::mat4 getCameraMatrix() { return _mvpMatrix; };
+
+		glm::vec3 getCameraPosition() { return _cameraPosition; };
+		glm::vec3 getLookAtPosition() { return _lookAt; };
+		glm::mat4 getMVPMatrix() { return _mvpMatrix; };
+
+		void setCameraPosition(glm::vec3& newPosition) { _cameraPosition = newPosition; _needsMatrixUpdate = true; };
+		void setLookAtPosition(glm::vec3& newPosition) { _lookAt = newPosition; _needsMatrixUpdate = true; };
 
 	private:
+		bool _needsMatrixUpdate;
+
 		glm::mat4 _viewMatrix;
 		glm::mat4 _modelMatrix;
 		glm::mat4 _projMatrix;
 		glm::mat4 _mvpMatrix;
+
+		glm::vec3 _cameraPosition;
+		glm::vec3 _lookAt;
 	};
 
 }

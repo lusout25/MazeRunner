@@ -9,11 +9,9 @@ MainGame::MainGame()
 	_gameState = GameState::PLAY;
 }
 
-
 MainGame::~MainGame()
 {
 }
-
 
 void MainGame::run()
 {
@@ -88,11 +86,75 @@ void MainGame::gameLoop()
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*) (27 * sizeof(float)));
 
+		processInput();
+
 		//update the camera model-view-projection matrix
 		_camera.Update(); 
 
 		draw();
 	}
+
+}
+
+void MainGame::processInput()
+{
+	SDL_Event input;
+
+	const float CAMERA_SPEED = .001f;
+	
+	//set input state
+	while (SDL_PollEvent(&input))
+	{
+		switch (input.type)
+		{
+
+		case SDL_QUIT:
+			_gameState = GameState::EXIT;
+			break;
+
+		case SDL_KEYDOWN:
+			_inputManager.pressKey(input.key.keysym.sym);
+			break;
+
+		case SDL_KEYUP:
+			_inputManager.releaseKey(input.key.keysym.sym);
+			break;
+		}
+	}
+
+	glm::vec3& cameraPosition = _camera.getCameraPosition();
+	glm::vec3& lookAtPosition = _camera.getLookAtPosition();
+
+	//do input actions
+	if (_inputManager.isKeyPressed(SDLK_w))
+	{
+		//move camera forward
+		cameraPosition += glm::vec3(0, 0, -CAMERA_SPEED);
+	}
+
+	if (_inputManager.isKeyPressed(SDLK_a))
+	{
+		//strafe left
+		cameraPosition += glm::vec3(-CAMERA_SPEED, 0, 0);
+		lookAtPosition += glm::vec3(-CAMERA_SPEED, 0, 0);
+
+	}
+
+	if (_inputManager.isKeyPressed(SDLK_s))
+	{
+		//move camera backward
+		cameraPosition += glm::vec3(0, 0, CAMERA_SPEED);
+	}
+
+	if (_inputManager.isKeyPressed(SDLK_d))
+	{
+		//strafe right
+		cameraPosition += glm::vec3(CAMERA_SPEED, 0, 0);
+		lookAtPosition += glm::vec3(CAMERA_SPEED, 0, 0);
+	}
+
+	_camera.setCameraPosition(cameraPosition);
+	_camera.setLookAtPosition(lookAtPosition);
 
 }
 
@@ -107,7 +169,7 @@ void MainGame::draw()
 	GLint mvpLocation = _shaderProgram.getUniformLocation("MVP");
 
 	//pass the camera matrix to the shader
-	glm::mat4 cameraMatrix = _camera.getCameraMatrix();
+	glm::mat4 cameraMatrix = _camera.getMVPMatrix();
 	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 
 	glDrawArrays(GL_TRIANGLES, 0, 9);
