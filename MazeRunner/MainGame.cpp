@@ -69,15 +69,6 @@ void MainGame::gameLoop()
 
 	while (_gameState != GameState::EXIT)
 	{
-		//Handle other SDL bullshit like keyboard and mouse input, instead of gluts callback funtions
-		while (SDL_PollEvent(&Event))
-		{
-			//Handle pressing the close button. 'X' top right corner of created window
-			if (Event.type == SDL_QUIT)
-			{
-				_gameState = GameState::EXIT;
-			}
-		}
 
 		GLuint vbo = 0;
 		glGenBuffers(1, &vbo);
@@ -100,7 +91,7 @@ void MainGame::gameLoop()
 		processInput();
 
 		//update the camera model-view-projection matrix
-		_camera.Update(); 
+		_camera.Update();
 
 		draw();
 	}
