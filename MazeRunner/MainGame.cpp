@@ -1,6 +1,7 @@
 #include "MainGame.h"
 #include <GameEngine3D\GameEngine3D.h>
 #include <glm\glm.hpp>
+#include <glm\gtx\rotate_vector.hpp>
 
 MainGame::MainGame()
 {
@@ -24,6 +25,10 @@ void MainGame::initSystems()
 	GameEngine3D::init();
 	_window.create("Maze Runner", _screenWidth, _screenHeight);
 
+
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
+	
 	initShaders();
 }
 
@@ -39,13 +44,13 @@ void MainGame::gameLoop()
 {
 	float points[] =
 	{
-		0.0f, 0.5f, 0.0f,
+		-0.5f, -0.5f, 0.0f,
 		0.5f, -0.5f, 0.0f,
-		-0.5f, -0.5f, 0.0f,
-
 		0.0f, 0.5f, 0.0f,
-		-0.5f, -0.5f, 0.0f,
+
 		0.0f, -0.5f, 0.5f,
+		-0.5f, -0.5f, 0.0f,
+		0.0f, 0.5f, 0.0f,
 
 		0.0f, 0.5f, 0.0f,
 		0.5f, -0.5f, 0.0f,
@@ -100,7 +105,10 @@ void MainGame::processInput()
 {
 	SDL_Event input;
 
+	bool needsUpdate = false;
+
 	const float CAMERA_SPEED = .001f;
+	const float ROTATE_SPEED = .001f;
 	
 	//set input state
 	while (SDL_PollEvent(&input))
@@ -123,39 +131,55 @@ void MainGame::processInput()
 	}
 
 	glm::vec3& cameraPosition = _camera.getCameraPosition();
-	glm::vec3& lookAtPosition = _camera.getLookAtPosition();
+	glm::vec3& lookAtDirection = _camera.getLookAtDirection();
 
-	//do input actions
+	//input actions
 	if (_inputManager.isKeyPressed(SDLK_w))
 	{
 		//move camera forward
-		cameraPosition += glm::vec3(0, 0, -CAMERA_SPEED);
+		cameraPosition += glm::vec3(0, 0, -CAMERA_SPEED) * lookAtDirection;
+
+		needsUpdate = true;
 	}
 
 	if (_inputManager.isKeyPressed(SDLK_a))
 	{
 		//strafe left
 		cameraPosition += glm::vec3(-CAMERA_SPEED, 0, 0);
-		lookAtPosition += glm::vec3(-CAMERA_SPEED, 0, 0);
+
+		needsUpdate = true;
 
 	}
 
 	if (_inputManager.isKeyPressed(SDLK_s))
 	{
 		//move camera backward
-		cameraPosition += glm::vec3(0, 0, CAMERA_SPEED);
+		cameraPosition += glm::vec3(0, 0, CAMERA_SPEED) * lookAtDirection;
+
+		needsUpdate = true;
 	}
 
 	if (_inputManager.isKeyPressed(SDLK_d))
 	{
 		//strafe right
 		cameraPosition += glm::vec3(CAMERA_SPEED, 0, 0);
-		lookAtPosition += glm::vec3(CAMERA_SPEED, 0, 0);
+
+		needsUpdate = true;
 	}
 
-	_camera.setCameraPosition(cameraPosition);
-	_camera.setLookAtPosition(lookAtPosition);
+	if (_inputManager.isKeyPressed(SDLK_LEFT))
+	{
+		//look left
+		lookAtDirection = glm::rotateY(lookAtDirection, ROTATE_SPEED);
 
+		needsUpdate = true;
+	}
+
+	if (needsUpdate)
+	{
+		_camera.setCameraPosition(cameraPosition);
+		_camera.setLookAtDirection(lookAtDirection);
+	}
 }
 
 void MainGame::draw()

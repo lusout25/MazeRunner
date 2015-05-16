@@ -16,11 +16,11 @@ namespace GameEngine3D {
 		void Update();
 
 		glm::vec3 getCameraPosition() { return _cameraPosition; };
-		glm::vec3 getLookAtPosition() { return _lookAt; };
+		glm::vec3 getLookAtDirection() { return _lookAtDir; };
 		glm::mat4 getMVPMatrix() { return _mvpMatrix; };
 
 		void setCameraPosition(glm::vec3& newPosition) { _cameraPosition = newPosition; _needsMatrixUpdate = true; };
-		void setLookAtPosition(glm::vec3& newPosition) { _lookAt = newPosition; _needsMatrixUpdate = true; };
+		void setLookAtDirection(glm::vec3& newDirection) { _lookAtDir = newDirection; _needsMatrixUpdate = true; };
 
 	private:
 		bool _needsMatrixUpdate;
@@ -31,7 +31,7 @@ namespace GameEngine3D {
 		glm::mat4 _mvpMatrix;
 
 		glm::vec3 _cameraPosition;
-		glm::vec3 _lookAt;
+		glm::vec3 _lookAtDir;
 	};
 
 }
