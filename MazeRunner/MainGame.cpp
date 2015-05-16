@@ -70,6 +70,8 @@ void MainGame::gameLoop()
 		0.0f, 0.0f, 1.0f, 1.0f,
 	};
 
+	SDL_Event Event;
+
 	while (_gameState != GameState::EXIT)
 	{
 
@@ -94,7 +96,7 @@ void MainGame::gameLoop()
 		processInput();
 
 		//update the camera model-view-projection matrix
-		_camera.Update(); 
+		_camera.Update();
 
 		draw();
 	}
