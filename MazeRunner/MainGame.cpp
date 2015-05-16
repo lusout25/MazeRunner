@@ -67,8 +67,19 @@ void MainGame::gameLoop()
 		0.0f, 0.0f, 1.0f, 1.0f,
 	};
 
+	SDL_Event Event;
+
 	while (_gameState != GameState::EXIT)
 	{
+		//Handle other SDL bullshit like keyboard and mouse input, instead of gluts callback funtions
+		while (SDL_PollEvent(&Event))
+		{
+			//Handle pressing the close button. 'X' top right corner of created window
+			if (Event.type == SDL_QUIT)
+			{
+				_gameState = GameState::EXIT;
+			}
+		}
 
 		GLuint vbo = 0;
 		glGenBuffers(1, &vbo);
