@@ -14,12 +14,14 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Error.h" />
     <ClInclude Include="GameEngine3D.h" />
+    <ClInclude Include="InputManager.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Error.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
