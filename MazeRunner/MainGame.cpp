@@ -139,7 +139,7 @@ void MainGame::processInput()
 	if (_inputManager.isKeyPressed(SDLK_w))
 	{
 		//move camera forward
-		cameraPosition += glm::vec3(0, 0, -CAMERA_SPEED) * lookAtDirection;
+		cameraPosition += CAMERA_SPEED * lookAtDirection;
 
 		needsUpdate = true;
 	}
@@ -147,7 +147,7 @@ void MainGame::processInput()
 	if (_inputManager.isKeyPressed(SDLK_a))
 	{
 		//strafe left
-		cameraPosition += glm::vec3(-CAMERA_SPEED, 0, 0);
+		cameraPosition += -CAMERA_SPEED * glm::cross(lookAtDirection, glm::vec3(lookAtDirection.x, 1, lookAtDirection.z));
 
 		needsUpdate = true;
 
@@ -156,7 +156,7 @@ void MainGame::processInput()
 	if (_inputManager.isKeyPressed(SDLK_s))
 	{
 		//move camera backward
-		cameraPosition += glm::vec3(0, 0, CAMERA_SPEED) * lookAtDirection;
+		cameraPosition += -CAMERA_SPEED * lookAtDirection;
 
 		needsUpdate = true;
 	}
@@ -164,8 +164,7 @@ void MainGame::processInput()
 	if (_inputManager.isKeyPressed(SDLK_d))
 	{
 		//strafe right
-		cameraPosition += glm::vec3(CAMERA_SPEED, 0, 0);
-
+		cameraPosition += CAMERA_SPEED * glm::cross(lookAtDirection, glm::vec3(lookAtDirection.x, 1, lookAtDirection.z));
 		needsUpdate = true;
 	}
 
@@ -173,6 +172,14 @@ void MainGame::processInput()
 	{
 		//look left
 		lookAtDirection = glm::rotateY(lookAtDirection, ROTATE_SPEED);
+
+		needsUpdate = true;
+	}
+
+	if (_inputManager.isKeyPressed(SDLK_RIGHT))
+	{
+		//look left
+		lookAtDirection = glm::rotateY(lookAtDirection, -ROTATE_SPEED);
 
 		needsUpdate = true;
 	}
