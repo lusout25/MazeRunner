@@ -70,8 +70,6 @@ void MainGame::gameLoop()
 		0.0f, 0.0f, 1.0f, 1.0f,
 	};
 
-	SDL_Event Event;
-
 	while (_gameState != GameState::EXIT)
 	{
 
@@ -109,8 +107,8 @@ void MainGame::processInput()
 
 	bool needsUpdate = false;
 
-	const float CAMERA_SPEED = .001f;
-	const float ROTATE_SPEED = .001f;
+	const float CAMERA_SPEED = .002f;
+	const float ROTATE_SPEED = .002f;
 	
 	//set input state
 	while (SDL_PollEvent(&input))
@@ -129,6 +127,7 @@ void MainGame::processInput()
 		case SDL_KEYUP:
 			_inputManager.releaseKey(input.key.keysym.sym);
 			break;
+
 		}
 	}
 
@@ -140,7 +139,6 @@ void MainGame::processInput()
 	{
 		//move camera forward
 		cameraPosition += CAMERA_SPEED * lookAtDirection;
-
 		needsUpdate = true;
 	}
 
@@ -148,16 +146,13 @@ void MainGame::processInput()
 	{
 		//strafe left
 		cameraPosition += -CAMERA_SPEED * glm::cross(lookAtDirection, glm::vec3(lookAtDirection.x, 1, lookAtDirection.z));
-
 		needsUpdate = true;
-
 	}
 
 	if (_inputManager.isKeyPressed(SDLK_s))
 	{
 		//move camera backward
 		cameraPosition += -CAMERA_SPEED * lookAtDirection;
-
 		needsUpdate = true;
 	}
 
@@ -172,7 +167,6 @@ void MainGame::processInput()
 	{
 		//look left
 		lookAtDirection = glm::rotateY(lookAtDirection, ROTATE_SPEED);
-
 		needsUpdate = true;
 	}
 
@@ -180,7 +174,6 @@ void MainGame::processInput()
 	{
 		//look left
 		lookAtDirection = glm::rotateY(lookAtDirection, -ROTATE_SPEED);
-
 		needsUpdate = true;
 	}
 
