@@ -36,4 +36,14 @@ namespace GameEngine3D
 		}
 	}
 
+	void InputManager::updateMouseCoordinates(int x)
+	{
+		mouseX = x;
+	}
+
+	int InputManager::getMouseCoordinates(void)
+	{
+		return mouseX;
+	}
+
 }
