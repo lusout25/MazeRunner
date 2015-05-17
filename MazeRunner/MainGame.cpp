@@ -30,6 +30,13 @@ void MainGame::initSystems()
 	glCullFace(GL_FRONT);
 	
 	initShaders();
+
+	//Trap mouse within window
+	//If SDL_SetRelativeMouseMode fails exit game
+	if (SDL_SetRelativeMouseMode(SDL_TRUE))
+	{
+		_gameState = GameState::EXIT;
+	}
 }
 
 void MainGame::initShaders()
@@ -110,6 +117,9 @@ void MainGame::processInput()
 	const float CAMERA_SPEED = .002f;
 	const float ROTATE_SPEED = .002f;
 	
+	glm::vec3& cameraPosition = _camera.getCameraPosition();
+	glm::vec3& lookAtDirection = _camera.getLookAtDirection();
+	
 	//set input state
 	while (SDL_PollEvent(&input))
 	{
@@ -128,11 +138,11 @@ void MainGame::processInput()
 			_inputManager.releaseKey(input.key.keysym.sym);
 			break;
 
+		case SDL_MOUSEMOTION:
+			_inputManager.updateMouseCoordinates(input.motion.xrel);
+		    break;
 		}
 	}
-
-	glm::vec3& cameraPosition = _camera.getCameraPosition();
-	glm::vec3& lookAtDirection = _camera.getLookAtDirection();
 
 	//input actions
 	if (_inputManager.isKeyPressed(SDLK_w))
@@ -163,17 +173,19 @@ void MainGame::processInput()
 		needsUpdate = true;
 	}
 
-	if (_inputManager.isKeyPressed(SDLK_LEFT))
+	if (_inputManager.isKeyPressed(SDLK_q))
 	{
 		//look left
 		lookAtDirection = glm::rotateY(lookAtDirection, ROTATE_SPEED);
+
 		needsUpdate = true;
 	}
 
-	if (_inputManager.isKeyPressed(SDLK_RIGHT))
+	if (_inputManager.getMouseCoordinates())
 	{
 		//look left
 		lookAtDirection = glm::rotateY(lookAtDirection, -ROTATE_SPEED);
+
 		needsUpdate = true;
 	}
 
