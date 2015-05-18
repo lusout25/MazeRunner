@@ -4,6 +4,9 @@
 #include <GameEngine3D\ShaderProgram.h>
 #include <GameEngine3D\Camera.h>
 #include <GameEngine3D\InputManager.h>
+#include "Maze.h"
+#include <GameEngine3D\Triangle.h>
+#include <GameEngine3D\Wall.h>
 
 enum class GameState { PLAY, EXIT };
 
@@ -32,6 +35,9 @@ private:
 	float _rotation_angle;
 
 	GameState _gameState;
+	Maze _maze;
+	GameEngine3D::Triangle _triangles;
+	GameEngine3D::Wall _walls;
 
 };
 

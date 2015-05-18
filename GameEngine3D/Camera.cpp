@@ -8,7 +8,7 @@ namespace GameEngine3D {
 	Camera::Camera()
 	{
 		_needsMatrixUpdate = true;
-		_cameraPosition = glm::vec3(0, 0, 1);
+		_cameraPosition = glm::vec3(0, .25, 1);
 		_lookAtDir = glm::vec3(0, 0, -1);  //begin looking down z-axis
 	}
 

@@ -1,4 +1,5 @@
 #include "MainGame.h"
+#include "Maze.h"
 #include <GameEngine3D\GameEngine3D.h>
 #include <glm\glm.hpp>
 #include <glm\gtx\rotate_vector.hpp>
@@ -27,6 +28,7 @@ void MainGame::initSystems()
 
 
 	glEnable(GL_CULL_FACE);
+	glFrontFace(GL_CCW);
 	glCullFace(GL_FRONT);
 	
 	initShaders();
@@ -49,55 +51,12 @@ void MainGame::initShaders()
 
 void MainGame::gameLoop()
 {
-	float points[] =
-	{
-		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		0.0f, 0.5f, 0.0f,
 
-		0.0f, -0.5f, 0.5f,
-		-0.5f, -0.5f, 0.0f,
-		0.0f, 0.5f, 0.0f,
-
-		0.0f, 0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		0.0f, -0.5f, 0.5f
-	};
-
-	float colors[] =
-	{
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-		1.0f, 0.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f,
-	};
+	_triangles.init(); //triangle stuff
+	_maze.init();
 
 	while (_gameState != GameState::EXIT)
 	{
-
-		GLuint vbo = 0;
-		glGenBuffers(1, &vbo);
-
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, (27+36) * sizeof(float), NULL, GL_STATIC_DRAW);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, 27 * sizeof(float), points);
-		glBufferSubData(GL_ARRAY_BUFFER, 27 * sizeof(float), 36 * sizeof(float), colors);
-
-		GLuint vao = 0;
-		glGenVertexArrays(1, &vao);
-		glBindVertexArray(vao);
-
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*) (27 * sizeof(float)));
-
 		processInput();
 
 		//update the camera model-view-projection matrix
@@ -173,19 +132,15 @@ void MainGame::processInput()
 		needsUpdate = true;
 	}
 
-	if (_inputManager.isKeyPressed(SDLK_q))
+	if (_inputManager.isKeyPressed(SDLK_q) || _inputManager.isKeyPressed(SDLK_ESCAPE))
 	{
-		//look left
-		lookAtDirection = glm::rotateY(lookAtDirection, ROTATE_SPEED);
-
-		needsUpdate = true;
+		_gameState = GameState::EXIT;
 	}
 
 	if (_inputManager.getMouseCoordinates())
 	{
-		//look left
-		lookAtDirection = glm::rotateY(lookAtDirection, -ROTATE_SPEED);
-
+		lookAtDirection = glm::rotateY(lookAtDirection, -ROTATE_SPEED*((float)_inputManager.getMouseCoordinates()));
+		_inputManager.updateMouseCoordinates(0);
 		needsUpdate = true;
 	}
 
@@ -210,7 +165,10 @@ void MainGame::draw()
 	glm::mat4 cameraMatrix = _camera.getMVPMatrix();
 	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 
-	glDrawArrays(GL_TRIANGLES, 0, 9);
+	_triangles.draw(); //triangle stuff
+	_triangles.render(); //triangle stuff
+
+	_maze.drawWalls();
 
 	_shaderProgram.unuse();
 

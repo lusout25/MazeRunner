@@ -24,6 +24,9 @@
     <ClCompile Include="MainGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Maze.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\colorShading.vert">
@@ -35,6 +38,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Maze.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
