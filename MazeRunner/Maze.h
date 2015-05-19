@@ -13,7 +13,7 @@ public:
 
 	void init();
 	void addCube(float x, float y, float z);
-	void drawWalls();
+	void renderWalls();
 
 private:
 	std::vector<Wall*> _walls;

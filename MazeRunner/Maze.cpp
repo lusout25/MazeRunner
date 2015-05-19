@@ -25,7 +25,7 @@ void Maze::addCube(float x, float y, float z)
 	_walls.push_back(wall);
 }
 
-void Maze::drawWalls()
+void Maze::renderWalls()
 {
 	for (int i = 0; i < _walls.size(); i++)
 	{

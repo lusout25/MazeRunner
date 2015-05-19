@@ -7,6 +7,7 @@
 #include "Maze.h"
 #include <GameEngine3D\Triangle.h>
 #include <GameEngine3D\Wall.h>
+#include <GameEngine3D\Camera2D.h>
 
 enum class GameState { PLAY, EXIT };
 
@@ -28,16 +29,14 @@ private:
 	GameEngine3D::Window _window;
 	GameEngine3D::ShaderProgram _shaderProgram;
 	GameEngine3D::Camera _camera;
+	GameEngine3D::Camera2D _hud;
 	GameEngine3D::InputManager _inputManager;
 
 	int _screenWidth;
 	int _screenHeight;
-	float _rotation_angle;
 
 	GameState _gameState;
 	Maze _maze;
-	GameEngine3D::Triangle _triangles;
-	GameEngine3D::Wall _walls;
 
 };
 

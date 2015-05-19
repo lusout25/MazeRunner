@@ -26,10 +26,9 @@ void MainGame::initSystems()
 	GameEngine3D::init();
 	_window.create("Maze Runner", _screenWidth, _screenHeight);
 
-
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
-	glCullFace(GL_FRONT);
+	glCullFace(GL_BACK);
 	
 	initShaders();
 
@@ -51,8 +50,6 @@ void MainGame::initShaders()
 
 void MainGame::gameLoop()
 {
-
-	_triangles.init(); //triangle stuff
 	_maze.init();
 
 	while (_gameState != GameState::EXIT)
@@ -165,10 +162,7 @@ void MainGame::draw()
 	glm::mat4 cameraMatrix = _camera.getMVPMatrix();
 	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 
-	_triangles.draw(); //triangle stuff
-	_triangles.render(); //triangle stuff
-
-	_maze.drawWalls();
+	_maze.renderWalls();
 
 	_shaderProgram.unuse();
 
