@@ -1,5 +1,4 @@
 #include "MainGame.h"
-#include "Maze.h"
 #include <GameEngine3D\GameEngine3D.h>
 #include <glm\glm.hpp>
 #include <glm\gtx\rotate_vector.hpp>
@@ -38,6 +37,11 @@ void MainGame::initSystems()
 	{
 		_gameState = GameState::EXIT;
 	}
+
+	//Generate Maze
+	mazeAlgor.generateMazeWeights();
+	mazeAlgor.generateMaze();
+	mazeAlgor.printMaze();
 }
 
 void MainGame::initShaders()
@@ -50,8 +54,6 @@ void MainGame::initShaders()
 
 void MainGame::gameLoop()
 {
-	_maze.init();
-
 	while (_gameState != GameState::EXIT)
 	{
 		processInput();
@@ -61,7 +63,6 @@ void MainGame::gameLoop()
 
 		draw();
 	}
-
 }
 
 void MainGame::processInput()
@@ -162,7 +163,7 @@ void MainGame::draw()
 	glm::mat4 cameraMatrix = _camera.getMVPMatrix();
 	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 
-	_maze.renderWalls();
+	mazeAlgor.drawMaze();
 
 	_shaderProgram.unuse();
 

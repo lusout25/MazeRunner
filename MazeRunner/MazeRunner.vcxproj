@@ -13,11 +13,11 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGame.cpp" />
-    <ClCompile Include="Maze.cpp" />
+    <ClCompile Include="MazeAlgorithm.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h" />
-    <ClInclude Include="Maze.h" />
+    <ClInclude Include="MazeAlgorithm.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\colorShading.frag" />
