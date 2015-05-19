@@ -31,6 +31,8 @@ private:
 	Node **MazeNodes;
 	std::list<Node> frontierNodes, possibleOpenNodes;
 	std::list<Node>::iterator it, pon;
+	std::list<GameEngine3D::Wall>::iterator wallIt;
+	std::list<GameEngine3D::Wall> walls;
 
 	void findNextNodeToAdd(void);
 	bool validFrontierNode(Node NodeToLookat);

@@ -236,6 +236,8 @@ void MazeAlgorithm::markClosedNode(Node *closeNode)
 
 void MazeAlgorithm::printMaze(void)
 {
+	GameEngine3D::Wall* wallyWorld;
+
 	for (int i = 0; i < MazeRows; ++i)
 	{
 		for (int j = 0; j < MazeRows; ++j)
@@ -243,6 +245,10 @@ void MazeAlgorithm::printMaze(void)
 			if (MazeNodes[i][j].weight)
 			{
 				std::cout << '\xDB';
+				wallyWorld = new GameEngine3D::Wall();
+				wallyWorld->placeCube((float)i, 0, (float)j);
+				walls.push_back(*wallyWorld);
+				delete wallyWorld;
 			}
 			else if (i == 0 && j == 0)
 			{
@@ -263,20 +269,9 @@ void MazeAlgorithm::printMaze(void)
 
 void MazeAlgorithm::drawMaze(void)
 {
-	GameEngine3D::Wall wallyWorld;
-
-	for (int i = 0; i < MazeRows; ++i)
+	for (wallIt = walls.begin(); wallIt != walls.end(); ++wallIt)
 	{
-		for (int j = 0; j < MazeRows; ++j)
-		{
-			if (MazeNodes[i][j].weight)
-			{
-				wallyWorld = GameEngine3D::Wall();
-				wallyWorld.placeCube(i, 0, j);
-				wallyWorld.draw();
-				wallyWorld.render();
-			}
-		}
-		std::cout << std::endl;
+		wallIt->draw();
+		wallIt->render();
 	}
 }

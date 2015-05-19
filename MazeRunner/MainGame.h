@@ -8,8 +8,8 @@
 #include <GameEngine3D\Triangle.h>
 #include <GameEngine3D\Wall.h>
 
-#define MAZE_HEIGHT 5
-#define MAZE_LENGTH 5
+#define MAZE_HEIGHT 100
+#define MAZE_LENGTH 100
 
 enum class GameState { PLAY, EXIT };
 
