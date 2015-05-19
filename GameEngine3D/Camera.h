@@ -25,9 +25,6 @@ namespace GameEngine3D {
 	private:
 		bool _needsMatrixUpdate;
 
-		glm::mat4 _viewMatrix;
-		glm::mat4 _modelMatrix;
-		glm::mat4 _projMatrix;
 		glm::mat4 _mvpMatrix;
 
 		glm::vec3 _cameraPosition;

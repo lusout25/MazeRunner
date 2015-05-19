@@ -25,10 +25,9 @@ void MainGame::initSystems()
 	GameEngine3D::init();
 	_window.create("Maze Runner", _screenWidth, _screenHeight);
 
-
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
-	glCullFace(GL_FRONT);
+	glCullFace(GL_BACK);
 	
 	initShaders();
 
