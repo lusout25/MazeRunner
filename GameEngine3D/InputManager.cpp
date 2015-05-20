@@ -36,14 +36,20 @@ namespace GameEngine3D
 		}
 	}
 
-	void InputManager::updateMouseCoordinates(int x)
+	void InputManager::updateMouseCoordinates(int x, int y)
 	{
 		mouseX = x;
+		mouseY = y;
 	}
 
-	int InputManager::getMouseCoordinates(void)
+	int InputManager::getMouseXCoordinates(void)
 	{
 		return mouseX;
+	}
+
+	int InputManager::getMouseYCoordinates(void)
+	{
+		return mouseY;
 	}
 
 }

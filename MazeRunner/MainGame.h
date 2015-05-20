@@ -9,10 +9,11 @@
 #include <GameEngine3D\Wall.h>
 #include <GameEngine3D\Camera2D.h>
 
-#define MAZE_HEIGHT 100
-#define MAZE_LENGTH 100
+#define MAZE_HEIGHT 20
+#define MAZE_LENGTH 20
 
 enum class GameState { PLAY, EXIT };
+enum class JumpState { NONE, UP, DOWN };
 
 class MainGame
 {
@@ -39,6 +40,7 @@ private:
 	int _screenHeight;
 
 	GameState _gameState;
+	JumpState _jumpState;
 	GameEngine3D::Wall _walls;
 
 	MazeAlgorithm mazeAlgor = MazeAlgorithm(MAZE_HEIGHT, MAZE_LENGTH);
