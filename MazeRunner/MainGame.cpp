@@ -2,6 +2,7 @@
 #include <GameEngine3D\GameEngine3D.h>
 #include <glm\glm.hpp>
 #include <glm\gtx\rotate_vector.hpp>
+#include "Player.h"
 
 MainGame::MainGame()
 {
@@ -38,6 +39,11 @@ void MainGame::initSystems()
 		_gameState = GameState::EXIT;
 	}
 
+	_player.placeCube(0, 0, 0);
+
+	_hud.init(_screenWidth, _screenHeight);
+	_hud.setPosition(glm::vec2(_screenWidth / 2, _screenHeight / 2));
+
 	//Generate Maze
 	mazeAlgor.generateMazeWeights();
 	mazeAlgor.generateMaze();
@@ -60,6 +66,7 @@ void MainGame::gameLoop()
 
 		//update the camera model-view-projection matrix
 		_camera.Update();
+		_hud.update();
 
 		draw();
 	}
@@ -71,7 +78,7 @@ void MainGame::processInput()
 
 	bool needsUpdate = false;
 
-	const float CAMERA_SPEED = .002f;
+	const float CAMERA_SPEED = .004f;
 	const float ROTATE_SPEED = .002f;
 	const float JUMP_SPEED   = .001f;
 	
@@ -185,6 +192,7 @@ void MainGame::processInput()
 	{
 		_camera.setCameraPosition(cameraPosition);
 		_camera.setLookAtDirection(lookAtDirection);
+		_player.placeCube(cameraPosition.x + lookAtDirection.x, 0, cameraPosition.z + lookAtDirection.z);
 	}
 }
 
@@ -203,6 +211,15 @@ void MainGame::draw()
 	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 
 	mazeAlgor.drawMaze();
+
+	
+	_player.draw();
+	_player.render();
+
+	glm::mat4 projMatrix = _hud.getCameraMatrix();
+	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(projMatrix[0][0]));
+
+	_hud.draw();
 
 	_shaderProgram.unuse();
 

@@ -8,6 +8,7 @@
 #include <GameEngine3D\Triangle.h>
 #include <GameEngine3D\Wall.h>
 #include <GameEngine3D\Camera2D.h>
+#include "Player.h"
 
 #define MAZE_HEIGHT 20
 #define MAZE_LENGTH 20
@@ -29,6 +30,7 @@ private:
 	void gameLoop();
 	void processInput();
 	void draw();
+	void drawHUD();
 
 	GameEngine3D::Window _window;
 	GameEngine3D::ShaderProgram _shaderProgram;
@@ -42,6 +44,7 @@ private:
 	GameState _gameState;
 	JumpState _jumpState;
 	GameEngine3D::Wall _walls;
+	Player _player;
 
 	MazeAlgorithm mazeAlgor = MazeAlgorithm(MAZE_HEIGHT, MAZE_LENGTH);
 
