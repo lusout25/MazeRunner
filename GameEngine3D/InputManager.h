@@ -16,12 +16,14 @@ namespace GameEngine3D
 		bool isKeyPressed(unsigned int keyID);
 
 		//Mouse Inputs
-		void updateMouseCoordinates(int x);
-		int getMouseCoordinates(void);
+		void updateMouseCoordinates(int x, int y);
+		int getMouseXCoordinates(void);
+		int getMouseYCoordinates(void);
 
 	private:
 		std::unordered_map<unsigned int, bool> _keyMap;
 		int mouseX;
+		int mouseY;
 
 	};
 

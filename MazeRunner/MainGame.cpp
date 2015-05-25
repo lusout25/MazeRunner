@@ -80,9 +80,11 @@ void MainGame::processInput()
 
 	const float CAMERA_SPEED = .004f;
 	const float ROTATE_SPEED = .002f;
+	const float JUMP_SPEED   = .001f;
 	
 	glm::vec3& cameraPosition = _camera.getCameraPosition();
 	glm::vec3& lookAtDirection = _camera.getLookAtDirection();
+	glm::vec3 temp;
 	
 	//set input state
 	while (SDL_PollEvent(&input))
@@ -103,7 +105,7 @@ void MainGame::processInput()
 			break;
 
 		case SDL_MOUSEMOTION:
-			_inputManager.updateMouseCoordinates(input.motion.xrel);
+			_inputManager.updateMouseCoordinates(input.motion.xrel, input.motion.yrel);
 		    break;
 		}
 	}
@@ -112,29 +114,44 @@ void MainGame::processInput()
 	if (_inputManager.isKeyPressed(SDLK_w))
 	{
 		//move camera forward
-		cameraPosition += CAMERA_SPEED * lookAtDirection;
+		cameraPosition.x += CAMERA_SPEED * lookAtDirection.x;
+		cameraPosition.z += CAMERA_SPEED * lookAtDirection.z;
 		needsUpdate = true;
 	}
 
 	if (_inputManager.isKeyPressed(SDLK_a))
 	{
 		//strafe left
-		cameraPosition += -CAMERA_SPEED * glm::cross(lookAtDirection, glm::vec3(lookAtDirection.x, 1, lookAtDirection.z));
+		temp = -CAMERA_SPEED * glm::cross(lookAtDirection, glm::vec3(lookAtDirection.x, 1, lookAtDirection.z));
+		cameraPosition.x += temp.x;
+		cameraPosition.z += temp.z;
 		needsUpdate = true;
 	}
 
 	if (_inputManager.isKeyPressed(SDLK_s))
 	{
 		//move camera backward
-		cameraPosition += -CAMERA_SPEED * lookAtDirection;
+		cameraPosition.x += -CAMERA_SPEED * lookAtDirection.x;
+		cameraPosition.z += -CAMERA_SPEED * lookAtDirection.z;
 		needsUpdate = true;
 	}
 
 	if (_inputManager.isKeyPressed(SDLK_d))
 	{
 		//strafe right
-		cameraPosition += CAMERA_SPEED * glm::cross(lookAtDirection, glm::vec3(lookAtDirection.x, 1, lookAtDirection.z));
+		temp = CAMERA_SPEED * glm::cross(lookAtDirection, glm::vec3(lookAtDirection.x, 1, lookAtDirection.z));
+		cameraPosition.x += temp.x;
+		cameraPosition.z += temp.z;
 		needsUpdate = true;
+	}
+
+	if (_inputManager.isKeyPressed(SDLK_SPACE))
+	{
+		//Lebrons Jumping ability
+		if (_jumpState == JumpState::NONE)
+		{
+			_jumpState = JumpState::UP;
+		}
 	}
 
 	if (_inputManager.isKeyPressed(SDLK_q) || _inputManager.isKeyPressed(SDLK_ESCAPE))
@@ -142,11 +159,33 @@ void MainGame::processInput()
 		_gameState = GameState::EXIT;
 	}
 
-	if (_inputManager.getMouseCoordinates())
+	if (_inputManager.getMouseXCoordinates() || _inputManager.getMouseYCoordinates())
 	{
-		lookAtDirection = glm::rotateY(lookAtDirection, -ROTATE_SPEED*((float)_inputManager.getMouseCoordinates()));
-		_inputManager.updateMouseCoordinates(0);
+		lookAtDirection = glm::rotateY(lookAtDirection, -ROTATE_SPEED*((float)_inputManager.getMouseXCoordinates()));
+		lookAtDirection.y += -ROTATE_SPEED * (float)_inputManager.getMouseYCoordinates();
+		_inputManager.updateMouseCoordinates(0, 0);
 		needsUpdate = true;
+	}
+
+	if (_jumpState != JumpState::NONE)
+	{
+		if (_jumpState == JumpState::UP)
+		{
+			cameraPosition.y += JUMP_SPEED;
+			if (cameraPosition.y > 1.0f)
+			{
+				_jumpState = JumpState::DOWN;
+			}
+		}
+		else
+		{
+			cameraPosition.y -= JUMP_SPEED;
+			if (cameraPosition.y <= .25)
+			{
+				_jumpState = JumpState::NONE;
+			}
+		}
+		_camera.setCameraPosition(cameraPosition);
 	}
 
 	if (needsUpdate)

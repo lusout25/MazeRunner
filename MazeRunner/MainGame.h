@@ -10,10 +10,11 @@
 #include <GameEngine3D\Camera2D.h>
 #include "Player.h"
 
-#define MAZE_HEIGHT 40
-#define MAZE_LENGTH 40
+#define MAZE_HEIGHT 20
+#define MAZE_LENGTH 20
 
 enum class GameState { PLAY, EXIT };
+enum class JumpState { NONE, UP, DOWN };
 
 class MainGame
 {
@@ -41,6 +42,7 @@ private:
 	int _screenHeight;
 
 	GameState _gameState;
+	JumpState _jumpState;
 	GameEngine3D::Wall _walls;
 	Player _player;
 
