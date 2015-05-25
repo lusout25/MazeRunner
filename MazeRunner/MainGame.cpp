@@ -178,7 +178,8 @@ void MainGame::draw()
 	_player.render();
 
 	glm::mat4 projMatrix = _hud.getCameraMatrix();
-	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(projMatrix[0][0]));
+	glm::mat4 mvp = projMatrix * cameraMatrix;
+	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(mvp[0][0]));
 
 	_hud.draw();
 
