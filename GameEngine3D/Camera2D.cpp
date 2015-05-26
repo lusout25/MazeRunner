@@ -41,7 +41,7 @@ namespace GameEngine3D
 	void Camera2D::draw()
 	{
 
-		float _points[] = { 0, 10, 0, -10, 0, 0, 10, 0, 0 };
+		float _points[] = { _screenWidth / 2 - 10, _screenHeight / 2, 0, _screenWidth / 2, _screenHeight / 2 + 10, 0, _screenWidth / 2 + 10, _screenHeight / 2, 0 };
 		float _colors[] = { 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1 };
 
 		if (_vbo == 0)
