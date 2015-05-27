@@ -41,7 +41,7 @@ namespace GameEngine3D
 	void Camera2D::draw()
 	{
 
-		float _points[] = { 0, 0, 0, 0, 5, 0, 5, 0, 0 };
+		float _points[] = { _screenWidth / 2 - 10, _screenHeight / 2, 0, _screenWidth / 2, _screenHeight / 2 + 10, 0, _screenWidth / 2 + 10, _screenHeight / 2, 0 };
 		float _colors[] = { 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1 };
 
 		if (_vbo == 0)
@@ -66,6 +66,6 @@ namespace GameEngine3D
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(_points)));
 
-		glDrawArrays(GL_TRIANGLES, 0, 9);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 	}
 }

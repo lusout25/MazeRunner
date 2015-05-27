@@ -222,7 +222,11 @@ void MainGame::draw()
 	androidObj.render();
 
 	glm::mat4 projMatrix = _hud.getCameraMatrix();
-	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(projMatrix[0][0]));
+	glm::mat4 mvp = projMatrix;
+	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(mvp[0][0]));
+
+	glDisable(GL_CULL_FACE);
+	glClear(GL_DEPTH_BUFFER_BIT);
 
 	_hud.draw();
 
