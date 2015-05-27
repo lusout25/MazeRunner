@@ -17,6 +17,7 @@
     <ClInclude Include="GameEngine3D.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="SimpleObjLoader.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Wall.h" />
     <ClInclude Include="Window.h" />
@@ -27,6 +28,7 @@
     <ClCompile Include="Error.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="SimpleObjLoader.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="Wall.cpp" />
     <ClCompile Include="Window.cpp" />

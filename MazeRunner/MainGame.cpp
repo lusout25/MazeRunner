@@ -48,6 +48,10 @@ void MainGame::initSystems()
 	mazeAlgor.generateMazeWeights();
 	mazeAlgor.generateMaze();
 	mazeAlgor.printMaze();
+
+	//Load Object
+	androidObj = SimpleObjLoader();
+	androidObj.loadObject("..\\MazeRunner\\ObjectModels\\Jigglypuff.obj");
 }
 
 void MainGame::initShaders()
@@ -213,8 +217,9 @@ void MainGame::draw()
 	mazeAlgor.drawMaze();
 
 	
-	_player.draw();
-	_player.render();
+	//_player.draw();
+	//_player.render();
+	androidObj.render();
 
 	glm::mat4 projMatrix = _hud.getCameraMatrix();
 	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(projMatrix[0][0]));
