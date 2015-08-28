@@ -16,6 +16,9 @@
     <Filter Include="Resource Files\Shaders">
       <UniqueIdentifier>{bb4136ab-927c-4dbf-b9bf-6520aca35a95}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\ObjectModels">
+      <UniqueIdentifier>{bcb9ad3c-eaa3-464a-b4bb-904e2b6a6ba7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MazeAlgorithm.h"
+#include <GameEngine3D\SimpleObjLoader.h>
 #include <GameEngine3D\Window.h>
 #include <GameEngine3D\ShaderProgram.h>
 #include <GameEngine3D\Camera.h>
@@ -46,6 +47,7 @@ private:
 	JumpState _jumpState;
 	GameEngine3D::Wall _walls;
 	Player _player;
+	SimpleObjLoader androidObj;
 
 	MazeAlgorithm mazeAlgor = MazeAlgorithm(MAZE_HEIGHT, MAZE_LENGTH);
 	GameEngine3D::QuadTree<GameEngine3D::Wall>* _quadTree;
