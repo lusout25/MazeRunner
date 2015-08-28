@@ -30,6 +30,9 @@ void Player::placeCube(float x, float y, float z)
 	float nearY = y - EDGE_LENGTH / 2;
 	float nearZ = z - EDGE_LENGTH / 2;
 
+	//set collision boundary box
+	_collisionBoundary = GameEngine3D::AABB(GameEngine3D::Point(x, z), GameEngine3D::Point(EDGE_LENGTH / 2, EDGE_LENGTH / 2));
+
 	//triangle 1 - back face
 	_points[0] = farX;
 	_points[1] = nearY;

@@ -9,6 +9,7 @@
 #include <GameEngine3D\Wall.h>
 #include <GameEngine3D\Camera2D.h>
 #include "Player.h"
+#include <GameEngine3D\QuadTree.h>
 
 #define MAZE_HEIGHT 20
 #define MAZE_LENGTH 20
@@ -47,6 +48,7 @@ private:
 	Player _player;
 
 	MazeAlgorithm mazeAlgor = MazeAlgorithm(MAZE_HEIGHT, MAZE_LENGTH);
+	GameEngine3D::QuadTree<GameEngine3D::Wall>* _quadTree;
 
 };
 

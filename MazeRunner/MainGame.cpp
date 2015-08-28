@@ -48,6 +48,9 @@ void MainGame::initSystems()
 	mazeAlgor.generateMazeWeights();
 	mazeAlgor.generateMaze();
 	mazeAlgor.printMaze();
+
+	//get collision data structure
+	_quadTree = mazeAlgor.getQuadTree();
 }
 
 void MainGame::initShaders()
@@ -193,6 +196,14 @@ void MainGame::processInput()
 		_camera.setCameraPosition(cameraPosition);
 		_camera.setLookAtDirection(lookAtDirection);
 		_player.placeCube(cameraPosition.x + lookAtDirection.x, 0, cameraPosition.z + lookAtDirection.z);
+		
+		//test collision stuffy stuff
+		GameEngine3D::AABB playerBoundary = _player.getCollisionBoundary();
+		std::vector<GameEngine3D::Data<GameEngine3D::Wall>> res = _quadTree->queryRange(playerBoundary);
+		if (res.size() > 0)
+		{
+			std::cout << "Collision \n";
+		}
 	}
 }
 

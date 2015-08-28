@@ -31,6 +31,12 @@ namespace GameEngine3D
 		float nearX = x - EDGE_LENGTH / 2;
 		float nearY = y - EDGE_LENGTH / 2;
 		float nearZ = z - EDGE_LENGTH / 2;
+
+		//set collision corners
+		_collisionCorners[0] = nearX;
+		_collisionCorners[1] = nearZ;
+		_collisionCorners[2] = farX;
+		_collisionCorners[3] = farZ;
 		
 		//triangle 1 - back face
 		_points[0] = farX;

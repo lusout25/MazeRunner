@@ -15,7 +15,7 @@ namespace GameEngine3D
 		~Wall();
 
 		void placeCube(float x, float y, float z); //center coordinates
-
+		float* getCollisionCoords() { return _collisionCorners; };
 		void init();
 		void draw();
 		void render();
@@ -23,6 +23,7 @@ namespace GameEngine3D
 	private:
 		float _points[3 * NUM_VERTICES];
 		float _colors[4 * NUM_VERTICES];
+		float _collisionCorners[4];
 
 		GLuint _vbo;
 		GLuint _vao;

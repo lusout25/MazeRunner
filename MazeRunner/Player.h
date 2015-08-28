@@ -1,5 +1,6 @@
 #pragma once
 #include <GL\glew.h>
+#include <GameEngine3D\QuadTree.h>
 
 class Player
 {
@@ -15,9 +16,13 @@ public:
 	void draw();
 	void render();
 
+	GameEngine3D::AABB getCollisionBoundary() { return _collisionBoundary; }
+
 private:
 	float _points[3 * NUM_VERTICES];
 	float _colors[4 * NUM_VERTICES];
+
+	GameEngine3D::AABB _collisionBoundary;
 
 	GLuint _vbo;
 	GLuint _vao;
