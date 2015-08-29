@@ -55,6 +55,7 @@ void MainGame::initSystems()
 
 	//get collision data structure
 	_quadTree = mazeAlgor.getQuadTree();
+	_allWalls = mazeAlgor.getAllWalls();
 }
 
 void MainGame::initShaders()
@@ -197,17 +198,43 @@ void MainGame::processInput()
 
 	if (needsUpdate)
 	{
+
+
+
 		_camera.setCameraPosition(cameraPosition);
 		_camera.setLookAtDirection(lookAtDirection);
-		_player.placeCube(cameraPosition.x + lookAtDirection.x, 0, cameraPosition.z + lookAtDirection.z);
-		
+		_player.placeCube(cameraPosition.x /* + lookAtDirection.x */, 0, cameraPosition.z /* + lookAtDirection.z */);
+
+
 		//test collision stuffy stuff
-		GameEngine3D::AABB playerBoundary = _player.getCollisionBoundary();
-		std::vector<GameEngine3D::Data<GameEngine3D::Wall>> res = _quadTree->queryRange(playerBoundary);
+		float collisionX, collisionY;
+		GameEngine3D::AABB wallBoundary, playerBoundary;
+		
+		collisionX = cameraPosition.x;
+		collisionY = cameraPosition.z;
+		playerBoundary = _player.getCollisionBoundary();
+
+		for (auto wallIter = _allWalls.begin(); wallIter != _allWalls.end(); wallIter++)
+		{
+			wallBoundary = wallIter->getCollisionBox();
+			if (playerBoundary.intersects(wallBoundary, collisionX, collisionY))
+			{
+				//_player.placeCube(collisionX /* + lookAtDirection.x */, 0, collisionY /* + lookAtDirection.z */);
+				std::cout << wallBoundary.center.x << "  " << wallBoundary.center.y << "Collision \n";
+				
+			}
+		}
+
+		/*std::vector<GameEngine3D::Data<GameEngine3D::Wall>> res = _quadTree->queryRange(playerBoundary);
 		if (res.size() > 0)
 		{
-			std::cout << "Collision \n";
-		}
+			if (playerBoundary.intersects(wallIter->getCollisionBox()))
+			{
+				std::cout << wallIter->getCollisionBox().center.x << "  " << wallIter->getCollisionBox().center.y << "Collision \n";
+			}
+		}*/
+		
+		
 	}
 }
 
@@ -228,8 +255,8 @@ void MainGame::draw()
 	mazeAlgor.drawMaze();
 
 	
-	//_player.draw();
-	//_player.render();
+	_player.draw();
+	_player.render();
 	androidObj.render();
 
 	glm::mat4 projMatrix = _hud.getCameraMatrix();

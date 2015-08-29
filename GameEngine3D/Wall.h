@@ -1,6 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <GL\glew.h>
+#include "QuadTree.h"
 
 namespace GameEngine3D
 {
@@ -19,11 +20,14 @@ namespace GameEngine3D
 		void init();
 		void draw();
 		void render();
+		AABB getCollisionBox() { return _collisionBox; };
 
 	private:
 		float _points[3 * NUM_VERTICES];
 		float _colors[4 * NUM_VERTICES];
 		float _collisionCorners[4];
+
+		AABB _collisionBox;
 
 		GLuint _vbo;
 		GLuint _vao;

@@ -37,6 +37,9 @@ namespace GameEngine3D
 		_collisionCorners[1] = nearZ;
 		_collisionCorners[2] = farX;
 		_collisionCorners[3] = farZ;
+
+		//set collision boundary box
+		_collisionBox = GameEngine3D::AABB(GameEngine3D::Point(x, z), GameEngine3D::Point(EDGE_LENGTH / 2, EDGE_LENGTH / 2));
 		
 		//triangle 1 - back face
 		_points[0] = farX;

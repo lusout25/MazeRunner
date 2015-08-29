@@ -17,7 +17,11 @@ public:
 private:
 	std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
 	std::vector< glm::vec3 > vertices;
+	std::vector< glm::vec4 > colors;
 	std::vector< glm::vec2 > uvs;
 	std::vector< glm::vec3 > normals;
 	int NumFaces;
+
+	GLuint _vbo;
+	GLuint _vao;
 };

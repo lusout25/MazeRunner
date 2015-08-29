@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "Wall.h"
+#include <glm\glm.hpp>
 
 namespace GameEngine3D
 {
@@ -28,7 +28,7 @@ namespace GameEngine3D
 			halfSize = hf;
 		};
 
-		bool contains(Point a) const
+		bool contains(Point a)
 		{
 			if (a.x < center.x + halfSize.x && a.x > center.x - halfSize.x)
 			{
@@ -40,16 +40,41 @@ namespace GameEngine3D
 			return false;
 		}
 
-		bool intersects(const AABB other) const
+		bool intersects(AABB other, float &xPos, float &yPos)
 		{
-			if (center.x + halfSize.x > other.center.x - other.halfSize.x || center.x - halfSize.x < other.center.x + other.halfSize.x)
+			bool xCollision = false, yCollision=false;
+
+			if (glm::abs(center.x - other.center.x) < (halfSize.x + other.halfSize.x))
 			{
-				if (center.y + halfSize.y > other.center.y - other.halfSize.y || center.y - halfSize.y < other.center.y + other.halfSize.y)
+				xCollision = true;
+				if (center.x < other.center.x) //x-direction collision
 				{
-					return true;
+					//player is left of wall
+					xPos = other.center.x - other.halfSize.x - halfSize.x;
+				}
+				else
+				{
+					//player is right of wall
+					xPos = other.center.x + other.halfSize.x + halfSize.x;
 				}
 			}
-			return false;
+
+			if (glm::abs(center.y - other.center.y) < (halfSize.y + other.halfSize.y)) 
+			{
+				yCollision = true;
+				if (center.y < other.center.y) //y-direction collision
+				{
+					//player is front wall
+					yPos = other.center.y - other.halfSize.y - halfSize.y;
+				}
+				else
+				{
+					//player is behind wall
+					yPos = other.center.y + other.halfSize.y + halfSize.y;
+				}
+			}
+
+			return (xCollision && yCollision);
 		}
 	};
 

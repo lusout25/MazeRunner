@@ -17,6 +17,7 @@ public:
 	void drawMaze(void);
 
 	GameEngine3D::QuadTree<GameEngine3D::Wall>* getQuadTree() { return _quadTree; };
+	std::list<GameEngine3D::Wall> getAllWalls() { return walls; };
 
 private:
 	enum DIRECTION { UP, DOWN, LEFT, RIGHT };

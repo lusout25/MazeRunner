@@ -59,8 +59,8 @@ bool SimpleObjLoader::loadObject(char* filePath)
 		{
 			unsigned int tempVertIndex[3], tempUvIndex[3], normalIndex[3];
 			fp >> tempVertIndex[0] >> tempUvIndex[0] >> normalIndex[0] >>
-				  tempVertIndex[1] >> tempUvIndex[1] >> normalIndex[1] >>
-				  tempVertIndex[2] >> tempUvIndex[2] >> normalIndex[2];
+				tempVertIndex[1] >> tempUvIndex[1] >> normalIndex[1] >>
+				tempVertIndex[2] >> tempUvIndex[2] >> normalIndex[2];
 
 			vertexIndices.push_back(tempVertIndex[0]);
 			vertexIndices.push_back(tempVertIndex[1]);
@@ -82,11 +82,12 @@ bool SimpleObjLoader::loadObject(char* filePath)
 	for (int i = 0; i < vertexIndices.size(); i++)
 	{
 		vertices.push_back(temp_vertices[vertexIndices[i] - 1]);
+		colors.push_back(glm::vec4(0, 1, 1, 1));
 	}
 
 	for (int i = 0; i < uvIndices.size(); i++)
 	{
-		uvs.push_back(temp_uvs[uvIndices[i]-1]);
+		uvs.push_back(temp_uvs[uvIndices[i] - 1]);
 	}
 
 	for (int i = 0; i < normalIndices.size(); i++)
@@ -100,6 +101,27 @@ bool SimpleObjLoader::loadObject(char* filePath)
 
 void SimpleObjLoader::render()
 {
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
-	glDrawArrays(GL_TRIANGLES, 0, 3*NumFaces);
+	if (_vbo == 0)
+	{
+		glGenBuffers(1, &_vbo);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3) + colors.size() * sizeof(glm::vec4), nullptr, GL_STATIC_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(glm::vec3), &vertices[0]);
+	glBufferSubData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), colors.size() * sizeof(glm::vec4), &colors[0]);
+
+	if (_vao == 0)
+	{
+		glGenVertexArrays(1, &_vao);
+	}
+	glBindVertexArray(_vao);
+
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)(vertices.size() * sizeof(glm::vec3)));
+
+	glDrawArrays(GL_TRIANGLES, 0, 3 * NumFaces);
 }

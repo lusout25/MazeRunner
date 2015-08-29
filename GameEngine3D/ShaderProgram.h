@@ -14,7 +14,6 @@ namespace GameEngine3D
 		void compileShaders(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilepath);
 
 		void linkShaders();
-
 		void addAttribute(const std::string attributeName);
 
 		GLint getUniformLocation(const std::string& uniformName);

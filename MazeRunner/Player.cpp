@@ -177,6 +177,7 @@ void Player::placeCube(float x, float y, float z)
 
 void Player::draw()
 {
+
 	if (_vbo == 0)
 	{
 		glGenBuffers(1, &_vbo);

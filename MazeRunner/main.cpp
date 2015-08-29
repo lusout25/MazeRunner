@@ -7,7 +7,7 @@ int main(int, char**)
 {
 
 	
-	GameEngine3D::Wall* wallA = new GameEngine3D::Wall();
+	/*GameEngine3D::Wall* wallA = new GameEngine3D::Wall();
 	GameEngine3D::Wall* wallB = new GameEngine3D::Wall();
 	GameEngine3D::Wall* wallC = new GameEngine3D::Wall();
 	wallA->placeCube(0, 0, 0);
@@ -47,7 +47,7 @@ int main(int, char**)
 	aabb.halfSize.y = 1.1;
 
 	std::vector<GameEngine3D::Data<GameEngine3D::Wall>> res = quadTree->queryRange(aabb);
-
+	*/
 	MainGame mainGame;
 	mainGame.run();
 
