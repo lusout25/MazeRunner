@@ -107,9 +107,10 @@ void SimpleObjLoader::render()
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3) + colors.size() * sizeof(glm::vec4), nullptr, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3) + colors.size() * sizeof(glm::vec4) + normals.size() * sizeof(glm::vec3), nullptr, GL_STATIC_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(glm::vec3), &vertices[0]);
 	glBufferSubData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), colors.size() * sizeof(glm::vec4), &colors[0]);
+	glBufferSubData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3) + colors.size() * sizeof(glm::vec4), normals.size() * sizeof(glm::vec4), &normals[0]);
 
 	if (_vao == 0)
 	{
@@ -119,9 +120,11 @@ void SimpleObjLoader::render()
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)(vertices.size() * sizeof(glm::vec3)));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)(vertices.size() * sizeof(glm::vec3) + colors.size() * sizeof(glm::vec4)));
 
 	glDrawArrays(GL_TRIANGLES, 0, 3 * NumFaces);
 }

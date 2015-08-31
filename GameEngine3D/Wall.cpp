@@ -51,6 +51,9 @@ namespace GameEngine3D
 		_points[6] = nearX;
 		_points[7] = farY;
 		_points[8] = nearZ;
+		_normals[0] = 0;
+		_normals[1] = 0;
+		_normals[2] = 1;
 
 		//triangle 2 - back face
 		_points[9] = nearX;
@@ -62,6 +65,9 @@ namespace GameEngine3D
 		_points[15] = nearX;
 		_points[16] = farY;
 		_points[17] = nearZ;
+		_normals[3] = 0;
+		_normals[4] = 0;
+		_normals[5] = 1;
 
 		//triangle 3 - front face
 		_points[18] = farX;
@@ -73,6 +79,9 @@ namespace GameEngine3D
 		_points[24] = nearX;
 		_points[25] = farY;
 		_points[26] = farZ;
+		_normals[6] = 0;
+		_normals[7] = 0;
+		_normals[8] = -1;
 
 		//triangle 4 - front face
 		_points[27] = farX;
@@ -84,6 +93,9 @@ namespace GameEngine3D
 		_points[33] = nearX;
 		_points[34] = farY;
 		_points[35] = farZ;
+		_normals[9] = 0;
+		_normals[10] = 0;
+		_normals[11] = -1;
 
 		//triangle 5 - right face
 		_points[36] = farX;
@@ -95,6 +107,9 @@ namespace GameEngine3D
 		_points[42] = farX;
 		_points[43] = farY;
 		_points[44] = nearZ;
+		_normals[12] = 1;
+		_normals[13] = 0;
+		_normals[14] = 0;
 
 		//triangle 6 - right face
 		_points[45] = farX;
@@ -106,6 +121,9 @@ namespace GameEngine3D
 		_points[51] = farX;
 		_points[52] = nearY;
 		_points[53] = nearZ;
+		_normals[15] = 1;
+		_normals[16] = 0;
+		_normals[17] = 0;
 		
 		//triangle 7 - left side
 		_points[54] = nearX;
@@ -117,6 +135,9 @@ namespace GameEngine3D
 		_points[60] = nearX;
 		_points[61] = farY;
 		_points[62] = nearZ;
+		_normals[18] = -1;
+		_normals[19] = 0;
+		_normals[20] = 0;
 
 		//triangle 8 - left side
 		_points[63] = nearX;
@@ -128,6 +149,9 @@ namespace GameEngine3D
 		_points[69] = nearX;
 		_points[70] = nearY;
 		_points[71] = nearZ;
+		_normals[21] = -1;
+		_normals[22] = 0;
+		_normals[23] = 0;
 
 		//triangle 9 - top side
 		_points[72] = farX;
@@ -139,6 +163,9 @@ namespace GameEngine3D
 		_points[78] = nearX;
 		_points[79] = farY;
 		_points[80] = farZ;
+		_normals[24] = 0;
+		_normals[25] = 1;
+		_normals[26] = 0;
 
 		//triangle 10 - top side
 		_points[81] = nearX;
@@ -150,6 +177,9 @@ namespace GameEngine3D
 		_points[87] = nearX;
 		_points[88] = farY;
 		_points[89] = farZ;
+		_normals[27] = 0;
+		_normals[28] = 1;
+		_normals[29] = 0;
 
 		//triangle 11 - bottom side
 		_points[90] = farX;
@@ -161,6 +191,9 @@ namespace GameEngine3D
 		_points[96] = nearX;
 		_points[97] = nearY;
 		_points[98] = farZ;
+		_normals[30] = 0;
+		_normals[31] = -1;
+		_normals[32] = 0;
 
 		//triangle 12 - bottom side
 		_points[99] = farX;
@@ -172,6 +205,9 @@ namespace GameEngine3D
 		_points[105] = nearX;
 		_points[106] = nearY;
 		_points[107] = farZ;
+		_normals[33] = 0;
+		_normals[34] = -1;
+		_normals[35] = 0;
 
 		//set all sides purple
 		for (int i = 0; i < NUM_VERTICES; i++)
@@ -203,7 +239,7 @@ namespace GameEngine3D
 
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
-
+		
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(_points)));
 	}

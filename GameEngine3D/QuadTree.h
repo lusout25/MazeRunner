@@ -42,26 +42,42 @@ namespace GameEngine3D
 
 		bool intersects(AABB other, float &xPos, float &yPos)
 		{
-			bool xCollision = false, yCollision=false;
 
-			if (glm::abs(center.x - other.center.x) < (halfSize.x + other.halfSize.x))
+			if ((glm::abs(center.x - other.center.x) < (halfSize.x + other.halfSize.x)) && (glm::abs(center.y - other.center.y) < (halfSize.y + other.halfSize.y))) //is collision?
 			{
-				xCollision = true;
-				if (center.x < other.center.x) //x-direction collision
+				if (glm::abs(center.x - other.center.x) > glm::abs(center.y - other.center.y))
 				{
-					//player is left of wall
-					xPos = other.center.x - other.halfSize.x - halfSize.x;
+					//shove x direction
+					if (center.x < other.center.x) //x-direction collision
+					{
+						//player is left of wall
+						xPos = other.center.x - other.halfSize.x - halfSize.x;
+					}
+					else
+					{
+						//player is right of wall
+						xPos = other.center.x + other.halfSize.x + halfSize.x;
+					}
 				}
 				else
 				{
-					//player is right of wall
-					xPos = other.center.x + other.halfSize.x + halfSize.x;
+					if (center.y < other.center.y) //y-direction collision
+					{
+						//player is front wall
+						yPos = other.center.y - other.halfSize.y - halfSize.y;
+					}
+					else
+					{
+						//player is behind wall
+						yPos = other.center.y + other.halfSize.y + halfSize.y;
+					}
 				}
+
+				return true;
 			}
 
-			if (glm::abs(center.y - other.center.y) < (halfSize.y + other.halfSize.y)) 
+			/*if (glm::abs(center.y - other.center.y) < (halfSize.y + other.halfSize.y)) 
 			{
-				yCollision = true;
 				if (center.y < other.center.y) //y-direction collision
 				{
 					//player is front wall
@@ -72,9 +88,9 @@ namespace GameEngine3D
 					//player is behind wall
 					yPos = other.center.y + other.halfSize.y + halfSize.y;
 				}
-			}
+			}*/
 
-			return (xCollision && yCollision);
+			return false;
 		}
 	};
 

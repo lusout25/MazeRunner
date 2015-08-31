@@ -219,8 +219,7 @@ void MainGame::processInput()
 			wallBoundary = wallIter->getCollisionBox();
 			if (playerBoundary.intersects(wallBoundary, collisionX, collisionY))
 			{
-				//_player.placeCube(collisionX /* + lookAtDirection.x */, 0, collisionY /* + lookAtDirection.z */);
-				std::cout << wallBoundary.center.x << "  " << wallBoundary.center.y << "Collision \n";
+				_player.placeCube(collisionX /* + lookAtDirection.x */, 0, collisionY /* + lookAtDirection.z */);
 				
 			}
 		}

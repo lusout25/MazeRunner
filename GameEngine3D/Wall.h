@@ -25,6 +25,7 @@ namespace GameEngine3D
 	private:
 		float _points[3 * NUM_VERTICES];
 		float _colors[4 * NUM_VERTICES];
+		float _normals[NUM_VERTICES];
 		float _collisionCorners[4];
 
 		AABB _collisionBox;

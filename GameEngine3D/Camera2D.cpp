@@ -43,6 +43,7 @@ namespace GameEngine3D
 
 		float _points[] = { _screenWidth / 2 - 10, _screenHeight / 2, 0, _screenWidth / 2, _screenHeight / 2 + 10, 0, _screenWidth / 2 + 10, _screenHeight / 2, 0 };
 		float _colors[] = { 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1 };
+		float _normals[] = { 0, 1, 1, 0, 1, 1, 0, 1, 1 };
 
 		if (_vbo == 0)
 		{
