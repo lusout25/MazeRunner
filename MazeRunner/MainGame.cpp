@@ -201,17 +201,18 @@ void MainGame::processInput()
 
 
 
+
 		_camera.setCameraPosition(cameraPosition);
 		_camera.setLookAtDirection(lookAtDirection);
-		_player.placeCube(cameraPosition.x /* + lookAtDirection.x */, 0, cameraPosition.z /* + lookAtDirection.z */);
+		_player.placeCube(cameraPosition.x + lookAtDirection.x, 0, cameraPosition.z + lookAtDirection.z );
 
 
 		//test collision stuffy stuff
-		float collisionX, collisionY;
+		float collisionX = 0, collisionY = 0;
 		GameEngine3D::AABB wallBoundary, playerBoundary;
 		
-		collisionX = cameraPosition.x;
-		collisionY = cameraPosition.z;
+		//collisionX = cameraPosition.x;
+		//collisionY = cameraPosition.z;
 		playerBoundary = _player.getCollisionBoundary();
 
 		for (auto wallIter = _allWalls.begin(); wallIter != _allWalls.end(); wallIter++)
@@ -219,20 +220,27 @@ void MainGame::processInput()
 			wallBoundary = wallIter->getCollisionBox();
 			if (playerBoundary.intersects(wallBoundary, collisionX, collisionY))
 			{
-				_player.placeCube(collisionX /* + lookAtDirection.x */, 0, collisionY /* + lookAtDirection.z */);
-				
+				cameraPosition.x -= collisionX;
+				cameraPosition.z -= collisionY;
+
+				_player.placeCube(cameraPosition.x + lookAtDirection.x, 0, cameraPosition.z + lookAtDirection.z);
+				_camera.setCameraPosition(cameraPosition);
+				//cameraPosition.x = collisionX - CAMERA_SPEED * lookAtDirection.x;
+				//cameraPosition.z = collisionY - CAMERA_SPEED * lookAtDirection.z;
 			}
 		}
 
 		/*std::vector<GameEngine3D::Data<GameEngine3D::Wall>> res = _quadTree->queryRange(playerBoundary);
-		if (res.size() > 0)
+		for (int i = 0; i < res.size(); i++)
 		{
-			if (playerBoundary.intersects(wallIter->getCollisionBox()))
+			if (playerBoundary.intersects(res[i].load->getCollisionBox(), collisionX, collisionY))
 			{
-				std::cout << wallIter->getCollisionBox().center.x << "  " << wallIter->getCollisionBox().center.y << "Collision \n";
+				_player.placeCube(collisionX, 0, collisionY);
+				cameraPosition.x = collisionX - CAMERA_SPEED * lookAtDirection.x;
+				cameraPosition.z = collisionY - CAMERA_SPEED * lookAtDirection.z;
 			}
 		}*/
-		
+
 		
 	}
 }

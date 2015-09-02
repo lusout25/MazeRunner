@@ -51,12 +51,14 @@ namespace GameEngine3D
 					if (center.x < other.center.x) //x-direction collision
 					{
 						//player is left of wall
-						xPos = other.center.x - other.halfSize.x - halfSize.x;
+						// = other.center.x - other.halfSize.x - halfSize.x;
+						xPos = (center.x + halfSize.x) - (other.center.x - other.halfSize.x);
 					}
 					else
 					{
 						//player is right of wall
-						xPos = other.center.x + other.halfSize.x + halfSize.x;
+						//xPos = other.center.x + other.halfSize.x + halfSize.x;
+						xPos = (center.x - halfSize.x) - (other.center.x + other.halfSize.x);
 					}
 				}
 				else
@@ -64,12 +66,14 @@ namespace GameEngine3D
 					if (center.y < other.center.y) //y-direction collision
 					{
 						//player is front wall
-						yPos = other.center.y - other.halfSize.y - halfSize.y;
+						//yPos = other.center.y - other.halfSize.y - halfSize.y;
+						yPos = (center.y + halfSize.y) - (other.center.y - other.halfSize.y);
 					}
 					else
 					{
 						//player is behind wall
-						yPos = other.center.y + other.halfSize.y + halfSize.y;
+						//yPos = other.center.y + other.halfSize.y + halfSize.y;
+						yPos = (center.y - halfSize.y) - (other.center.y + other.halfSize.y);
 					}
 				}
 
@@ -200,8 +204,8 @@ namespace GameEngine3D
 		std::vector<Data<T>> queryRange(AABB range)
 		{
 			std::vector<Data<T>> pInRange = std::vector<Data<T>>();
-
-			if (!_boundary.intersects(range))
+			float scratch = 0, scratch2 = 0;
+			if (!_boundary.intersects(range,scratch,scratch2))
 			{
 				return pInRange;
 			}
