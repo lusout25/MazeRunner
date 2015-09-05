@@ -18,6 +18,7 @@ namespace GameEngine3D {
 		glm::vec3 getCameraPosition() { return _cameraPosition; };
 		glm::vec3 getLookAtDirection() { return _lookAtDir; };
 		glm::mat4 getMVPMatrix() { return _mvpMatrix; };
+		glm::mat4 getModelView() { return _modelViewMatrix; };
 
 		void setCameraPosition(glm::vec3& newPosition) { _cameraPosition = newPosition; _needsMatrixUpdate = true; };
 		void setLookAtDirection(glm::vec3& newDirection) { _lookAtDir = newDirection; _needsMatrixUpdate = true; };
@@ -26,6 +27,7 @@ namespace GameEngine3D {
 		bool _needsMatrixUpdate;
 
 		glm::mat4 _mvpMatrix;
+		glm::mat4 _modelViewMatrix;
 
 		glm::vec3 _cameraPosition;
 		glm::vec3 _lookAtDir;

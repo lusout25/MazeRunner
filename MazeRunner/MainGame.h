@@ -17,6 +17,7 @@
 
 enum class GameState { PLAY, EXIT };
 enum class JumpState { NONE, UP, DOWN };
+enum class ShaderState { COLOR, LIGHTING };
 
 class MainGame
 {
@@ -28,7 +29,7 @@ public:
 
 private:
 	void initSystems();
-	void initShaders();
+	void initShaders(ShaderState ss);
 	void gameLoop();
 	void processInput();
 	void draw();
@@ -45,13 +46,15 @@ private:
 
 	GameState _gameState;
 	JumpState _jumpState;
+	ShaderState _shaderState;
+
 	GameEngine3D::Wall _walls;
 	Player _player;
 	SimpleObjLoader androidObj;
 
 	MazeAlgorithm mazeAlgor = MazeAlgorithm(MAZE_HEIGHT, MAZE_LENGTH);
 	GameEngine3D::QuadTree<GameEngine3D::Wall>* _quadTree;
-	std::list<GameEngine3D::Wall> _allWalls;
+	//std::list<GameEngine3D::Wall> _allWalls;
 
 };
 

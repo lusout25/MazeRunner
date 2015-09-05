@@ -41,6 +41,8 @@
     <None Include="Shaders\colorShading.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="Shaders\lightingShader.vert" />
+    <None Include="Shaders\lightingShader.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h">

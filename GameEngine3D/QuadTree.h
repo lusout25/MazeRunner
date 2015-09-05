@@ -30,9 +30,9 @@ namespace GameEngine3D
 
 		bool contains(Point a)
 		{
-			if (a.x < center.x + halfSize.x && a.x > center.x - halfSize.x)
+			if ((a.x <= center.x + halfSize.x) && (a.x >= center.x - halfSize.x))
 			{
-				if (a.y < center.y + halfSize.y && a.y > center.y - halfSize.y)
+				if ((a.y <= center.y + halfSize.y) && (a.y >= center.y - halfSize.y))
 				{
 					return true;
 				}
@@ -102,10 +102,12 @@ namespace GameEngine3D
 	{
 		Point pos;
 		T* load;
+		GameEngine3D::AABB box;
 		
-		Data(Point p = Point(), T* data = nullptr)
+		Data(Point p = Point(), GameEngine3D::AABB b = GameEngine3D::AABB(), T* data = nullptr)
 		{
 			pos = p; 
+			box = b;
 			load = data;
 		};
 	};
@@ -187,7 +189,7 @@ namespace GameEngine3D
 
 		void split()
 		{
-			Point qSize = { _boundary.center.x/2, _boundary.center.y/2 };
+			Point qSize = { _boundary.halfSize.x, _boundary.halfSize.y };
 			Point qCenter = { _boundary.center.x - qSize.x, _boundary.center.y - qSize.y };
 			_northWest = new QuadTree(AABB(qCenter, qSize));
 

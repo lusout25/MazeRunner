@@ -29,8 +29,6 @@ void MainGame::initSystems()
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
 	glCullFace(GL_BACK);
-	
-	initShaders();
 
 	//Trap mouse within window
 	//If SDL_SetRelativeMouseMode fails exit game
@@ -50,19 +48,49 @@ void MainGame::initSystems()
 	mazeAlgor.printMaze();
 
 	//Load Object
-	androidObj = SimpleObjLoader();
-	androidObj.loadObject("..\\MazeRunner\\ObjectModels\\Jigglypuff.obj");
+	//androidObj = SimpleObjLoader();
+	//androidObj.loadObject("..\\MazeRunner\\ObjectModels\\Jigglypuff.obj");
 
 	//get collision data structure
 	_quadTree = mazeAlgor.getQuadTree();
-	_allWalls = mazeAlgor.getAllWalls();
+	//_allWalls = mazeAlgor.getAllWalls();
 }
 
-void MainGame::initShaders()
+void MainGame::initShaders(ShaderState ss)
 {
-	_shaderProgram.compileShaders("Shaders/colorShading.vert", "Shaders/colorShading.frag");
-	_shaderProgram.addAttribute("vertexPosition");
-	_shaderProgram.addAttribute("vertexColor");
+	std::string vertFilePath, fragFilePath;
+	std::string* attributeList;
+	int attributeCount = 0;
+
+	if (ss == ShaderState::COLOR)
+	{
+		vertFilePath = "Shaders/colorShading.vert";
+		fragFilePath = "Shaders/colorShading.frag";
+		attributeCount = 2;
+		attributeList = new std::string[attributeCount];
+		attributeList[0] = "vertexPosition";
+		attributeList[1] = "vertexColor";
+	}
+	else if (ss == ShaderState::LIGHTING)
+	{
+		vertFilePath = "Shaders/lightingShader.vert";
+		fragFilePath = "Shaders/lightingShader.frag";
+		attributeCount = 3;
+		attributeList = new std::string[attributeCount];
+		attributeList[0] = "inPosition";
+		attributeList[1] = "inColor";
+		attributeList[2] = "inNormal";
+	}
+	else
+	{
+		attributeList = new std::string[attributeCount];
+	}
+
+	_shaderProgram.compileShaders(vertFilePath, fragFilePath );
+	for (int i = 0; i < attributeCount; i++)
+	{
+		_shaderProgram.addAttribute(attributeList[i]);
+	}
 	_shaderProgram.linkShaders();
 }
 
@@ -209,13 +237,15 @@ void MainGame::processInput()
 
 		//test collision stuffy stuff
 		float collisionX = 0, collisionY = 0;
-		GameEngine3D::AABB wallBoundary, playerBoundary;
+		GameEngine3D::AABB wallBoundary, playerBoundary,searchBoundary;
 		
 		//collisionX = cameraPosition.x;
 		//collisionY = cameraPosition.z;
 		playerBoundary = _player.getCollisionBoundary();
+		searchBoundary = playerBoundary;
+		searchBoundary.halfSize = { 2, 2 };
 
-		for (auto wallIter = _allWalls.begin(); wallIter != _allWalls.end(); wallIter++)
+		/*for (auto wallIter = _allWalls.begin(); wallIter != _allWalls.end(); wallIter++)
 		{
 			wallBoundary = wallIter->getCollisionBox();
 			if (playerBoundary.intersects(wallBoundary, collisionX, collisionY))
@@ -223,23 +253,23 @@ void MainGame::processInput()
 				cameraPosition.x -= collisionX;
 				cameraPosition.z -= collisionY;
 
-				_player.placeCube(cameraPosition.x /*+ lookAtDirection.x*/, 0, cameraPosition.z /*+ lookAtDirection.z*/);
+				_player.placeCube(cameraPosition.x , 0, cameraPosition.z );
 				_camera.setCameraPosition(cameraPosition);
-				//cameraPosition.x = collisionX - CAMERA_SPEED * lookAtDirection.x;
-				//cameraPosition.z = collisionY - CAMERA_SPEED * lookAtDirection.z;
-			}
-		}
-
-		/*std::vector<GameEngine3D::Data<GameEngine3D::Wall>> res = _quadTree->queryRange(playerBoundary);
-		for (int i = 0; i < res.size(); i++)
-		{
-			if (playerBoundary.intersects(res[i].load->getCollisionBox(), collisionX, collisionY))
-			{
-				_player.placeCube(collisionX, 0, collisionY);
-				cameraPosition.x = collisionX - CAMERA_SPEED * lookAtDirection.x;
-				cameraPosition.z = collisionY - CAMERA_SPEED * lookAtDirection.z;
 			}
 		}*/
+
+		std::vector<GameEngine3D::Data<GameEngine3D::Wall>> res = _quadTree->queryRange(searchBoundary);
+		for (int i = 0; i < res.size(); i++)
+		{
+			if (playerBoundary.intersects(res[i].box, collisionX, collisionY))
+			{
+				cameraPosition.x -= collisionX;
+				cameraPosition.z -= collisionY;
+
+				_player.placeCube(cameraPosition.x, 0, cameraPosition.z);
+				_camera.setCameraPosition(cameraPosition);
+			}
+		}
 
 		
 	}
@@ -249,6 +279,8 @@ void MainGame::draw()
 {
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	initShaders(ShaderState::COLOR);
 
 	_shaderProgram.use();
 
@@ -261,10 +293,8 @@ void MainGame::draw()
 
 	mazeAlgor.drawMaze();
 
-	
 	_player.draw();
 	_player.render();
-	androidObj.render();
 
 	glm::mat4 projMatrix = _hud.getCameraMatrix();
 	glm::mat4 mvp = projMatrix;
@@ -276,6 +306,27 @@ void MainGame::draw()
 	_hud.draw();
 
 	_shaderProgram.unuse();
+
+	//***************
+	// Lighting 
+	//***************
+	/*initShaders(ShaderState::LIGHTING);
+	_shaderProgram.use();
+
+	//locate the location of "MVP" in the shader
+	mvpLocation = _shaderProgram.getUniformLocation("MVP");
+
+	//pass the camera matrix to the shader
+	cameraMatrix = _camera.getMVPMatrix();
+	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
+
+	GLuint normalMatLoc = _shaderProgram.getUniformLocation("normalMatrix");
+
+	glm::mat4 normalMatrix = glm::transpose(glm::inverse(_camera.getModelView()));
+	glUniformMatrix4fv(normalMatLoc, 1, GL_FALSE, &(normalMatrix[0][0]));
+
+	androidObj.render();
+	_shaderProgram.unuse();*/
 
 	_window.swapBuffer();
 }

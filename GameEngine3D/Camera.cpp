@@ -30,7 +30,8 @@ namespace GameEngine3D {
 			//rotation it is looking at {0,1,0} is head up {0,-1,0} is upside down.
 			glm::mat4 viewMatrix = glm::lookAt(_cameraPosition - glm::vec3(_lookAtDir.x,0,_lookAtDir.z), _cameraPosition + _lookAtDir, glm::vec3(0, 1, 0)); 
 			glm::mat4 modelMatrix = glm::mat4(1.0f); //identity matrix, model will be at the origin
-			_mvpMatrix = projMatrix * viewMatrix * modelMatrix;
+			_modelViewMatrix = viewMatrix * modelMatrix;
+			_mvpMatrix = projMatrix * _modelViewMatrix;
 
 			_needsMatrixUpdate = false;
 		}
