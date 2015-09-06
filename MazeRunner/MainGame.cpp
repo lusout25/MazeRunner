@@ -53,7 +53,6 @@ void MainGame::initSystems()
 
 	//get collision data structure
 	_quadTree = mazeAlgor.getQuadTree();
-	//_allWalls = mazeAlgor.getAllWalls();
 }
 
 void MainGame::initShaders(ShaderState ss)
@@ -226,37 +225,17 @@ void MainGame::processInput()
 
 	if (needsUpdate)
 	{
-
-
-
-
 		_camera.setCameraPosition(cameraPosition);
 		_camera.setLookAtDirection(lookAtDirection);
 		_player.placeCube(cameraPosition.x/* + lookAtDirection.x*/, 0, cameraPosition.z /*+ lookAtDirection.z*/ );
-
 
 		//test collision stuffy stuff
 		float collisionX = 0, collisionY = 0;
 		GameEngine3D::AABB wallBoundary, playerBoundary,searchBoundary;
 		
-		//collisionX = cameraPosition.x;
-		//collisionY = cameraPosition.z;
 		playerBoundary = _player.getCollisionBoundary();
 		searchBoundary = playerBoundary;
 		searchBoundary.halfSize = { 2, 2 };
-
-		/*for (auto wallIter = _allWalls.begin(); wallIter != _allWalls.end(); wallIter++)
-		{
-			wallBoundary = wallIter->getCollisionBox();
-			if (playerBoundary.intersects(wallBoundary, collisionX, collisionY))
-			{
-				cameraPosition.x -= collisionX;
-				cameraPosition.z -= collisionY;
-
-				_player.placeCube(cameraPosition.x , 0, cameraPosition.z );
-				_camera.setCameraPosition(cameraPosition);
-			}
-		}*/
 
 		std::vector<GameEngine3D::Data<GameEngine3D::AABB>> res = _quadTree->queryRange(searchBoundary);
 		for (int i = 0; i < res.size(); i++)
@@ -270,8 +249,6 @@ void MainGame::processInput()
 				_camera.setCameraPosition(cameraPosition);
 			}
 		}
-
-		
 	}
 }
 

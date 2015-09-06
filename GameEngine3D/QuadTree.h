@@ -47,17 +47,14 @@ namespace GameEngine3D
 			{
 				if (glm::abs(center.x - other.center.x) > glm::abs(center.y - other.center.y))
 				{
-					//shove x direction
 					if (center.x < other.center.x) //x-direction collision
 					{
 						//player is left of wall
-						// = other.center.x - other.halfSize.x - halfSize.x;
 						xPos = (center.x + halfSize.x) - (other.center.x - other.halfSize.x);
 					}
 					else
 					{
 						//player is right of wall
-						//xPos = other.center.x + other.halfSize.x + halfSize.x;
 						xPos = (center.x - halfSize.x) - (other.center.x + other.halfSize.x);
 					}
 				}
@@ -66,33 +63,17 @@ namespace GameEngine3D
 					if (center.y < other.center.y) //y-direction collision
 					{
 						//player is front wall
-						//yPos = other.center.y - other.halfSize.y - halfSize.y;
 						yPos = (center.y + halfSize.y) - (other.center.y - other.halfSize.y);
 					}
 					else
 					{
 						//player is behind wall
-						//yPos = other.center.y + other.halfSize.y + halfSize.y;
 						yPos = (center.y - halfSize.y) - (other.center.y + other.halfSize.y);
 					}
 				}
 
 				return true;
 			}
-
-			/*if (glm::abs(center.y - other.center.y) < (halfSize.y + other.halfSize.y)) 
-			{
-				if (center.y < other.center.y) //y-direction collision
-				{
-					//player is front wall
-					yPos = other.center.y - other.halfSize.y - halfSize.y;
-				}
-				else
-				{
-					//player is behind wall
-					yPos = other.center.y + other.halfSize.y + halfSize.y;
-				}
-			}*/
 
 			return false;
 		}

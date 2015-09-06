@@ -54,7 +54,6 @@ private:
 
 	MazeAlgorithm mazeAlgor = MazeAlgorithm(MAZE_HEIGHT, MAZE_LENGTH);
 	GameEngine3D::QuadTree<GameEngine3D::AABB>* _quadTree;
-	//std::list<GameEngine3D::Wall> _allWalls;
 
 };
 
