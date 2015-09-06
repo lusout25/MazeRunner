@@ -101,14 +101,12 @@ namespace GameEngine3D
 	template <typename T> struct Data
 	{
 		Point pos;
-		T* load;
-		GameEngine3D::AABB box;
+		T box;
 		
-		Data(Point p = Point(), GameEngine3D::AABB b = GameEngine3D::AABB(), T* data = nullptr)
+		Data(Point p = Point(), T data = T())
 		{
 			pos = p; 
-			box = b;
-			load = data;
+			box = data;
 		};
 	};
 

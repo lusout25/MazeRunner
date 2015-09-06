@@ -16,7 +16,7 @@ public:
 	void printMaze(void);
 	void drawMaze(void);
 
-	GameEngine3D::QuadTree<GameEngine3D::Wall>* getQuadTree() { return _quadTree; };
+	GameEngine3D::QuadTree<GameEngine3D::AABB>* getQuadTree() { return _quadTree; };
 	std::list<GameEngine3D::Wall> getAllWalls() { return walls; };
 
 private:
@@ -38,7 +38,7 @@ private:
 	std::list<Node>::iterator it, pon;
 	std::list<GameEngine3D::Wall>::iterator wallIt;
 	std::list<GameEngine3D::Wall> walls;
-	GameEngine3D::QuadTree<GameEngine3D::Wall>* _quadTree;
+	GameEngine3D::QuadTree<GameEngine3D::AABB>* _quadTree;
 	GameEngine3D::AABB* _mapBoundary;
 
 	void findNextNodeToAdd(void);

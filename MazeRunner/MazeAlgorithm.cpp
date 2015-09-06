@@ -14,7 +14,7 @@ MazeAlgorithm::MazeAlgorithm(int Rows, int Cols)
 	srand((unsigned int)time(NULL));
 
 	_mapBoundary = new GameEngine3D::AABB(GameEngine3D::Point(Cols / 2, Rows / 2), GameEngine3D::Point(Cols/2, Rows/2));
-	_quadTree = new GameEngine3D::QuadTree<GameEngine3D::Wall>(*_mapBoundary);
+	_quadTree = new GameEngine3D::QuadTree<GameEngine3D::AABB>(*_mapBoundary);
 }
 
 MazeAlgorithm::~MazeAlgorithm()
@@ -256,14 +256,10 @@ void MazeAlgorithm::printMaze(void)
 				GameEngine3D::AABB tempBox = wallyWorld->getCollisionBox();
 				GameEngine3D::Point p = { tempBox.center.x, tempBox.center.y };
 
-				GameEngine3D::Data<GameEngine3D::Wall> data = { p, wallyWorld->getCollisionBox(), nullptr };
+				GameEngine3D::Data<GameEngine3D::AABB> data = { p, wallyWorld->getCollisionBox() };
 				_quadTree->insert(data);
 
-				//p = { colPoints[2], colPoints[3] };
-				//data.pos = p;
-				//_quadTree->insert(data);
-
-				delete wallyWorld;
+				//delete wallyWorld;
 			}
 			else if (i == 0 && j == 0)
 			{

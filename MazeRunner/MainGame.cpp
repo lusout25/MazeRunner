@@ -258,7 +258,7 @@ void MainGame::processInput()
 			}
 		}*/
 
-		std::vector<GameEngine3D::Data<GameEngine3D::Wall>> res = _quadTree->queryRange(searchBoundary);
+		std::vector<GameEngine3D::Data<GameEngine3D::AABB>> res = _quadTree->queryRange(searchBoundary);
 		for (int i = 0; i < res.size(); i++)
 		{
 			if (playerBoundary.intersects(res[i].box, collisionX, collisionY))
