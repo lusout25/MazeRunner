@@ -50,7 +50,7 @@ private:
 
 	GameEngine3D::Wall _walls;
 	Player _player;
-	SimpleObjLoader androidObj;
+	SimpleObjLoader _androidObj;
 
 	MazeAlgorithm mazeAlgor = MazeAlgorithm(MAZE_HEIGHT, MAZE_LENGTH);
 	GameEngine3D::QuadTree<GameEngine3D::AABB>* _quadTree;

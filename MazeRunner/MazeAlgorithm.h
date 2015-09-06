@@ -17,7 +17,7 @@ public:
 	void drawMaze(void);
 
 	GameEngine3D::QuadTree<GameEngine3D::AABB>* getQuadTree() { return _quadTree; };
-	std::list<GameEngine3D::Wall> getAllWalls() { return walls; };
+	std::list<GameEngine3D::Wall> getAllWalls() { return _walls; };
 
 private:
 	enum DIRECTION { UP, DOWN, LEFT, RIGHT };
@@ -30,14 +30,14 @@ private:
 		bool open;
 	};
 
-	int MazeRows;
-	int MazeCols;
-	Node GoalNode;
-	Node **MazeNodes;
-	std::list<Node> frontierNodes, possibleOpenNodes;
-	std::list<Node>::iterator it, pon;
-	std::list<GameEngine3D::Wall>::iterator wallIt;
-	std::list<GameEngine3D::Wall> walls;
+	int _mazeRows;
+	int _mazeCols;
+	Node _goalNode;
+	Node **_mazeNodes;
+	std::list<Node> _frontierNodes, _possibleOpenNodes;
+	std::list<Node>::iterator _it, _pon;
+	std::list<GameEngine3D::Wall>::iterator _wallIt;
+	std::list<GameEngine3D::Wall> _walls;
 	GameEngine3D::QuadTree<GameEngine3D::AABB>* _quadTree;
 	GameEngine3D::AABB* _mapBoundary;
 

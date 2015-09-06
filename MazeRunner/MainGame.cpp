@@ -48,8 +48,8 @@ void MainGame::initSystems()
 	mazeAlgor.printMaze();
 
 	//Load Object
-	//androidObj = SimpleObjLoader();
-	//androidObj.loadObject("..\\MazeRunner\\ObjectModels\\Jigglypuff.obj");
+	//_androidObj = SimpleObjLoader();
+	//_androidObj.loadObject("..\\MazeRunner\\ObjectModels\\Jigglypuff.obj");
 
 	//get collision data structure
 	_quadTree = mazeAlgor.getQuadTree();
@@ -302,7 +302,7 @@ void MainGame::draw()
 	glm::mat4 normalMatrix = glm::transpose(glm::inverse(_camera.getModelView()));
 	glUniformMatrix4fv(normalMatLoc, 1, GL_FALSE, &(normalMatrix[0][0]));
 
-	androidObj.render();
+	_androidObj.render();
 	_shaderProgram.unuse();*/
 
 	_window.swapBuffer();

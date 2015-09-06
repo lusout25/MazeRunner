@@ -15,12 +15,12 @@ public:
 	void render(void);
 
 private:
-	std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
-	std::vector< glm::vec3 > vertices;
-	std::vector< glm::vec4 > colors;
-	std::vector< glm::vec2 > uvs;
-	std::vector< glm::vec3 > normals;
-	int NumFaces;
+	std::vector< unsigned int > _vertexIndices, _uvIndices, _normalIndices;
+	std::vector< glm::vec3 > _vertices;
+	std::vector< glm::vec4 > _colors;
+	std::vector< glm::vec2 > _uvs;
+	std::vector< glm::vec3 > _normals;
+	int _numFaces;
 
 	GLuint _vbo;
 	GLuint _vao;

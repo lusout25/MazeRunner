@@ -15,7 +15,7 @@ bool SimpleObjLoader::loadObject(char* filePath)
 	std::vector< glm::vec3 > temp_vertices;
 	std::vector< glm::vec2 > temp_uvs;
 	std::vector< glm::vec3 > temp_normals;
-	NumFaces = 0;
+	_numFaces = 0;
 
 	std::ifstream fp(filePath);
 
@@ -62,37 +62,37 @@ bool SimpleObjLoader::loadObject(char* filePath)
 				tempVertIndex[1] >> tempUvIndex[1] >> normalIndex[1] >>
 				tempVertIndex[2] >> tempUvIndex[2] >> normalIndex[2];
 
-			vertexIndices.push_back(tempVertIndex[0]);
-			vertexIndices.push_back(tempVertIndex[1]);
-			vertexIndices.push_back(tempVertIndex[2]);
-			uvIndices.push_back(tempUvIndex[0]);
-			uvIndices.push_back(tempUvIndex[1]);
-			uvIndices.push_back(tempUvIndex[2]);
-			normalIndices.push_back(normalIndex[0]);
-			normalIndices.push_back(normalIndex[1]);
-			normalIndices.push_back(normalIndex[2]);
+			_vertexIndices.push_back(tempVertIndex[0]);
+			_vertexIndices.push_back(tempVertIndex[1]);
+			_vertexIndices.push_back(tempVertIndex[2]);
+			_uvIndices.push_back(tempUvIndex[0]);
+			_uvIndices.push_back(tempUvIndex[1]);
+			_uvIndices.push_back(tempUvIndex[2]);
+			_normalIndices.push_back(normalIndex[0]);
+			_normalIndices.push_back(normalIndex[1]);
+			_normalIndices.push_back(normalIndex[2]);
 
-			++NumFaces;
+			++_numFaces;
 		}
 	}
 
 	fp.close();
 
 	//INDEX THE VERTICES AND STORE THEM IN ORDER FOR OPENGL
-	for (int i = 0; i < vertexIndices.size(); i++)
+	for (int i = 0; i < _vertexIndices.size(); i++)
 	{
-		vertices.push_back(temp_vertices[vertexIndices[i] - 1]);
-		colors.push_back(glm::vec4(0, 1, 1, 1));
+		_vertices.push_back(temp_vertices[_vertexIndices[i] - 1]);
+		_colors.push_back(glm::vec4(0, 1, 1, 1));
 	}
 
-	for (int i = 0; i < uvIndices.size(); i++)
+	for (int i = 0; i < _uvIndices.size(); i++)
 	{
-		uvs.push_back(temp_uvs[uvIndices[i] - 1]);
+		_uvs.push_back(temp_uvs[_uvIndices[i] - 1]);
 	}
 
-	for (int i = 0; i < normalIndices.size(); i++)
+	for (int i = 0; i < _normalIndices.size(); i++)
 	{
-		normals.push_back(temp_normals[normalIndices[i] - 1]);
+		_normals.push_back(temp_normals[_normalIndices[i] - 1]);
 	}
 
 	return true;
@@ -107,10 +107,10 @@ void SimpleObjLoader::render()
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3) + colors.size() * sizeof(glm::vec4) + normals.size() * sizeof(glm::vec3), nullptr, GL_STATIC_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(glm::vec3), &vertices[0]);
-	glBufferSubData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), colors.size() * sizeof(glm::vec4), &colors[0]);
-	glBufferSubData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3) + colors.size() * sizeof(glm::vec4), normals.size() * sizeof(glm::vec4), &normals[0]);
+	glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(glm::vec3) + _colors.size() * sizeof(glm::vec4) + _normals.size() * sizeof(glm::vec3), nullptr, GL_STATIC_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, _vertices.size() * sizeof(glm::vec3), &_vertices[0]);
+	glBufferSubData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(glm::vec3), _colors.size() * sizeof(glm::vec4), &_colors[0]);
+	glBufferSubData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(glm::vec3) + _colors.size() * sizeof(glm::vec4), _normals.size() * sizeof(glm::vec4), &_normals[0]);
 
 	if (_vao == 0)
 	{
@@ -123,8 +123,8 @@ void SimpleObjLoader::render()
 	glEnableVertexAttribArray(2);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)(vertices.size() * sizeof(glm::vec3)));
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)(vertices.size() * sizeof(glm::vec3) + colors.size() * sizeof(glm::vec4)));
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)(_vertices.size() * sizeof(glm::vec3)));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)(_vertices.size() * sizeof(glm::vec3) + _colors.size() * sizeof(glm::vec4)));
 
-	glDrawArrays(GL_TRIANGLES, 0, 3 * NumFaces);
+	glDrawArrays(GL_TRIANGLES, 0, 3 * _numFaces);
 }

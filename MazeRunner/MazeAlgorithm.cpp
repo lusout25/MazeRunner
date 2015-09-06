@@ -2,14 +2,14 @@
 
 MazeAlgorithm::MazeAlgorithm(int Rows, int Cols)
 {
-	MazeRows = Rows;
-	MazeCols = Cols;
+	_mazeRows = Rows;
+	_mazeCols = Cols;
 
-	MazeNodes = new Node*[MazeRows];
+	_mazeNodes = new Node*[_mazeRows];
 
-	for (int j = 0; j < MazeRows; ++j)
+	for (int j = 0; j < _mazeRows; ++j)
 	{
-		MazeNodes[j] = new Node[MazeCols];
+		_mazeNodes[j] = new Node[_mazeCols];
 	}
 	srand((unsigned int)time(NULL));
 
@@ -19,24 +19,24 @@ MazeAlgorithm::MazeAlgorithm(int Rows, int Cols)
 
 MazeAlgorithm::~MazeAlgorithm()
 {
-	for (int j = 0; j < MazeCols; ++j)
+	for (int j = 0; j < _mazeCols; ++j)
 	{
-		delete[] MazeNodes[j];
+		delete[] _mazeNodes[j];
 	}
 
-	delete[] MazeNodes;
+	delete[] _mazeNodes;
 }
 
 void MazeAlgorithm::generateMazeWeights(void)
 {
-	for (int i = 0; i < MazeRows; ++i)
+	for (int i = 0; i < _mazeRows; ++i)
 	{
-		for (int j = 0; j < MazeRows; ++j)
+		for (int j = 0; j < _mazeRows; ++j)
 		{
-			MazeNodes[i][j].x = i;
-			MazeNodes[i][j].y = j;
-			MazeNodes[i][j].weight = (rand() % 9) + 1;
-			MazeNodes[i][j].open = true;
+			_mazeNodes[i][j].x = i;
+			_mazeNodes[i][j].y = j;
+			_mazeNodes[i][j].weight = (rand() % 9) + 1;
+			_mazeNodes[i][j].open = true;
 		}
 	}
 }
@@ -44,10 +44,10 @@ void MazeAlgorithm::generateMazeWeights(void)
 void MazeAlgorithm::generateMaze(void)
 {
 	//Add starting node to list
-	frontierNodes.push_back(MazeNodes[0][0]);
-	markClosedNode(&MazeNodes[0][0]);
+	_frontierNodes.push_back(_mazeNodes[0][0]);
+	markClosedNode(&_mazeNodes[0][0]);
 
-	while (!frontierNodes.empty())
+	while (!_frontierNodes.empty())
 	{
 		findNextNodeToAdd();
 	}
@@ -58,46 +58,46 @@ void MazeAlgorithm::findNextNodeToAdd(void)
 	Node temp = { -1, -1, -1, false };
 
 	//Loop through Nodes in the frontier
-	it = frontierNodes.begin();
+	_it = _frontierNodes.begin();
 
-	while (it != frontierNodes.end())
+	while (_it != _frontierNodes.end())
 	{
 		//Check to see if this node has any values to add.
-		if (validFrontierNode(*it))
+		if (validFrontierNode(*_it))
 		{
-			++it;
+			++_it;
 		}
 		//remove this node
 		else
 		{
-			it = frontierNodes.erase(it);
+			_it = _frontierNodes.erase(_it);
 		}
 	}
 
 	//Loop through Nodes in the possible next selection
-	for (pon = possibleOpenNodes.begin(); pon != possibleOpenNodes.end(); ++pon)
+	for (_pon = _possibleOpenNodes.begin(); _pon != _possibleOpenNodes.end(); ++_pon)
 	{
 		if (temp.weight == -1)
 		{
-			temp = *pon;
+			temp = *_pon;
 		}
 		else
 		{
-			if ((*pon).weight < temp.weight)
+			if ((*_pon).weight < temp.weight)
 			{
-				temp = *pon;
+				temp = *_pon;
 			}
 		}
 	}
 
 	if (temp.weight != -1)
 	{
-		frontierNodes.push_back(MazeNodes[temp.x][temp.y]);
-		markClosedNode(&MazeNodes[temp.x][temp.y]);
-		GoalNode = MazeNodes[temp.x][temp.y];
+		_frontierNodes.push_back(_mazeNodes[temp.x][temp.y]);
+		markClosedNode(&_mazeNodes[temp.x][temp.y]);
+		_goalNode = _mazeNodes[temp.x][temp.y];
 	}
 
-	possibleOpenNodes.erase(possibleOpenNodes.begin(), possibleOpenNodes.end());
+	_possibleOpenNodes.erase(_possibleOpenNodes.begin(), _possibleOpenNodes.end());
 }
 
 //check to see if the adjacent nodes are available
@@ -109,14 +109,14 @@ bool MazeAlgorithm::validFrontierNode(Node NodeToLookat)
 	bool validLeft = false;
 
 	//check upper node
-	if (NodeToLookat.y + 1 < MazeRows)
+	if (NodeToLookat.y + 1 < _mazeRows)
 	{
-		if (MazeNodes[NodeToLookat.x][NodeToLookat.y + 1].open)
+		if (_mazeNodes[NodeToLookat.x][NodeToLookat.y + 1].open)
 		{
-			validUpper = validNextNode(MazeNodes[NodeToLookat.x][NodeToLookat.y + 1], LEFT);
+			validUpper = validNextNode(_mazeNodes[NodeToLookat.x][NodeToLookat.y + 1], LEFT);
 			if (validUpper)
 			{
-				possibleOpenNodes.push_back(MazeNodes[NodeToLookat.x][NodeToLookat.y + 1]);
+				_possibleOpenNodes.push_back(_mazeNodes[NodeToLookat.x][NodeToLookat.y + 1]);
 			}
 		}
 	}
@@ -124,25 +124,25 @@ bool MazeAlgorithm::validFrontierNode(Node NodeToLookat)
 	//check lower node
 	if (NodeToLookat.y - 1 >= 0)
 	{
-		if (MazeNodes[NodeToLookat.x][NodeToLookat.y - 1].open)
+		if (_mazeNodes[NodeToLookat.x][NodeToLookat.y - 1].open)
 		{
-			validLower = validNextNode(MazeNodes[NodeToLookat.x][NodeToLookat.y - 1], RIGHT);
+			validLower = validNextNode(_mazeNodes[NodeToLookat.x][NodeToLookat.y - 1], RIGHT);
 			if (validLower)
 			{
-				possibleOpenNodes.push_back(MazeNodes[NodeToLookat.x][NodeToLookat.y - 1]);
+				_possibleOpenNodes.push_back(_mazeNodes[NodeToLookat.x][NodeToLookat.y - 1]);
 			}
 		}
 	}
 
 	//check right node
-	if (NodeToLookat.x + 1 < MazeCols)
+	if (NodeToLookat.x + 1 < _mazeCols)
 	{
-		if (MazeNodes[NodeToLookat.x + 1][NodeToLookat.y].open)
+		if (_mazeNodes[NodeToLookat.x + 1][NodeToLookat.y].open)
 		{
-			validRight = validNextNode(MazeNodes[NodeToLookat.x + 1][NodeToLookat.y], DOWN);
+			validRight = validNextNode(_mazeNodes[NodeToLookat.x + 1][NodeToLookat.y], DOWN);
 			if (validRight)
 			{
-				possibleOpenNodes.push_back(MazeNodes[NodeToLookat.x + 1][NodeToLookat.y]);
+				_possibleOpenNodes.push_back(_mazeNodes[NodeToLookat.x + 1][NodeToLookat.y]);
 			}
 		}
 	}
@@ -150,12 +150,12 @@ bool MazeAlgorithm::validFrontierNode(Node NodeToLookat)
 	//check left node
 	if (NodeToLookat.x - 1 >= 0)
 	{
-		if (MazeNodes[NodeToLookat.x - 1][NodeToLookat.y].open)
+		if (_mazeNodes[NodeToLookat.x - 1][NodeToLookat.y].open)
 		{
-			validRight = validNextNode(MazeNodes[NodeToLookat.x - 1][NodeToLookat.y], UP);
+			validRight = validNextNode(_mazeNodes[NodeToLookat.x - 1][NodeToLookat.y], UP);
 			if (validRight)
 			{
-				possibleOpenNodes.push_back(MazeNodes[NodeToLookat.x - 1][NodeToLookat.y]);
+				_possibleOpenNodes.push_back(_mazeNodes[NodeToLookat.x - 1][NodeToLookat.y]);
 			}
 		}
 	}
@@ -172,9 +172,9 @@ bool MazeAlgorithm::validNextNode(Node NodeToLookat, DIRECTION dir)
 	bool validLeft = false;
 
 	//check upper node
-	if (NodeToLookat.y + 1 < MazeRows)
+	if (NodeToLookat.y + 1 < _mazeRows)
 	{
-		validUpper = MazeNodes[NodeToLookat.x][NodeToLookat.y + 1].open;
+		validUpper = _mazeNodes[NodeToLookat.x][NodeToLookat.y + 1].open;
 	}
 	else
 	{
@@ -184,7 +184,7 @@ bool MazeAlgorithm::validNextNode(Node NodeToLookat, DIRECTION dir)
 	//check lower node
 	if (NodeToLookat.y - 1 >= 0)
 	{
-		validLower = MazeNodes[NodeToLookat.x][NodeToLookat.y - 1].open;
+		validLower = _mazeNodes[NodeToLookat.x][NodeToLookat.y - 1].open;
 	}
 	else
 	{
@@ -193,9 +193,9 @@ bool MazeAlgorithm::validNextNode(Node NodeToLookat, DIRECTION dir)
 
 
 	//check right node
-	if (NodeToLookat.x + 1 < MazeCols)
+	if (NodeToLookat.x + 1 < _mazeCols)
 	{
-		validRight = MazeNodes[NodeToLookat.x + 1][NodeToLookat.y].open;
+		validRight = _mazeNodes[NodeToLookat.x + 1][NodeToLookat.y].open;
 	}
 	else
 	{
@@ -205,7 +205,7 @@ bool MazeAlgorithm::validNextNode(Node NodeToLookat, DIRECTION dir)
 	//check left node
 	if (NodeToLookat.x - 1 >= 0)
 	{
-		validLeft = MazeNodes[NodeToLookat.x - 1][NodeToLookat.y].open;
+		validLeft = _mazeNodes[NodeToLookat.x - 1][NodeToLookat.y].open;
 	}
 	else
 	{
@@ -241,16 +241,16 @@ void MazeAlgorithm::printMaze(void)
 {
 	GameEngine3D::Wall* wallyWorld;
 
-	for (int i = 0; i < MazeRows; ++i)
+	for (int i = 0; i < _mazeRows; ++i)
 	{
-		for (int j = 0; j < MazeRows; ++j)
+		for (int j = 0; j < _mazeRows; ++j)
 		{
-			if (MazeNodes[i][j].weight)
+			if (_mazeNodes[i][j].weight)
 			{
 				std::cout << '\xDB';
 				wallyWorld = new GameEngine3D::Wall();
 				wallyWorld->placeCube((float)i, 0, (float)j);
-				walls.push_back(*wallyWorld);
+				_walls.push_back(*wallyWorld);
 
 				//store collision data
 				GameEngine3D::AABB tempBox = wallyWorld->getCollisionBox();
@@ -265,7 +265,7 @@ void MazeAlgorithm::printMaze(void)
 			{
 				std::cout << 'S';
 			}
-			else if (i == GoalNode.x && j == GoalNode.y)
+			else if (i == _goalNode.x && j == _goalNode.y)
 			{
 				std::cout << 'G';
 			}
@@ -280,9 +280,9 @@ void MazeAlgorithm::printMaze(void)
 
 void MazeAlgorithm::drawMaze(void)
 {
-	for (wallIt = walls.begin(); wallIt != walls.end(); ++wallIt)
+	for (_wallIt = _walls.begin(); _wallIt != _walls.end(); ++_wallIt)
 	{
-		wallIt->draw();
-		wallIt->render();
+		_wallIt->draw();
+		_wallIt->render();
 	}
 }
