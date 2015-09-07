@@ -4,11 +4,11 @@
 #include <glm\gtx\rotate_vector.hpp>
 #include "Player.h"
 
-MainGame::MainGame()
+MainGame::MainGame() : _screenWidth(1024),
+	_screenHeight(768),
+	_gameState(GameState::PLAY)
 {
-	_screenWidth = 1024;
-	_screenHeight = 768;
-	_gameState = GameState::PLAY;
+
 }
 
 MainGame::~MainGame()

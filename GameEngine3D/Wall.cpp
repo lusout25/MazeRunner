@@ -3,10 +3,10 @@
 namespace GameEngine3D
 {
 
-	Wall::Wall()
+	Wall::Wall() : _vbo(0),
+		_vao(0)
 	{
-		_vbo = 0;
-		_vao = 0;
+
 	}
 
 

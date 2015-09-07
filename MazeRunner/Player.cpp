@@ -1,10 +1,9 @@
 #include "Player.h"
 
 
-Player::Player()
+Player::Player() : _vbo(0),
+	_vao(0)
 {
-	_vbo = 0;
-	_vao = 0;
 }
 
 

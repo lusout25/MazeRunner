@@ -5,11 +5,11 @@
 
 namespace GameEngine3D {
 
-	Camera::Camera()
+	Camera::Camera() : _needsMatrixUpdate(true), 
+		_cameraPosition(glm::vec3(0, .25, 1)), 
+		_lookAtDir(_lookAtDir = glm::vec3(0, 0, -1))
 	{
-		_needsMatrixUpdate = true;
-		_cameraPosition = glm::vec3(0, .25, 1);
-		_lookAtDir = glm::vec3(0, 0, -1);  //begin looking down z-axis
+
 	}
 
 

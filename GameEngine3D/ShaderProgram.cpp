@@ -6,12 +6,12 @@
 namespace GameEngine3D
 {
 
-	ShaderProgram::ShaderProgram()
+	ShaderProgram::ShaderProgram() : _numAttributes(0),
+		_programID(0),
+		_vertexShaderID(0),
+		_fragmentShaderID(0)
 	{
-		_numAttributes = 0;
-		_programID = 0;
-		_vertexShaderID = 0;
-		_fragmentShaderID = 0;
+
 	}
 
 
