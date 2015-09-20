@@ -4,13 +4,13 @@
 
 namespace GameEngine3D {
 
-	void fatalError(std::string errorString)
+	void fatalError(string errorString)
 	{
 		int tmp;
 
-		std::cout << errorString << std::endl;
-		std::cout << "Enter any key to quit...";
-		std::cin >> tmp;
+		cout << errorString << endl;
+		cout << "Enter any key to quit...";
+		cin >> tmp;
 
 		SDL_Quit();
 		exit(1);

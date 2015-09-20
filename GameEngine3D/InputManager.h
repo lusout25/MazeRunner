@@ -1,6 +1,8 @@
 #pragma once
 #include <unordered_map>
 
+using namespace std;
+
 namespace GameEngine3D
 {
 
@@ -21,7 +23,7 @@ namespace GameEngine3D
 		int getMouseYCoordinates(void);
 
 	private:
-		std::unordered_map<unsigned int, bool> _keyMap;
+		unordered_map<unsigned int, bool> _keyMap;
 		int mouseX;
 		int mouseY;
 

@@ -4,24 +4,33 @@
 #include <string>
 #include <vector>
 #include <GL\glew.h>
+#include "Shared.h"
 
-class SimpleObjLoader
+using namespace glm;
+using namespace std;
+
+namespace GameEngine3D
 {
-public:
-	SimpleObjLoader();
-	~SimpleObjLoader();
 
-	bool loadObject(char* filePath);
-	void render(void);
+	class SimpleObjLoader
+	{
 
-private:
-	std::vector< unsigned int > _vertexIndices, _uvIndices, _normalIndices;
-	std::vector< glm::vec3 > _vertices;
-	std::vector< glm::vec4 > _colors;
-	std::vector< glm::vec2 > _uvs;
-	std::vector< glm::vec3 > _normals;
-	int _numFaces;
+	public:
+		SimpleObjLoader();
+		~SimpleObjLoader();
 
-	GLuint _vbo;
-	GLuint _vao;
-};
+		bool loadObject(char* filePath);
+		void render(void);
+
+	private:
+		vector< unsigned int > _vertexIndices, _uvIndices, _normalIndices;
+		vector< vec3 > _vertices;
+		vector< vec4 > _colors;
+		vector< vec2 > _uvs;
+		vector< vec3 > _normals;
+		int _numFaces;
+
+		GLuint _vbo;
+	};
+
+}

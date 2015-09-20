@@ -23,7 +23,7 @@ void MainGame::run()
 
 void MainGame::initSystems()
 {
-	GameEngine3D::init();
+	init();
 	_window.create("Maze Runner", _screenWidth, _screenHeight);
 
 	glEnable(GL_CULL_FACE);
@@ -40,25 +40,25 @@ void MainGame::initSystems()
 	_player.placeCube(0, 0, 0);
 
 	_hud.init(_screenWidth, _screenHeight);
-	_hud.setPosition(glm::vec2(_screenWidth / 2, _screenHeight / 2));
+	_hud.setPosition(vec2(_screenWidth / 2, _screenHeight / 2));
 
 	//Generate Maze
-	mazeAlgor.generateMazeWeights();
-	mazeAlgor.generateMaze();
-	mazeAlgor.printMaze();
+	_maze.generateMazeWeights();
+	_maze.generateMaze();
+	_maze.printMaze();
 
 	//Load Object
 	//_androidObj = SimpleObjLoader();
 	//_androidObj.loadObject("..\\MazeRunner\\ObjectModels\\Jigglypuff.obj");
 
 	//get collision data structure
-	_quadTree = mazeAlgor.getQuadTree();
+	_quadTree = _maze.getQuadTree();
 }
 
 void MainGame::initShaders(ShaderState ss)
 {
-	std::string vertFilePath, fragFilePath;
-	std::string* attributeList;
+	string vertFilePath, fragFilePath;
+	string* attributeList;
 	int attributeCount = 0;
 
 	if (ss == ShaderState::COLOR)
@@ -66,7 +66,7 @@ void MainGame::initShaders(ShaderState ss)
 		vertFilePath = "Shaders/colorShading.vert";
 		fragFilePath = "Shaders/colorShading.frag";
 		attributeCount = 2;
-		attributeList = new std::string[attributeCount];
+		attributeList = new string[attributeCount];
 		attributeList[0] = "vertexPosition";
 		attributeList[1] = "vertexColor";
 	}
@@ -75,14 +75,14 @@ void MainGame::initShaders(ShaderState ss)
 		vertFilePath = "Shaders/lightingShader.vert";
 		fragFilePath = "Shaders/lightingShader.frag";
 		attributeCount = 3;
-		attributeList = new std::string[attributeCount];
+		attributeList = new string[attributeCount];
 		attributeList[0] = "inPosition";
 		attributeList[1] = "inColor";
 		attributeList[2] = "inNormal";
 	}
 	else
 	{
-		attributeList = new std::string[attributeCount];
+		attributeList = new string[attributeCount];
 	}
 
 	_shaderProgram.compileShaders(vertFilePath, fragFilePath );
@@ -117,9 +117,9 @@ void MainGame::processInput()
 	const float ROTATE_SPEED = .002f;
 	const float JUMP_SPEED   = .001f;
 	
-	glm::vec3& cameraPosition = _camera.getCameraPosition();
-	glm::vec3& lookAtDirection = _camera.getLookAtDirection();
-	glm::vec3 temp;
+	vec3& cameraPosition = _camera.getCameraPosition();
+	vec3& lookAtDirection = _camera.getLookAtDirection();
+	vec3 temp;
 	
 	//set input state
 	while (SDL_PollEvent(&input))
@@ -157,7 +157,7 @@ void MainGame::processInput()
 	if (_inputManager.isKeyPressed(SDLK_a))
 	{
 		//strafe left
-		temp = -CAMERA_SPEED * glm::cross(lookAtDirection, glm::vec3(lookAtDirection.x, 1, lookAtDirection.z));
+		temp = -CAMERA_SPEED * cross(lookAtDirection, vec3(lookAtDirection.x, 1, lookAtDirection.z));
 		cameraPosition.x += temp.x;
 		cameraPosition.z += temp.z;
 		needsUpdate = true;
@@ -174,7 +174,7 @@ void MainGame::processInput()
 	if (_inputManager.isKeyPressed(SDLK_d))
 	{
 		//strafe right
-		temp = CAMERA_SPEED * glm::cross(lookAtDirection, glm::vec3(lookAtDirection.x, 1, lookAtDirection.z));
+		temp = CAMERA_SPEED * cross(lookAtDirection, vec3(lookAtDirection.x, 1, lookAtDirection.z));
 		cameraPosition.x += temp.x;
 		cameraPosition.z += temp.z;
 		needsUpdate = true;
@@ -196,7 +196,7 @@ void MainGame::processInput()
 
 	if (_inputManager.getMouseXCoordinates() || _inputManager.getMouseYCoordinates())
 	{
-		lookAtDirection = glm::rotateY(lookAtDirection, -ROTATE_SPEED*((float)_inputManager.getMouseXCoordinates()));
+		lookAtDirection = rotateY(lookAtDirection, -ROTATE_SPEED*((float)_inputManager.getMouseXCoordinates()));
 		lookAtDirection.y += -ROTATE_SPEED * (float)_inputManager.getMouseYCoordinates();
 		_inputManager.updateMouseCoordinates(0, 0);
 		needsUpdate = true;
@@ -227,18 +227,18 @@ void MainGame::processInput()
 	{
 		_camera.setCameraPosition(cameraPosition);
 		_camera.setLookAtDirection(lookAtDirection);
-		_player.placeCube(cameraPosition.x/* + lookAtDirection.x*/, 0, cameraPosition.z /*+ lookAtDirection.z*/ );
+		_player.placeCube(cameraPosition.x, 0, cameraPosition.z);
 
 		//test collision stuffy stuff
 		float collisionX = 0, collisionY = 0;
-		GameEngine3D::AABB wallBoundary, playerBoundary,searchBoundary;
+		AABB wallBoundary, playerBoundary,searchBoundary;
 		
 		playerBoundary = _player.getCollisionBoundary();
 		searchBoundary = playerBoundary;
 		searchBoundary.halfSize = { 2, 2 };
 
-		std::vector<GameEngine3D::Data<GameEngine3D::AABB>> res = _quadTree->queryRange(searchBoundary);
-		for (int i = 0; i < res.size(); i++)
+		vector<Data<AABB>> res = _quadTree->queryRange(searchBoundary);
+		for (uint i = 0; i < res.size(); i++)
 		{
 			if (playerBoundary.intersects(res[i].box, collisionX, collisionY))
 			{
@@ -263,22 +263,32 @@ void MainGame::draw()
 
 	//locate the location of "MVP" in the shader
 	GLint mvpLocation = _shaderProgram.getUniformLocation("MVP");
+	GLint colorLocation = _shaderProgram.getUniformLocation("COLOR");
 
 	//pass the camera matrix to the shader
-	glm::mat4 cameraMatrix = _camera.getMVPMatrix();
-	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
+	mat4 cameraMatrix = _camera.getMVPMatrix();
+	vec4 color = _maze.getColor();
 
-	mazeAlgor.drawMaze();
+	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
+	glUniform4fv(colorLocation, 1, &(color[0]));
+
+	_maze.drawMaze();
+
+	color = _player.getColor();
+	glUniform4fv(colorLocation, 1, &(color[0]));
 
 	_player.draw();
 	_player.render();
 
-	glm::mat4 projMatrix = _hud.getCameraMatrix();
-	glm::mat4 mvp = projMatrix;
+	mat4 projMatrix = _hud.getCameraMatrix();
+	mat4 mvp = projMatrix;
 	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(mvp[0][0]));
 
 	glDisable(GL_CULL_FACE);
 	glClear(GL_DEPTH_BUFFER_BIT);
+
+	color = _hud.getColor();
+	glUniform4fv(colorLocation, 1, &(color[0]));
 
 	_hud.draw();
 
@@ -299,7 +309,7 @@ void MainGame::draw()
 
 	GLuint normalMatLoc = _shaderProgram.getUniformLocation("normalMatrix");
 
-	glm::mat4 normalMatrix = glm::transpose(glm::inverse(_camera.getModelView()));
+	mat4 normalMatrix = transpose(inverse(_camera.getModelView()));
 	glUniformMatrix4fv(normalMatLoc, 1, GL_FALSE, &(normalMatrix[0][0]));
 
 	_androidObj.render();

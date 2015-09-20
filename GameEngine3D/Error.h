@@ -1,8 +1,10 @@
 #pragma once
 #include <string>
 
+using namespace std;
+
 namespace GameEngine3D {
 
-	extern void fatalError(std::string errorString);
+	extern void fatalError(string errorString);
 
 }

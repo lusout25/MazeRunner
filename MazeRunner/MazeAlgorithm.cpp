@@ -5,6 +5,8 @@ MazeAlgorithm::MazeAlgorithm(int Rows, int Cols)
 	_mazeRows = Rows;
 	_mazeCols = Cols;
 
+	_numWalls = 0;
+	_color = vec4(1, 0, 1, 1);
 	_mazeNodes = new Node*[_mazeRows];
 
 	for (int j = 0; j < _mazeRows; ++j)
@@ -13,8 +15,8 @@ MazeAlgorithm::MazeAlgorithm(int Rows, int Cols)
 	}
 	srand((unsigned int)time(NULL));
 
-	_mapBoundary = new GameEngine3D::AABB(GameEngine3D::Point(Cols / 2, Rows / 2), GameEngine3D::Point(Cols/2, Rows/2));
-	_quadTree = new GameEngine3D::QuadTree<GameEngine3D::AABB>(*_mapBoundary);
+	_mapBoundary = new AABB(Point(Cols / 2.0f, Rows / 2.0f), Point(Cols / 2.0f, Rows / 2.0f));
+	_quadTree = new QuadTree<AABB>(*_mapBoundary);
 }
 
 MazeAlgorithm::~MazeAlgorithm()
@@ -239,7 +241,7 @@ void MazeAlgorithm::markClosedNode(Node *closeNode)
 
 void MazeAlgorithm::printMaze(void)
 {
-	GameEngine3D::Wall* wallyWorld;
+	Wall* wallyWorld;
 
 	for (int i = 0; i < _mazeRows; ++i)
 	{
@@ -247,42 +249,63 @@ void MazeAlgorithm::printMaze(void)
 		{
 			if (_mazeNodes[i][j].weight)
 			{
-				std::cout << '\xDB';
-				wallyWorld = new GameEngine3D::Wall();
+				cout << '\xDB';
+				wallyWorld = new Wall();
 				wallyWorld->placeCube((float)i, 0, (float)j);
 				_walls.push_back(*wallyWorld);
 
 				//store collision data
-				GameEngine3D::AABB tempBox = wallyWorld->getCollisionBox();
-				GameEngine3D::Point p = { tempBox.center.x, tempBox.center.y };
+				AABB tempBox = wallyWorld->getCollisionBox();
+				Point p = { tempBox.center.x, tempBox.center.y };
 
-				GameEngine3D::Data<GameEngine3D::AABB> data = { p, wallyWorld->getCollisionBox() };
+				Data<AABB> data = { p, wallyWorld->getCollisionBox() };
 				_quadTree->insert(data);
 
 				//delete wallyWorld;
 			}
 			else if (i == 0 && j == 0)
 			{
-				std::cout << 'S';
+				cout << 'S';
 			}
 			else if (i == _goalNode.x && j == _goalNode.y)
 			{
-				std::cout << 'G';
+				cout << 'G';
 			}
 			else
 			{
-				std::cout << " ";
+				cout << " ";
 			}
 		}
-		std::cout << std::endl;
+		cout << endl;
 	}
 }
 
 void MazeAlgorithm::drawMaze(void)
 {
-	for (_wallIt = _walls.begin(); _wallIt != _walls.end(); ++_wallIt)
+	vector<float> temp;
+
+	if (_numWalls == 0)
 	{
-		_wallIt->draw();
-		_wallIt->render();
+		for (_wallIt = _walls.begin(); _wallIt != _walls.end(); ++_wallIt)
+		{
+			temp = _wallIt->getWallVertices();
+			_points.insert(_points.end(), temp.begin(), temp.end());
+
+			_numWalls++;
+		}
 	}
+
+	if (_vbo == 0)
+	{
+		glGenBuffers(1, &_vbo);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+
+	glBufferData(GL_ARRAY_BUFFER, _points.size() * sizeof(float), &_points.front(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+	glDrawArrays(GL_TRIANGLES, 0, NUM_VERTICES_WALL * _numWalls);
 }

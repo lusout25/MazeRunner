@@ -1,6 +1,4 @@
 #include "Window.h"
-#include "Error.h"
-#include <GL/glew.h>
 
 namespace GameEngine3D
 {
@@ -9,15 +7,12 @@ namespace GameEngine3D
 
 	}
 
-
 	Window::~Window()
 	{
 	}
 
-	int Window::create(std::string windowName, int screenWidth, int screenHeight)
+	int Window::create(string windowName, int screenWidth, int screenHeight)
 	{
-
-
 		_window = SDL_CreateWindow(windowName.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_OPENGL);
 		if (_window == nullptr)
 		{

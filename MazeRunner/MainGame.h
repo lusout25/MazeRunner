@@ -1,16 +1,18 @@
 #pragma once
-
 #include "MazeAlgorithm.h"
 #include <GameEngine3D\SimpleObjLoader.h>
 #include <GameEngine3D\Window.h>
 #include <GameEngine3D\ShaderProgram.h>
 #include <GameEngine3D\Camera.h>
 #include <GameEngine3D\InputManager.h>
-#include <GameEngine3D\Triangle.h>
 #include <GameEngine3D\Wall.h>
 #include <GameEngine3D\Camera2D.h>
 #include "Player.h"
 #include <GameEngine3D\QuadTree.h>
+
+using namespace GameEngine3D;
+using namespace glm;
+using namespace std;
 
 #define MAZE_HEIGHT 20
 #define MAZE_LENGTH 20
@@ -35,11 +37,12 @@ private:
 	void draw();
 	void drawHUD();
 
-	GameEngine3D::Window _window;
-	GameEngine3D::ShaderProgram _shaderProgram;
-	GameEngine3D::Camera _camera;
-	GameEngine3D::Camera2D _hud;
-	GameEngine3D::InputManager _inputManager;
+	Window _window;
+	ShaderProgram _shaderProgram;
+	Camera _camera;
+	Camera2D _hud;
+	InputManager _inputManager;
+	SimpleObjLoader _androidObj;
 
 	int _screenWidth;
 	int _screenHeight;
@@ -48,12 +51,10 @@ private:
 	JumpState _jumpState;
 	ShaderState _shaderState;
 
-	GameEngine3D::Wall _walls;
+	Wall _walls;
 	Player _player;
-	SimpleObjLoader _androidObj;
 
-	MazeAlgorithm mazeAlgor = MazeAlgorithm(MAZE_HEIGHT, MAZE_LENGTH);
-	GameEngine3D::QuadTree<GameEngine3D::AABB>* _quadTree;
-
+	MazeAlgorithm _maze = MazeAlgorithm(MAZE_HEIGHT, MAZE_LENGTH);
+	QuadTree<AABB>* _quadTree;
 };
 

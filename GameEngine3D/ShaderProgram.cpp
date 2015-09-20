@@ -1,7 +1,4 @@
 #include "ShaderProgram.h"
-#include "Error.h"
-#include <vector>
-#include <fstream>
 
 namespace GameEngine3D
 {
@@ -14,12 +11,11 @@ namespace GameEngine3D
 
 	}
 
-
 	ShaderProgram::~ShaderProgram()
 	{
 	}
 
-	void ShaderProgram::compileShaders(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilepath)
+	void ShaderProgram::compileShaders(const string& vertexShaderFilePath, const string& fragmentShaderFilepath)
 	{
 		_programID = glCreateProgram();
 
@@ -39,19 +35,19 @@ namespace GameEngine3D
 		compileShader(fragmentShaderFilepath, _fragmentShaderID);
 	}
 
-	void ShaderProgram::compileShader(const std::string& filePath, GLuint id)
+	void ShaderProgram::compileShader(const string& filePath, GLuint id)
 	{
-		std::fstream shaderFile(filePath);
+		fstream shaderFile(filePath);
 		if (shaderFile.fail())
 		{
 			perror(filePath.c_str());
 			fatalError("Failed to open " + filePath);
 		}
 
-		std::string fileContents = "";
-		std::string line;
+		string fileContents = "";
+		string line;
 
-		while (std::getline(shaderFile, line))
+		while (getline(shaderFile, line))
 		{
 			fileContents += line + "\n";
 		}
@@ -68,12 +64,12 @@ namespace GameEngine3D
 			GLint maxLength = 0;
 			glGetShaderiv(id, GL_INFO_LOG_LENGTH, &maxLength);
 
-			std::vector<GLchar> errorLog(maxLength);
+			vector<GLchar> errorLog(maxLength);
 			glGetShaderInfoLog(id, maxLength, &maxLength, &errorLog[0]);
 
 			glDeleteShader(id);
 
-			std::printf("%s\n", &(errorLog[0]));
+			printf("%s\n", &(errorLog[0]));
 			fatalError("Shader " + filePath + " failed to compile.");
 		}
 	}
@@ -92,7 +88,7 @@ namespace GameEngine3D
 			GLint maxLength = 0;
 			glGetProgramiv(_programID, GL_INFO_LOG_LENGTH, &maxLength);
 
-			std::vector<GLchar> errorLog(maxLength);
+			vector<GLchar> errorLog(maxLength);
 			glGetProgramInfoLog(_programID, maxLength, &maxLength, &errorLog[0]);
 
 			glDeleteProgram(_programID);
@@ -100,7 +96,7 @@ namespace GameEngine3D
 			glDeleteShader(_vertexShaderID);
 			glDeleteShader(_fragmentShaderID);
 
-			std::printf("%s\n", &(errorLog[0]));
+			printf("%s\n", &(errorLog[0]));
 			fatalError("Shaders failed to link.");
 
 			return;
@@ -112,7 +108,7 @@ namespace GameEngine3D
 		glDeleteShader(_fragmentShaderID);
 	}
 
-	void ShaderProgram::addAttribute(const std::string attributeName)
+	void ShaderProgram::addAttribute(const string attributeName)
 	{
 		glBindAttribLocation(_programID, _numAttributes++, attributeName.c_str());
 	}
@@ -135,7 +131,7 @@ namespace GameEngine3D
 		}
 	}
 
-	GLint ShaderProgram::getUniformLocation(const std::string& uniformName)
+	GLint ShaderProgram::getUniformLocation(const string& uniformName)
 	{
 		GLint location = glGetUniformLocation(_programID, uniformName.c_str());
 		if (location == GL_INVALID_INDEX)

@@ -2,6 +2,9 @@
 #include <vector>
 #include <glm\glm.hpp>
 
+using namespace glm;
+using namespace std;
+
 namespace GameEngine3D
 {
 
@@ -43,9 +46,9 @@ namespace GameEngine3D
 		bool intersects(AABB other, float &xPos, float &yPos)
 		{
 
-			if ((glm::abs(center.x - other.center.x) < (halfSize.x + other.halfSize.x)) && (glm::abs(center.y - other.center.y) < (halfSize.y + other.halfSize.y))) //is collision?
+			if ((abs(center.x - other.center.x) < (halfSize.x + other.halfSize.x)) && (abs(center.y - other.center.y) < (halfSize.y + other.halfSize.y))) //is collision?
 			{
-				if (glm::abs(center.x - other.center.x) > glm::abs(center.y - other.center.y))
+				if (abs(center.x - other.center.x) > abs(center.y - other.center.y))
 				{
 					if (center.x < other.center.x) //x-direction collision
 					{
@@ -104,7 +107,7 @@ namespace GameEngine3D
 			_southWest = nullptr;
 			_southEast = nullptr;
 			_boundary = AABB();
-			_objects = std::vector<Data<T>>();
+			_objects = vector<Data<T>>();
 		}
 
 		QuadTree<T>(AABB boundary)
@@ -114,7 +117,7 @@ namespace GameEngine3D
 			_southWest = nullptr;
 			_southEast = nullptr;
 			_boundary = boundary;
-			_objects = std::vector<Data<T>>();
+			_objects = vector<Data<T>>();
 		}
 
 		~QuadTree()
@@ -182,16 +185,16 @@ namespace GameEngine3D
 			_southEast = new QuadTree(AABB(qCenter, qSize));
 		}
 
-		std::vector<Data<T>> queryRange(AABB range)
+		vector<Data<T>> queryRange(AABB range)
 		{
-			std::vector<Data<T>> pInRange = std::vector<Data<T>>();
+			vector<Data<T>> pInRange = vector<Data<T>>();
 			float scratch = 0, scratch2 = 0;
 			if (!_boundary.intersects(range,scratch,scratch2))
 			{
 				return pInRange;
 			}
 
-			for (int i = 0; i < _objects.size(); i++)
+			for (uint i = 0; i < _objects.size(); i++)
 			{
 				if (range.contains(_objects.at(i).pos))
 				{
@@ -204,7 +207,7 @@ namespace GameEngine3D
 				return pInRange;
 			}
 
-			std::vector<Data<T>> temp = _northWest->queryRange(range);
+			vector<Data<T>> temp = _northWest->queryRange(range);
 			pInRange.insert(pInRange.end(), temp.begin(), temp.end());
 
 			temp = _northEast->queryRange(range);
@@ -228,7 +231,7 @@ namespace GameEngine3D
 
 		AABB _boundary;
 
-		std::vector<Data<T>> _objects;
+		vector<Data<T>> _objects;
 	};
 
 }

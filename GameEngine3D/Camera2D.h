@@ -2,6 +2,9 @@
 #include <glm\glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <GL\glew.h>
+#include "Shared.h"
+
+using namespace glm;
 
 namespace GameEngine3D
 {
@@ -16,20 +19,22 @@ namespace GameEngine3D
 		void update();
 		void draw();
 
-		void setPosition(glm::vec2& newPosition){ _position = newPosition; _needsMatrixUpdate = true; };
+		void setPosition(vec2& newPosition){ _position = newPosition; _needsMatrixUpdate = true; };
 
-		glm::mat4 getCameraMatrix() { return _cameraMatrix; };
+		mat4 getCameraMatrix() { return _cameraMatrix; };
+		vec4 getColor() { return _color; };
 
 	private:
 		GLuint _vbo;
-		GLuint _vao;
 
 		int _screenWidth, _screenHeight;
 		bool _needsMatrixUpdate;
 
-		glm::vec2 _position;
-		glm::mat4 _cameraMatrix;
-		glm::mat4 _orthoMatrix;
+		vec2 _position;
+		vec4 _color;
+		mat4 _cameraMatrix;
+		mat4 _orthoMatrix;
+
 	};
 
 }

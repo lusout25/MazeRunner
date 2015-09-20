@@ -1,9 +1,9 @@
 #include "Player.h"
 
 
-Player::Player() : _vbo(0),
-	_vao(0)
+Player::Player() : _vbo(0)
 {
+	_color = vec4(0, 1, 1, 1);
 }
 
 
@@ -14,7 +14,7 @@ Player::~Player()
 
 void Player::init()
 {
-
+	
 }
 
 void Player::placeCube(float x, float y, float z)
@@ -30,7 +30,7 @@ void Player::placeCube(float x, float y, float z)
 	float nearZ = z - EDGE_LENGTH / 2;
 
 	//set collision boundary box
-	_collisionBoundary = GameEngine3D::AABB(GameEngine3D::Point(x, z), GameEngine3D::Point(EDGE_LENGTH / 2, EDGE_LENGTH / 2));
+	_collisionBoundary = AABB(Point(x, z), Point(EDGE_LENGTH / 2, EDGE_LENGTH / 2));
 
 	//triangle 1 - back face
 	_points[0] = farX;
@@ -164,14 +164,6 @@ void Player::placeCube(float x, float y, float z)
 	_points[106] = nearY;
 	_points[107] = farZ;
 
-	//set all sides purple
-	for (int i = 0; i < NUM_VERTICES; i++)
-	{
-		_colors[4 * i] = 0;
-		_colors[4 * i + 1] = 1;
-		_colors[4 * i + 2] = 0;
-		_colors[4 * i + 3] = 1;
-	}
 }
 
 void Player::draw()
@@ -183,24 +175,14 @@ void Player::draw()
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 
-	glBufferData(GL_ARRAY_BUFFER, sizeof(_points) + sizeof(_colors), nullptr, GL_STATIC_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(_points), _points);
-	glBufferSubData(GL_ARRAY_BUFFER, sizeof(_points), sizeof(_colors), _colors);
-
-	if (_vao == 0)
-	{
-		glGenVertexArrays(1, &_vao);
-	}
-	glBindVertexArray(_vao);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(_points), _points, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(_points)));
+	glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
 void Player::render()
 {
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDrawArrays(GL_TRIANGLES, 0, NUM_VERTICES_WALL);
 }

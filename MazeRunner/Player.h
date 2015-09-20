@@ -1,10 +1,13 @@
 #pragma once
 #include <GL\glew.h>
 #include <GameEngine3D\QuadTree.h>
+#include <GameEngine3D\Shared.h>
+
+using namespace GameEngine3D;
+using namespace glm;
 
 class Player
 {
-	static const int NUM_VERTICES = 36;
 
 public:
 	Player();
@@ -15,16 +18,16 @@ public:
 	void init();
 	void draw();
 	void render();
+	vec4 getColor() { return _color; };
 
-	GameEngine3D::AABB getCollisionBoundary() { return _collisionBoundary; }
+	AABB getCollisionBoundary() { return _collisionBoundary; }
 
 private:
-	float _points[3 * NUM_VERTICES];
-	float _colors[4 * NUM_VERTICES];
-
-	GameEngine3D::AABB _collisionBoundary;
+	float _points[NUM_3D_VERTEX * NUM_VERTICES_WALL];
+	float _colors[NUM_RGBA_COLOR * NUM_VERTICES_WALL];
+	vec4 _color;
+	AABB _collisionBoundary;
 
 	GLuint _vbo;
-	GLuint _vao;
 };
 

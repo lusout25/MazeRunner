@@ -2,6 +2,9 @@
 #include <glm/glm.hpp>
 #include <GL\glew.h>
 #include "QuadTree.h"
+#include "Shared.h"
+
+using namespace std;
 
 namespace GameEngine3D
 {
@@ -9,29 +12,29 @@ namespace GameEngine3D
 	class Wall
 	{
 	
-	static const int NUM_VERTICES = 36;
-	
 	public:
 		Wall();
 		~Wall();
 
 		void placeCube(float x, float y, float z); //center coordinates
-		float* getCollisionCoords() { return _collisionCorners; };
+		
+		AABB getCollisionBox() { return _collisionBox; };
+		vector<float> getWallVertices() { return _pointData; };
+		vector<float> getWallColors() { return _colorData; };
+		
 		void init();
 		void draw();
 		void render();
-		AABB getCollisionBox() { return _collisionBox; };
 
 	private:
-		float _points[3 * NUM_VERTICES];
-		float _colors[4 * NUM_VERTICES];
-		float _normals[NUM_VERTICES];
-		float _collisionCorners[4];
+		vector<float> _pointData;
+		vector<float> _colorData;
+
+		float _normals[NUM_VERTICES_WALL];
 
 		AABB _collisionBox;
 
 		GLuint _vbo;
-		GLuint _vao;
 	};
 
 }

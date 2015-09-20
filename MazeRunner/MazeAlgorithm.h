@@ -5,6 +5,10 @@
 #include <GameEngine3D\Wall.h>
 #include <GameEngine3D\QuadTree.h>
 
+using namespace GameEngine3D;
+using namespace glm;
+using namespace std;
+
 class MazeAlgorithm
 {
 public:
@@ -15,9 +19,9 @@ public:
 	void generateMaze(void);
 	void printMaze(void);
 	void drawMaze(void);
-
-	GameEngine3D::QuadTree<GameEngine3D::AABB>* getQuadTree() { return _quadTree; };
-	std::list<GameEngine3D::Wall> getAllWalls() { return _walls; };
+	vec4 getColor() { return _color; };
+	QuadTree<AABB>* getQuadTree() { return _quadTree; };
+	list<Wall> getAllWalls() { return _walls; };
 
 private:
 	enum DIRECTION { UP, DOWN, LEFT, RIGHT };
@@ -30,20 +34,24 @@ private:
 		bool open;
 	};
 
+	GLuint _vbo;
 	int _mazeRows;
 	int _mazeCols;
 	Node _goalNode;
 	Node **_mazeNodes;
-	std::list<Node> _frontierNodes, _possibleOpenNodes;
-	std::list<Node>::iterator _it, _pon;
-	std::list<GameEngine3D::Wall>::iterator _wallIt;
-	std::list<GameEngine3D::Wall> _walls;
-	GameEngine3D::QuadTree<GameEngine3D::AABB>* _quadTree;
-	GameEngine3D::AABB* _mapBoundary;
+	list<Node> _frontierNodes, _possibleOpenNodes;
+	list<Node>::iterator _it, _pon;
+	list<Wall>::iterator _wallIt;
+	list<Wall> _walls;
+	QuadTree<AABB>* _quadTree;
+	AABB* _mapBoundary;
 
 	void findNextNodeToAdd(void);
 	bool validFrontierNode(Node NodeToLookat);
 	bool validNextNode(Node NodeToLookat, DIRECTION dir);
 	void markClosedNode(Node* closeNode);
 
+	vector<float> _points, _colors;
+	int _numWalls;
+	vec4 _color;
 };
