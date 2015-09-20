@@ -19,18 +19,17 @@ void Player::init()
 
 void Player::placeCube(float x, float y, float z)
 {
-	const float EDGE_LENGTH = 0.25f;
 
-	float farX = x + EDGE_LENGTH / 2;
-	float farY = y + EDGE_LENGTH / 2;
-	float farZ = z + EDGE_LENGTH / 2;
+	float farX = x + PLAYER_EDGE_LENGTH / 2;
+	float farY = y + PLAYER_EDGE_LENGTH / 2;
+	float farZ = z + PLAYER_EDGE_LENGTH / 2;
 
-	float nearX = x - EDGE_LENGTH / 2;
-	float nearY = y - EDGE_LENGTH / 2;
-	float nearZ = z - EDGE_LENGTH / 2;
+	float nearX = x - PLAYER_EDGE_LENGTH / 2;
+	float nearY = y - PLAYER_EDGE_LENGTH / 2;
+	float nearZ = z - PLAYER_EDGE_LENGTH / 2;
 
 	//set collision boundary box
-	_collisionBoundary = AABB(Point(x, z), Point(EDGE_LENGTH / 2, EDGE_LENGTH / 2));
+	_collisionBoundary = AABB(Point(x, z), Point(PLAYER_EDGE_LENGTH / 2, PLAYER_EDGE_LENGTH / 2));
 
 	//triangle 1 - back face
 	_points[0] = farX;
@@ -174,11 +173,9 @@ void Player::draw()
 		glGenBuffers(1, &_vbo);
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-
 	glBufferData(GL_ARRAY_BUFFER, sizeof(_points), _points, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-
 	glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 

@@ -6,8 +6,8 @@
 namespace GameEngine3D {
 
 	Camera::Camera() : _needsMatrixUpdate(true), 
-		_cameraPosition(vec3(0, .25, 1)), 
-		_lookAtDir(_lookAtDir = vec3(0, 0, -1))
+		_cameraPosition(vec3(0, .25, 0)), 
+		_lookAtDir(_lookAtDir = normalize(vec3(1 , 0, 1)))
 	{
 
 	}
@@ -18,6 +18,7 @@ namespace GameEngine3D {
 
 	void Camera::Update()
 	{
+		mat4 viewMatrix, modelMatrix;
 
 		if (_needsMatrixUpdate)
 		{
@@ -26,8 +27,8 @@ namespace GameEngine3D {
 
 			//Camera point in world space, point the camera is looking at, 
 			//rotation it is looking at {0,1,0} is head up {0,-1,0} is upside down.
-			mat4 viewMatrix = lookAt(_cameraPosition - vec3(_lookAtDir.x, 0, _lookAtDir.z), _cameraPosition + _lookAtDir, vec3(0, 1, 0)); 
-			mat4 modelMatrix = mat4(1.0f); //identity matrix, model will be at the origin
+			viewMatrix = lookAt(_cameraPosition - vec3(_lookAtDir.x, 0, _lookAtDir.z), _cameraPosition + _lookAtDir, vec3(0, 1, 0)); 
+			modelMatrix = mat4(1.0f); //identity matrix, model will be at the origin
 			_modelViewMatrix = viewMatrix * modelMatrix;
 			_mvpMatrix = projMatrix * _modelViewMatrix;
 

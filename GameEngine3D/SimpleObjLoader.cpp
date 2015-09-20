@@ -119,9 +119,9 @@ namespace GameEngine3D
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)(_vertices.size() * sizeof(vec3)));
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)(_vertices.size() * sizeof(vec3) + _colors.size() * sizeof(vec4)));
+		glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
+		glVertexAttribPointer(1, NUM_RGBA_COLOR, GL_FLOAT, GL_FALSE, 0, (void*)(_vertices.size() * sizeof(vec3)));
+		glVertexAttribPointer(2, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, (void*)(_vertices.size() * sizeof(vec3) + _colors.size() * sizeof(vec4)));
 
 		glDrawArrays(GL_TRIANGLES, 0, NUM_3D_VERTEX * _numFaces);
 	}

@@ -2,6 +2,8 @@
 
 MazeAlgorithm::MazeAlgorithm(int Rows, int Cols)
 {
+	int j;
+
 	_mazeRows = Rows;
 	_mazeCols = Cols;
 
@@ -9,7 +11,7 @@ MazeAlgorithm::MazeAlgorithm(int Rows, int Cols)
 	_color = vec4(1, 0, 1, 1);
 	_mazeNodes = new Node*[_mazeRows];
 
-	for (int j = 0; j < _mazeRows; ++j)
+	for (j = 0; j < _mazeRows; ++j)
 	{
 		_mazeNodes[j] = new Node[_mazeCols];
 	}
@@ -21,7 +23,9 @@ MazeAlgorithm::MazeAlgorithm(int Rows, int Cols)
 
 MazeAlgorithm::~MazeAlgorithm()
 {
-	for (int j = 0; j < _mazeCols; ++j)
+	int j;
+
+	for (j = 0; j < _mazeCols; ++j)
 	{
 		delete[] _mazeNodes[j];
 	}
@@ -31,9 +35,11 @@ MazeAlgorithm::~MazeAlgorithm()
 
 void MazeAlgorithm::generateMazeWeights(void)
 {
-	for (int i = 0; i < _mazeRows; ++i)
+	int i, j;
+
+	for (i = 0; i < _mazeRows; ++i)
 	{
-		for (int j = 0; j < _mazeRows; ++j)
+		for (j = 0; j < _mazeRows; ++j)
 		{
 			_mazeNodes[i][j].x = i;
 			_mazeNodes[i][j].y = j;
@@ -242,10 +248,14 @@ void MazeAlgorithm::markClosedNode(Node *closeNode)
 void MazeAlgorithm::printMaze(void)
 {
 	Wall* wallyWorld;
+	AABB tempBox;
+	Point p;
+	Data<AABB> data;
+	int i, j;
 
-	for (int i = 0; i < _mazeRows; ++i)
+	for (i = 0; i < _mazeRows; ++i)
 	{
-		for (int j = 0; j < _mazeRows; ++j)
+		for (j = 0; j < _mazeRows; ++j)
 		{
 			if (_mazeNodes[i][j].weight)
 			{
@@ -255,10 +265,10 @@ void MazeAlgorithm::printMaze(void)
 				_walls.push_back(*wallyWorld);
 
 				//store collision data
-				AABB tempBox = wallyWorld->getCollisionBox();
-				Point p = { tempBox.center.x, tempBox.center.y };
+				tempBox = wallyWorld->getCollisionBox();
+				p = { tempBox.center.x, tempBox.center.y };
 
-				Data<AABB> data = { p, wallyWorld->getCollisionBox() };
+				data = { p, wallyWorld->getCollisionBox() };
 				_quadTree->insert(data);
 
 				//delete wallyWorld;
@@ -300,12 +310,10 @@ void MazeAlgorithm::drawMaze(void)
 		glGenBuffers(1, &_vbo);
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-
 	glBufferData(GL_ARRAY_BUFFER, _points.size() * sizeof(float), &_points.front(), GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+	glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	glDrawArrays(GL_TRIANGLES, 0, NUM_VERTICES_WALL * _numWalls);
 }

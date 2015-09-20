@@ -1,5 +1,4 @@
 #pragma once
-#include "MazeAlgorithm.h"
 #include <GameEngine3D\SimpleObjLoader.h>
 #include <GameEngine3D\Window.h>
 #include <GameEngine3D\ShaderProgram.h>
@@ -7,15 +6,16 @@
 #include <GameEngine3D\InputManager.h>
 #include <GameEngine3D\Wall.h>
 #include <GameEngine3D\Camera2D.h>
-#include "Player.h"
 #include <GameEngine3D\QuadTree.h>
+#include <glm\glm.hpp>
+#include <glm\gtx\rotate_vector.hpp>
+#include "MazeAlgorithm.h"
+#include "Player.h"
+#include "Shared.h"
 
 using namespace GameEngine3D;
 using namespace glm;
 using namespace std;
-
-#define MAZE_HEIGHT 20
-#define MAZE_LENGTH 20
 
 enum class GameState { PLAY, EXIT };
 enum class JumpState { NONE, UP, DOWN };
@@ -54,7 +54,7 @@ private:
 	Wall _walls;
 	Player _player;
 
-	MazeAlgorithm _maze = MazeAlgorithm(MAZE_HEIGHT, MAZE_LENGTH);
+	MazeAlgorithm _maze = MazeAlgorithm(MAZE_ROWS, MAZE_COLUMNS);
 	QuadTree<AABB>* _quadTree;
 };
 

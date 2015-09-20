@@ -20,6 +20,7 @@
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="MazeAlgorithm.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Shared.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\colorShading.frag" />

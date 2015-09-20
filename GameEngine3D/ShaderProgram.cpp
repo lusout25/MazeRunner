@@ -37,15 +37,15 @@ namespace GameEngine3D
 
 	void ShaderProgram::compileShader(const string& filePath, GLuint id)
 	{
+		string fileContents = "", line;
+		GLint success, maxLength;
 		fstream shaderFile(filePath);
+
 		if (shaderFile.fail())
 		{
 			perror(filePath.c_str());
 			fatalError("Failed to open " + filePath);
 		}
-
-		string fileContents = "";
-		string line;
 
 		while (getline(shaderFile, line))
 		{
@@ -57,11 +57,11 @@ namespace GameEngine3D
 		glShaderSource(id, 1, &contentsPtr, nullptr);
 		glCompileShader(id);
 
-		GLint success = 0;
+		success = 0;
 		glGetShaderiv(id, GL_COMPILE_STATUS, &success);
 		if (success == GL_FALSE)
 		{
-			GLint maxLength = 0;
+			maxLength = 0;
 			glGetShaderiv(id, GL_INFO_LOG_LENGTH, &maxLength);
 
 			vector<GLchar> errorLog(maxLength);
@@ -76,16 +76,18 @@ namespace GameEngine3D
 
 	void ShaderProgram::linkShaders()
 	{
+		GLint isLinked, maxLength;
+
 		glAttachShader(_programID, _vertexShaderID);
 		glAttachShader(_programID, _fragmentShaderID);
 
 		glLinkProgram(_programID);
 
-		GLint isLinked = 0;
+		isLinked = 0;
 		glGetProgramiv(_programID, GL_LINK_STATUS, (int*)&isLinked);
 		if (isLinked == GL_FALSE)
 		{
-			GLint maxLength = 0;
+			maxLength = 0;
 			glGetProgramiv(_programID, GL_INFO_LOG_LENGTH, &maxLength);
 
 			vector<GLchar> errorLog(maxLength);
@@ -115,8 +117,10 @@ namespace GameEngine3D
 
 	void ShaderProgram::use()
 	{
+		int i;
+
 		glUseProgram(_programID);
-		for (int i = 0; i < _numAttributes; i++)
+		for (i = 0; i < _numAttributes; i++)
 		{
 			glEnableVertexAttribArray(i);
 		}
@@ -124,8 +128,10 @@ namespace GameEngine3D
 
 	void ShaderProgram::unuse()
 	{
+		int i;
+
 		glUseProgram(0);
-		for (int i = 0; i < _numAttributes; i++)
+		for (i = 0; i < _numAttributes; i++)
 		{
 			glDisableVertexAttribArray(i);
 		}

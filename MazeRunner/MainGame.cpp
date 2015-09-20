@@ -1,11 +1,8 @@
 #include "MainGame.h"
 #include <GameEngine3D\GameEngine3D.h>
-#include <glm\glm.hpp>
-#include <glm\gtx\rotate_vector.hpp>
-#include "Player.h"
 
-MainGame::MainGame() : _screenWidth(1024),
-	_screenHeight(768),
+MainGame::MainGame() : _screenWidth(SCREEN_WIDTH_PIXELS),
+_screenHeight(SCREEN_HEIGHT_PIXELS),
 	_gameState(GameState::PLAY)
 {
 
@@ -24,7 +21,7 @@ void MainGame::run()
 void MainGame::initSystems()
 {
 	init();
-	_window.create("Maze Runner", _screenWidth, _screenHeight);
+	_window.create(GAME_TITLE, _screenWidth, _screenHeight);
 
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CCW);
@@ -59,7 +56,7 @@ void MainGame::initShaders(ShaderState ss)
 {
 	string vertFilePath, fragFilePath;
 	string* attributeList;
-	int attributeCount = 0;
+	int attributeCount = 0, i;
 
 	if (ss == ShaderState::COLOR)
 	{
@@ -86,7 +83,7 @@ void MainGame::initShaders(ShaderState ss)
 	}
 
 	_shaderProgram.compileShaders(vertFilePath, fragFilePath );
-	for (int i = 0; i < attributeCount; i++)
+	for (i = 0; i < attributeCount; i++)
 	{
 		_shaderProgram.addAttribute(attributeList[i]);
 	}
@@ -112,14 +109,15 @@ void MainGame::processInput()
 	SDL_Event input;
 
 	bool needsUpdate = false;
-
-	const float CAMERA_SPEED = .004f;
-	const float ROTATE_SPEED = .002f;
-	const float JUMP_SPEED   = .001f;
 	
 	vec3& cameraPosition = _camera.getCameraPosition();
 	vec3& lookAtDirection = _camera.getLookAtDirection();
 	vec3 temp;
+
+	float collisionX = 0, collisionY = 0;
+	AABB wallBoundary, playerBoundary, searchBoundary;
+	vector<Data<AABB>> res;
+	uint i;
 	
 	//set input state
 	while (SDL_PollEvent(&input))
@@ -149,15 +147,15 @@ void MainGame::processInput()
 	if (_inputManager.isKeyPressed(SDLK_w))
 	{
 		//move camera forward
-		cameraPosition.x += CAMERA_SPEED * lookAtDirection.x;
-		cameraPosition.z += CAMERA_SPEED * lookAtDirection.z;
+		cameraPosition.x += CAMERA_SPEED_STRAFE * lookAtDirection.x;
+		cameraPosition.z += CAMERA_SPEED_STRAFE * lookAtDirection.z;
 		needsUpdate = true;
 	}
 
 	if (_inputManager.isKeyPressed(SDLK_a))
 	{
 		//strafe left
-		temp = -CAMERA_SPEED * cross(lookAtDirection, vec3(lookAtDirection.x, 1, lookAtDirection.z));
+		temp = -CAMERA_SPEED_STRAFE * cross(lookAtDirection, vec3(lookAtDirection.x, 1, lookAtDirection.z));
 		cameraPosition.x += temp.x;
 		cameraPosition.z += temp.z;
 		needsUpdate = true;
@@ -166,15 +164,15 @@ void MainGame::processInput()
 	if (_inputManager.isKeyPressed(SDLK_s))
 	{
 		//move camera backward
-		cameraPosition.x += -CAMERA_SPEED * lookAtDirection.x;
-		cameraPosition.z += -CAMERA_SPEED * lookAtDirection.z;
+		cameraPosition.x += -CAMERA_SPEED_STRAFE * lookAtDirection.x;
+		cameraPosition.z += -CAMERA_SPEED_STRAFE * lookAtDirection.z;
 		needsUpdate = true;
 	}
 
 	if (_inputManager.isKeyPressed(SDLK_d))
 	{
 		//strafe right
-		temp = CAMERA_SPEED * cross(lookAtDirection, vec3(lookAtDirection.x, 1, lookAtDirection.z));
+		temp = CAMERA_SPEED_STRAFE * cross(lookAtDirection, vec3(lookAtDirection.x, 1, lookAtDirection.z));
 		cameraPosition.x += temp.x;
 		cameraPosition.z += temp.z;
 		needsUpdate = true;
@@ -196,8 +194,8 @@ void MainGame::processInput()
 
 	if (_inputManager.getMouseXCoordinates() || _inputManager.getMouseYCoordinates())
 	{
-		lookAtDirection = rotateY(lookAtDirection, -ROTATE_SPEED*((float)_inputManager.getMouseXCoordinates()));
-		lookAtDirection.y += -ROTATE_SPEED * (float)_inputManager.getMouseYCoordinates();
+		lookAtDirection = rotateY(lookAtDirection, -CAMERA_SPEED_STRAFE * ((float)_inputManager.getMouseXCoordinates()));
+		lookAtDirection.y += -CAMERA_SPEED_ROTATE * (float)_inputManager.getMouseYCoordinates();
 		_inputManager.updateMouseCoordinates(0, 0);
 		needsUpdate = true;
 	}
@@ -206,7 +204,7 @@ void MainGame::processInput()
 	{
 		if (_jumpState == JumpState::UP)
 		{
-			cameraPosition.y += JUMP_SPEED;
+			cameraPosition.y += PLAYER_JUMP_SPEED;
 			if (cameraPosition.y > 1.0f)
 			{
 				_jumpState = JumpState::DOWN;
@@ -214,12 +212,13 @@ void MainGame::processInput()
 		}
 		else
 		{
-			cameraPosition.y -= JUMP_SPEED;
+			cameraPosition.y -= PLAYER_JUMP_SPEED;
 			if (cameraPosition.y <= .25)
 			{
 				_jumpState = JumpState::NONE;
 			}
 		}
+		needsUpdate = true;
 		_camera.setCameraPosition(cameraPosition);
 	}
 
@@ -227,25 +226,22 @@ void MainGame::processInput()
 	{
 		_camera.setCameraPosition(cameraPosition);
 		_camera.setLookAtDirection(lookAtDirection);
-		_player.placeCube(cameraPosition.x, 0, cameraPosition.z);
+		_player.placeCube(cameraPosition.x, cameraPosition.y - 0.25, cameraPosition.z);
 
 		//test collision stuffy stuff
-		float collisionX = 0, collisionY = 0;
-		AABB wallBoundary, playerBoundary,searchBoundary;
-		
 		playerBoundary = _player.getCollisionBoundary();
 		searchBoundary = playerBoundary;
-		searchBoundary.halfSize = { 2, 2 };
+		searchBoundary.halfSize = { COLLISION_SEARCH_RADIUS, COLLISION_SEARCH_RADIUS };
 
-		vector<Data<AABB>> res = _quadTree->queryRange(searchBoundary);
-		for (uint i = 0; i < res.size(); i++)
+		res = _quadTree->queryRange(searchBoundary);
+		for (i = 0; i < res.size(); i++)
 		{
 			if (playerBoundary.intersects(res[i].box, collisionX, collisionY))
 			{
 				cameraPosition.x -= collisionX;
 				cameraPosition.z -= collisionY;
 
-				_player.placeCube(cameraPosition.x, 0, cameraPosition.z);
+				_player.placeCube(cameraPosition.x, cameraPosition.y - 0.25, cameraPosition.z);
 				_camera.setCameraPosition(cameraPosition);
 			}
 		}
@@ -254,6 +250,10 @@ void MainGame::processInput()
 
 void MainGame::draw()
 {
+	GLint mvpLocation, colorLocation;
+	mat4 cameraMatrix, projMatrix, mvp;
+	vec4 color;
+
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -262,12 +262,12 @@ void MainGame::draw()
 	_shaderProgram.use();
 
 	//locate the location of "MVP" in the shader
-	GLint mvpLocation = _shaderProgram.getUniformLocation("MVP");
-	GLint colorLocation = _shaderProgram.getUniformLocation("COLOR");
+	mvpLocation = _shaderProgram.getUniformLocation("MVP");
+	colorLocation = _shaderProgram.getUniformLocation("COLOR");
 
 	//pass the camera matrix to the shader
-	mat4 cameraMatrix = _camera.getMVPMatrix();
-	vec4 color = _maze.getColor();
+	cameraMatrix = _camera.getMVPMatrix();
+	color = _maze.getColor();
 
 	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 	glUniform4fv(colorLocation, 1, &(color[0]));
@@ -280,8 +280,8 @@ void MainGame::draw()
 	_player.draw();
 	_player.render();
 
-	mat4 projMatrix = _hud.getCameraMatrix();
-	mat4 mvp = projMatrix;
+	projMatrix = _hud.getCameraMatrix();
+	mvp = projMatrix;
 	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(mvp[0][0]));
 
 	glDisable(GL_CULL_FACE);

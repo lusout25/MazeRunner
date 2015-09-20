@@ -22,18 +22,18 @@ namespace GameEngine3D
 
 	void Wall::placeCube(float x, float y, float z)
 	{
-		const float EDGE_LENGTH = 1.0f;
-		
-		float farX = x + EDGE_LENGTH / 2;
-		float farY = y + EDGE_LENGTH / 2;
-		float farZ = z + EDGE_LENGTH / 2;
+		float farX, farY, farZ, nearX, nearY, nearZ;
 
-		float nearX = x - EDGE_LENGTH / 2;
-		float nearY = y - EDGE_LENGTH / 2;
-		float nearZ = z - EDGE_LENGTH / 2;
+		farX = x + WALL_EDGE_LENGTH / 2;
+		farY = y + WALL_EDGE_LENGTH / 2;
+		farZ = z + WALL_EDGE_LENGTH / 2;
+
+		nearX = x - WALL_EDGE_LENGTH / 2;
+		nearY = y - WALL_EDGE_LENGTH / 2;
+		nearZ = z - WALL_EDGE_LENGTH / 2;
 
 		//set collision boundary box
-		_collisionBox = AABB(Point(x, z), Point(EDGE_LENGTH / 2, EDGE_LENGTH / 2));
+		_collisionBox = AABB(Point(x, z), Point(WALL_EDGE_LENGTH / 2, WALL_EDGE_LENGTH / 2));
 		
 		//triangle 1 - back face
 		_normals[0] = 0;

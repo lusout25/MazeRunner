@@ -31,8 +31,8 @@ namespace GameEngine3D
 		if (_needsMatrixUpdate)
 		{
 			//Camera Translation
-			vec3 translate(-_position.x + _screenWidth / 2, -_position.y + _screenHeight / 2, 0.0f);
-			_cameraMatrix = glm::translate(_orthoMatrix, translate);
+			vec3 camTranslation(-_position.x + _screenWidth / 2, -_position.y + _screenHeight / 2, 0.0f);
+			_cameraMatrix = translate(_orthoMatrix, camTranslation);
 
 			_needsMatrixUpdate = false;
 		}

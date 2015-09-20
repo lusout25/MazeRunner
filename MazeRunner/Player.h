@@ -2,6 +2,7 @@
 #include <GL\glew.h>
 #include <GameEngine3D\QuadTree.h>
 #include <GameEngine3D\Shared.h>
+#include "Shared.h"
 
 using namespace GameEngine3D;
 using namespace glm;

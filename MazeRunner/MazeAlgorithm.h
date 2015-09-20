@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
@@ -19,6 +20,7 @@ public:
 	void generateMaze(void);
 	void printMaze(void);
 	void drawMaze(void);
+	
 	vec4 getColor() { return _color; };
 	QuadTree<AABB>* getQuadTree() { return _quadTree; };
 	list<Wall> getAllWalls() { return _walls; };
@@ -35,23 +37,23 @@ private:
 	};
 
 	GLuint _vbo;
-	int _mazeRows;
-	int _mazeCols;
+	int _mazeRows, _mazeCols, _numWalls;
+	vector<float> _points, _colors;
+	vec4 _color;
+
 	Node _goalNode;
 	Node **_mazeNodes;
 	list<Node> _frontierNodes, _possibleOpenNodes;
 	list<Node>::iterator _it, _pon;
+	
 	list<Wall>::iterator _wallIt;
 	list<Wall> _walls;
 	QuadTree<AABB>* _quadTree;
 	AABB* _mapBoundary;
 
 	void findNextNodeToAdd(void);
+	void markClosedNode(Node* closeNode);
 	bool validFrontierNode(Node NodeToLookat);
 	bool validNextNode(Node NodeToLookat, DIRECTION dir);
-	void markClosedNode(Node* closeNode);
 
-	vector<float> _points, _colors;
-	int _numWalls;
-	vec4 _color;
 };
