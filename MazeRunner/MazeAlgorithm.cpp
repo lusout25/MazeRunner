@@ -33,6 +33,9 @@ MazeAlgorithm::~MazeAlgorithm()
 	delete[] _mazeNodes;
 }
 
+/***********************************************************
+	Handles weighting for maze walls
+***********************************************************/
 void MazeAlgorithm::generateMazeWeights(void)
 {
 	int i, j;
@@ -49,10 +52,12 @@ void MazeAlgorithm::generateMazeWeights(void)
 	}
 }
 
+/***********************************************************
+	Generate maze nodes
+***********************************************************/
 void MazeAlgorithm::generateMaze(void)
 {
-	//Add starting node to list
-	_frontierNodes.push_back(_mazeNodes[0][0]);
+	_frontierNodes.push_back(_mazeNodes[0][0]); //starting node
 	markClosedNode(&_mazeNodes[0][0]);
 
 	while (!_frontierNodes.empty())
@@ -61,6 +66,9 @@ void MazeAlgorithm::generateMaze(void)
 	}
 }
 
+/***********************************************************
+	Support function for adding nodes
+***********************************************************/
 void MazeAlgorithm::findNextNodeToAdd(void)
 {
 	Node temp = { -1, -1, -1, false };
@@ -108,7 +116,9 @@ void MazeAlgorithm::findNextNodeToAdd(void)
 	_possibleOpenNodes.erase(_possibleOpenNodes.begin(), _possibleOpenNodes.end());
 }
 
-//check to see if the adjacent nodes are available
+/***********************************************************
+	Validate nodes.  Check to see if adjacent nodes are available.
+***********************************************************/
 bool MazeAlgorithm::validFrontierNode(Node NodeToLookat)
 {
 	bool validLower = false;
@@ -171,7 +181,9 @@ bool MazeAlgorithm::validFrontierNode(Node NodeToLookat)
 	return validLower || validUpper || validRight || validLeft;
 }
 
-//Make sure the next node doesnt connect to any other open nodes
+/***********************************************************
+	Validate next node. Make sure the next node doesnt connect to any other open nodes. 
+***********************************************************/
 bool MazeAlgorithm::validNextNode(Node NodeToLookat, DIRECTION dir)
 {
 	bool validLower = false;
@@ -239,12 +251,18 @@ bool MazeAlgorithm::validNextNode(Node NodeToLookat, DIRECTION dir)
 	return validLower && validUpper && validRight && validLeft;
 }
 
+/***********************************************************
+	Close maze nodes.
+***********************************************************/
 void MazeAlgorithm::markClosedNode(Node *closeNode)
 {
 	(*closeNode).open = false;
 	(*closeNode).weight = 0;
 }
 
+/***********************************************************
+	Print maze.
+***********************************************************/
 void MazeAlgorithm::printMaze(void)
 {
 	Wall* wallyWorld;
@@ -271,7 +289,7 @@ void MazeAlgorithm::printMaze(void)
 				data = { p, wallyWorld->getCollisionBox() };
 				_quadTree->insert(data);
 
-				//delete wallyWorld;
+				delete wallyWorld;
 			}
 			else if (i == 0 && j == 0)
 			{
@@ -290,11 +308,14 @@ void MazeAlgorithm::printMaze(void)
 	}
 }
 
+/***********************************************************
+	Render all walls in the maze.
+***********************************************************/
 void MazeAlgorithm::drawMaze(void)
 {
 	vector<float> temp;
 
-	if (_numWalls == 0)
+	if (_numWalls == 0) //only need to get wall coordinates once
 	{
 		for (_wallIt = _walls.begin(); _wallIt != _walls.end(); ++_wallIt)
 		{

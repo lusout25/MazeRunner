@@ -12,12 +12,19 @@ MainGame::~MainGame()
 {
 }
 
+/***********************************************************
+	Entry function to game logic.
+***********************************************************/
 void MainGame::run()
 {
 	initSystems();
 	gameLoop();
 }
 
+/***********************************************************
+	Initialize openGL variables and initial state of the game.
+	Functions here will be ran only once.
+***********************************************************/
 void MainGame::initSystems()
 {
 	init();
@@ -27,9 +34,7 @@ void MainGame::initSystems()
 	glFrontFace(GL_CCW);
 	glCullFace(GL_BACK);
 
-	//Trap mouse within window
-	//If SDL_SetRelativeMouseMode fails exit game
-	if (SDL_SetRelativeMouseMode(SDL_TRUE))
+	if (SDL_SetRelativeMouseMode(SDL_TRUE))	//Trap mouse within window
 	{
 		_gameState = GameState::EXIT;
 	}
@@ -39,19 +44,21 @@ void MainGame::initSystems()
 	_hud.init(_screenWidth, _screenHeight);
 	_hud.setPosition(vec2(_screenWidth / 2, _screenHeight / 2));
 
-	//Generate Maze
+	//Generate maze using Prim's algorithm
 	_maze.generateMazeWeights();
 	_maze.generateMaze();
 	_maze.printMaze();
 
-	//Load Object
+	//Load object from 3d model
 	//_androidObj = SimpleObjLoader();
 	//_androidObj.loadObject("..\\MazeRunner\\ObjectModels\\Jigglypuff.obj");
 
-	//get collision data structure
 	_quadTree = _maze.getQuadTree();
 }
 
+/***********************************************************
+	Compile and link vertex and fragment shaders
+***********************************************************/
 void MainGame::initShaders(ShaderState ss)
 {
 	string vertFilePath, fragFilePath;
@@ -90,13 +97,15 @@ void MainGame::initShaders(ShaderState ss)
 	_shaderProgram.linkShaders();
 }
 
+/***********************************************************
+	Game loop.  This will call appropirate functions to handle
+	input, update cameras, and render a frame to screen
+***********************************************************/
 void MainGame::gameLoop()
 {
 	while (_gameState != GameState::EXIT)
 	{
 		processInput();
-
-		//update the camera model-view-projection matrix
 		_camera.Update();
 		_hud.update();
 
@@ -104,6 +113,9 @@ void MainGame::gameLoop()
 	}
 }
 
+/***********************************************************
+	Handles keyboard and mouse events
+***********************************************************/
 void MainGame::processInput()
 {
 	SDL_Event input;
@@ -119,7 +131,7 @@ void MainGame::processInput()
 	vector<Data<AABB>> res;
 	uint i;
 	
-	//set input state
+	//set input event state
 	while (SDL_PollEvent(&input))
 	{
 		switch (input.type)
@@ -144,55 +156,50 @@ void MainGame::processInput()
 	}
 
 	//input actions
-	if (_inputManager.isKeyPressed(SDLK_w))
+	if (_inputManager.isKeyPressed(SDLK_w)) //move forward
 	{
-		//move camera forward
 		cameraPosition.x += CAMERA_SPEED_STRAFE * lookAtDirection.x;
 		cameraPosition.z += CAMERA_SPEED_STRAFE * lookAtDirection.z;
 		needsUpdate = true;
 	}
 
-	if (_inputManager.isKeyPressed(SDLK_a))
+	if (_inputManager.isKeyPressed(SDLK_a)) //strafe left
 	{
-		//strafe left
 		temp = -CAMERA_SPEED_STRAFE * cross(lookAtDirection, vec3(lookAtDirection.x, 1, lookAtDirection.z));
 		cameraPosition.x += temp.x;
 		cameraPosition.z += temp.z;
 		needsUpdate = true;
 	}
 
-	if (_inputManager.isKeyPressed(SDLK_s))
+	if (_inputManager.isKeyPressed(SDLK_s)) //move backward
 	{
-		//move camera backward
 		cameraPosition.x += -CAMERA_SPEED_STRAFE * lookAtDirection.x;
 		cameraPosition.z += -CAMERA_SPEED_STRAFE * lookAtDirection.z;
 		needsUpdate = true;
 	}
 
-	if (_inputManager.isKeyPressed(SDLK_d))
+	if (_inputManager.isKeyPressed(SDLK_d)) //strafe right
 	{
-		//strafe right
 		temp = CAMERA_SPEED_STRAFE * cross(lookAtDirection, vec3(lookAtDirection.x, 1, lookAtDirection.z));
 		cameraPosition.x += temp.x;
 		cameraPosition.z += temp.z;
 		needsUpdate = true;
 	}
 
-	if (_inputManager.isKeyPressed(SDLK_SPACE))
+	if (_inputManager.isKeyPressed(SDLK_SPACE)) //jump
 	{
-		//Lebrons Jumping ability
 		if (_jumpState == JumpState::NONE)
 		{
 			_jumpState = JumpState::UP;
 		}
 	}
 
-	if (_inputManager.isKeyPressed(SDLK_q) || _inputManager.isKeyPressed(SDLK_ESCAPE))
+	if (_inputManager.isKeyPressed(SDLK_q) || _inputManager.isKeyPressed(SDLK_ESCAPE)) //exit
 	{
 		_gameState = GameState::EXIT;
 	}
 
-	if (_inputManager.getMouseXCoordinates() || _inputManager.getMouseYCoordinates())
+	if (_inputManager.getMouseXCoordinates() || _inputManager.getMouseYCoordinates())  //move mouse
 	{
 		lookAtDirection = rotateY(lookAtDirection, -CAMERA_SPEED_STRAFE * ((float)_inputManager.getMouseXCoordinates()));
 		lookAtDirection.y += -CAMERA_SPEED_ROTATE * (float)_inputManager.getMouseYCoordinates();
@@ -202,7 +209,7 @@ void MainGame::processInput()
 
 	if (_jumpState != JumpState::NONE)
 	{
-		if (_jumpState == JumpState::UP)
+		if (_jumpState == JumpState::UP) //jumping upward
 		{
 			cameraPosition.y += PLAYER_JUMP_SPEED;
 			if (cameraPosition.y > 1.0f)
@@ -210,7 +217,7 @@ void MainGame::processInput()
 				_jumpState = JumpState::DOWN;
 			}
 		}
-		else
+		else  //falling downward
 		{
 			cameraPosition.y -= PLAYER_JUMP_SPEED;
 			if (cameraPosition.y <= .25)
@@ -222,18 +229,18 @@ void MainGame::processInput()
 		_camera.setCameraPosition(cameraPosition);
 	}
 
-	if (needsUpdate)
+	if (needsUpdate) //something has changed based off input
 	{
 		_camera.setCameraPosition(cameraPosition);
 		_camera.setLookAtDirection(lookAtDirection);
 		_player.placeCube(cameraPosition.x, cameraPosition.y - 0.25, cameraPosition.z);
 
-		//test collision stuffy stuff
+		//handle collision
 		playerBoundary = _player.getCollisionBoundary();
 		searchBoundary = playerBoundary;
 		searchBoundary.halfSize = { COLLISION_SEARCH_RADIUS, COLLISION_SEARCH_RADIUS };
 
-		res = _quadTree->queryRange(searchBoundary);
+		res = _quadTree->queryRange(searchBoundary); //get walls within search radius
 		for (i = 0; i < res.size(); i++)
 		{
 			if (playerBoundary.intersects(res[i].box, collisionX, collisionY))
@@ -248,6 +255,9 @@ void MainGame::processInput()
 	}
 }
 
+/***********************************************************
+	Draw and render game objects
+***********************************************************/
 void MainGame::draw()
 {
 	GLint mvpLocation, colorLocation;
@@ -261,22 +271,21 @@ void MainGame::draw()
 
 	_shaderProgram.use();
 
-	//locate the location of "MVP" in the shader
+	//get location for uniform variables
 	mvpLocation = _shaderProgram.getUniformLocation("MVP");
 	colorLocation = _shaderProgram.getUniformLocation("COLOR");
 
-	//pass the camera matrix to the shader
 	cameraMatrix = _camera.getMVPMatrix();
 	color = _maze.getColor();
 
+	//draw maze
 	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 	glUniform4fv(colorLocation, 1, &(color[0]));
-
 	_maze.drawMaze();
 
+	//draw player
 	color = _player.getColor();
 	glUniform4fv(colorLocation, 1, &(color[0]));
-
 	_player.draw();
 	_player.render();
 
@@ -284,12 +293,13 @@ void MainGame::draw()
 	mvp = projMatrix;
 	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(mvp[0][0]));
 
+	//clear setting for hud
 	glDisable(GL_CULL_FACE);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
+	//draw hud
 	color = _hud.getColor();
 	glUniform4fv(colorLocation, 1, &(color[0]));
-
 	_hud.draw();
 
 	_shaderProgram.unuse();

@@ -1,3 +1,7 @@
+/***********************************************************
+	User-controlled player object.
+***********************************************************/
+
 #pragma once
 #include <GL\glew.h>
 #include <GameEngine3D\QuadTree.h>
@@ -14,7 +18,7 @@ public:
 	Player();
 	~Player();
 
-	void placeCube(float x, float y, float z); //center coordinates
+	void placeCube(float x, float y, float z); //center coordinates for wall
 
 	void init();
 	void draw();

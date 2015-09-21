@@ -1,6 +1,5 @@
 #include "Player.h"
 
-
 Player::Player() : _vbo(0)
 {
 	_color = vec4(0, 1, 1, 1);
@@ -17,6 +16,9 @@ void Player::init()
 	
 }
 
+/***********************************************************
+	Places player at vertex centered around xyz.
+***********************************************************/
 void Player::placeCube(float x, float y, float z)
 {
 
@@ -28,7 +30,6 @@ void Player::placeCube(float x, float y, float z)
 	float nearY = y - PLAYER_EDGE_LENGTH / 2;
 	float nearZ = z - PLAYER_EDGE_LENGTH / 2;
 
-	//set collision boundary box
 	_collisionBoundary = AABB(Point(x, z), Point(PLAYER_EDGE_LENGTH / 2, PLAYER_EDGE_LENGTH / 2));
 
 	//triangle 1 - back face
@@ -165,6 +166,9 @@ void Player::placeCube(float x, float y, float z)
 
 }
 
+/***********************************************************
+	Draw player to vertex buffer object
+***********************************************************/
 void Player::draw()
 {
 
@@ -179,6 +183,9 @@ void Player::draw()
 	glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
+/***********************************************************
+	Render player to screen
+***********************************************************/
 void Player::render()
 {
 	glDrawArrays(GL_TRIANGLES, 0, NUM_VERTICES_WALL);

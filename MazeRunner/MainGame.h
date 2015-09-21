@@ -1,3 +1,7 @@
+/***********************************************************
+	Main logic for MazeRunner.
+***********************************************************/
+
 #pragma once
 #include <GameEngine3D\SimpleObjLoader.h>
 #include <GameEngine3D\Window.h>
@@ -51,10 +55,9 @@ private:
 	JumpState _jumpState;
 	ShaderState _shaderState;
 
-	Wall _walls;
 	Player _player;
 
 	MazeAlgorithm _maze = MazeAlgorithm(MAZE_ROWS, MAZE_COLUMNS);
-	QuadTree<AABB>* _quadTree;
+	QuadTree<AABB>* _quadTree; //data structure for spacial collision
 };
 
