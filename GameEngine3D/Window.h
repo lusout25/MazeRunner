@@ -1,3 +1,7 @@
+/***********************************************************
+	Window object to display MazeRunner
+***********************************************************/
+
 #pragma once
 #include <string>
 #include <SDL/SDL.h>

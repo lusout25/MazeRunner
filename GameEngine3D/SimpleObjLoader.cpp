@@ -13,6 +13,9 @@ namespace GameEngine3D
 
 	}
 
+	/***********************************************************
+		Load object model
+	***********************************************************/
 	bool SimpleObjLoader::loadObject(char* filePath)
 	{
 		vector< vec3 > temp_vertices;
@@ -102,6 +105,9 @@ namespace GameEngine3D
 
 	}
 
+	/***********************************************************
+		Render object model
+	***********************************************************/
 	void SimpleObjLoader::render()
 	{
 		if (_vbo == 0)

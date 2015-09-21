@@ -1,3 +1,7 @@
+/***********************************************************
+	 Camera object for 2-D world space.
+***********************************************************/
+
 #pragma once
 #include <glm\glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

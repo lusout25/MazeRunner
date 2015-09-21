@@ -19,6 +19,9 @@ namespace GameEngine3D
 	{
 	}
 
+	/***********************************************************
+		Initialize camera to screen dimensions
+	***********************************************************/
 	void Camera2D::init(int screenWidth, int screenHeight)
 	{
 		_screenWidth = screenWidth;
@@ -26,11 +29,13 @@ namespace GameEngine3D
 		_orthoMatrix = ortho(0.0f, (float)_screenWidth, 0.0f, (float)_screenHeight);
 	}
 
+	/***********************************************************
+		Update the camera properties
+	***********************************************************/
 	void Camera2D::update()
 	{
 		if (_needsMatrixUpdate)
 		{
-			//Camera Translation
 			vec3 camTranslation(-_position.x + _screenWidth / 2, -_position.y + _screenHeight / 2, 0.0f);
 			_cameraMatrix = translate(_orthoMatrix, camTranslation);
 
@@ -38,6 +43,9 @@ namespace GameEngine3D
 		}
 	}
 
+	/***********************************************************
+		Render camera to screen
+	***********************************************************/
 	void Camera2D::draw()
 	{
 

@@ -11,6 +11,9 @@ namespace GameEngine3D
 	{
 	}
 
+	/***********************************************************
+		Create window display
+	***********************************************************/
 	int Window::create(string windowName, int screenWidth, int screenHeight)
 	{
 		_window = SDL_CreateWindow(windowName.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_OPENGL);
@@ -43,6 +46,9 @@ namespace GameEngine3D
 		return 0;
 	}
 
+	/***********************************************************
+		Swap buffer to prevent flashes
+	***********************************************************/
 	void Window::swapBuffer()
 	{
 		SDL_GL_SwapWindow(_window);

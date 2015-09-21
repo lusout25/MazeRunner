@@ -1,3 +1,7 @@
+/***********************************************************
+	Input Manager.  Handles inputs from keyboard and mouse events.
+***********************************************************/
+
 #pragma once
 #include <unordered_map>
 

@@ -5,7 +5,8 @@ namespace GameEngine3D
 
 	Wall::Wall() : _vbo(0)
 	{
-
+		_pointData.reserve(NUM_VERTICES_WALL * NUM_3D_VERTEX);
+		_colorData.reserve(NUM_VERTICES_WALL * NUM_RGBA_COLOR);
 	}
 
 
@@ -16,10 +17,11 @@ namespace GameEngine3D
 
 	void Wall::init()
 	{
-		_pointData.reserve(NUM_VERTICES_WALL * NUM_3D_VERTEX);
-		_colorData.reserve(NUM_VERTICES_WALL * NUM_RGBA_COLOR);
 	}
 
+	/***********************************************************
+		Place wall centered at x y z
+	***********************************************************/
 	void Wall::placeCube(float x, float y, float z)
 	{
 		float farX, farY, farZ, nearX, nearY, nearZ;
@@ -48,7 +50,6 @@ namespace GameEngine3D
 		_pointData.push_back(nearX);
 		_pointData.push_back(farY);
 		_pointData.push_back(nearZ);
-
 
 		//triangle 2 - back face
 		_normals[3] = 0;
@@ -205,6 +206,9 @@ namespace GameEngine3D
 		_pointData.push_back(farZ);
 	}
 
+	/***********************************************************
+		Draw wall to VBO
+	***********************************************************/
 	void Wall::draw()
 	{
 		if (_vbo == 0)
@@ -218,6 +222,9 @@ namespace GameEngine3D
 		glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
 	}
 
+	/***********************************************************
+		Render wall to screen
+	***********************************************************/
 	void Wall::render()
 	{
 		glDrawArrays(GL_TRIANGLES, 0, NUM_VERTICES_WALL);

@@ -15,6 +15,9 @@ namespace GameEngine3D
 	{
 	}
 
+	/***********************************************************
+		Compile specified vertex and fragment shader programs
+	***********************************************************/
 	void ShaderProgram::compileShaders(const string& vertexShaderFilePath, const string& fragmentShaderFilepath)
 	{
 		_programID = glCreateProgram();
@@ -35,6 +38,9 @@ namespace GameEngine3D
 		compileShader(fragmentShaderFilepath, _fragmentShaderID);
 	}
 
+	/***********************************************************
+		Compile shader program
+	***********************************************************/
 	void ShaderProgram::compileShader(const string& filePath, GLuint id)
 	{
 		string fileContents = "", line;
@@ -74,6 +80,9 @@ namespace GameEngine3D
 		}
 	}
 
+	/***********************************************************
+		Link compiled shaders for use
+	***********************************************************/
 	void ShaderProgram::linkShaders()
 	{
 		GLint isLinked, maxLength;
@@ -110,11 +119,17 @@ namespace GameEngine3D
 		glDeleteShader(_fragmentShaderID);
 	}
 
+	/***********************************************************
+		Add shader attribute
+	***********************************************************/
 	void ShaderProgram::addAttribute(const string attributeName)
 	{
 		glBindAttribLocation(_programID, _numAttributes++, attributeName.c_str());
 	}
 
+	/***********************************************************
+		Setup shader program for use
+	***********************************************************/
 	void ShaderProgram::use()
 	{
 		int i;
@@ -126,6 +141,9 @@ namespace GameEngine3D
 		}
 	}
 
+	/***********************************************************
+		Cleanup shader program after use
+	***********************************************************/
 	void ShaderProgram::unuse()
 	{
 		int i;
@@ -137,6 +155,9 @@ namespace GameEngine3D
 		}
 	}
 
+	/***********************************************************
+		Find uniform variable location in shader
+	***********************************************************/
 	GLint ShaderProgram::getUniformLocation(const string& uniformName)
 	{
 		GLint location = glGetUniformLocation(_programID, uniformName.c_str());

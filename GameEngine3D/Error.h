@@ -1,3 +1,7 @@
+/***********************************************************
+	Fatal error.  Prints out error message and exits game.
+***********************************************************/
+
 #pragma once
 #include <string>
 

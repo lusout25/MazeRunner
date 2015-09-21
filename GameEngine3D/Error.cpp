@@ -4,6 +4,9 @@
 
 namespace GameEngine3D {
 
+	/***********************************************************
+		Prints error message and exits gracefully
+	***********************************************************/
 	void fatalError(string errorString)
 	{
 		int tmp;

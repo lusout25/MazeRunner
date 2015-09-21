@@ -1,3 +1,7 @@
+/***********************************************************
+	Qaudtree data structure with support objects.
+***********************************************************/
+
 #pragma once
 #include <vector>
 #include <glm\glm.hpp>
@@ -8,7 +12,7 @@ using namespace std;
 namespace GameEngine3D
 {
 
-	struct Point
+	struct Point //2-D vertex
 	{
 		float x;
 		float y;
@@ -20,7 +24,7 @@ namespace GameEngine3D
 		}
 	};
 
-	struct AABB
+	struct AABB //Bounding box
 	{
 		Point center;
 		Point halfSize;
@@ -31,6 +35,9 @@ namespace GameEngine3D
 			halfSize = hf;
 		};
 
+		/***********************************************************
+			Tests to see if a point is within the bounding box
+		***********************************************************/
 		bool contains(Point a)
 		{
 			if ((a.x <= center.x + halfSize.x) && (a.x >= center.x - halfSize.x))
@@ -43,6 +50,10 @@ namespace GameEngine3D
 			return false;
 		}
 
+		/***********************************************************
+			Tests to see if two bounding boxes intersects
+			Returns x-y coordinates for collision point.
+		***********************************************************/
 		bool intersects(AABB other, float &xPos, float &yPos)
 		{
 
@@ -82,6 +93,9 @@ namespace GameEngine3D
 		}
 	};
 
+	/***********************************************************
+		Data bor an object with a center point
+	***********************************************************/
 	template <typename T> struct Data
 	{
 		Point pos;
@@ -94,6 +108,9 @@ namespace GameEngine3D
 		};
 	};
 
+	/***********************************************************
+		Quadtree for spacial partitioning to detect collision
+	***********************************************************/
 	template <class T> class QuadTree
 	{
 		const int MAX_OBJECTS = 10;
@@ -128,6 +145,9 @@ namespace GameEngine3D
 			delete _southEast;
 		}
 
+		/***********************************************************
+			Inserts a data object into the quadtree
+		***********************************************************/
 		bool insert(Data<T> d)
 		{
 			if (!_boundary.contains(d.pos))
@@ -169,6 +189,9 @@ namespace GameEngine3D
 			return false;
 		}
 
+		/***********************************************************
+			Splits a quadtree section
+		***********************************************************/
 		void split()
 		{
 			Point qSize = { _boundary.halfSize.x, _boundary.halfSize.y };
@@ -185,6 +208,9 @@ namespace GameEngine3D
 			_southEast = new QuadTree(AABB(qCenter, qSize));
 		}
 
+		/***********************************************************
+			Finds walls that that are within the collision search radius.
+		***********************************************************/
 		vector<Data<T>> queryRange(AABB range)
 		{
 			vector<Data<T>> pInRange = vector<Data<T>>();

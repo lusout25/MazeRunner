@@ -1,3 +1,7 @@
+/***********************************************************
+	Camera object.  Handles model-view-projection for 3-d world.
+***********************************************************/
+
 #pragma once
 #include <vector>
 #include <math.h>
