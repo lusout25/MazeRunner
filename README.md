@@ -1,11 +1,12 @@
 
-##Maze Runner
+#Maze Runner
 ######by Luke Southard and Nathan Southard
 --------------------------
 ###Summary:
 
+
 ####Purpose: 
-The goal of this project is to gain experience in graphics development and learn the intricaces of openGL.  Game engine architecture has been an interest of ours for quite some time.  We decided to put the concepts we've learned and read about to code.
+The goal of this project is to gain experience in graphics development and learn the intricacies of OpenGL.  Game engine architecture has been an interest of ours for quite some time.  We decided to put the concepts we've learned and read about to code.
 
 ####Controls:
 W - move forward  
@@ -28,7 +29,7 @@ GLM (OpenGL Mathematics) - Math library
   - Input handling
   - 3rd person camera  
 - Maze generation  
-  - Djikstra's algorithm  
+  - Dijkstra's algorithm  
 - Collision  
   - Silo'd AABB detection
   - Quadtree data structure for consideration
