@@ -3,10 +3,10 @@
 ######by Luke Southard and Nathan Southard
 --------------------------
 ###Summary:
-
+Standard maze game. Can you reach the end?
 
 ####Purpose: 
-The goal of this project is to gain experience in graphics development and learn the intricacies of OpenGL.  Game engine architecture has been an interest of ours for quite some time.  We decided to put the concepts we've learned and read about to code.
+The goal of this project is to gain experience in graphics development and learn the intricacies of OpenGL.  Game engine architecture has been an interest of ours for quite some time.  We decided to implement the concepts we've learned about by building a game engine from scratch.  We also sought out to implement a couple advanced algorithms and data structures. 
 
 ####Controls:
 W - move forward  
