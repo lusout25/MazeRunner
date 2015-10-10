@@ -25,19 +25,19 @@ SDL v2.0.3 (Simple DirectMEdia Layer) - hardware abstraction library used for in
 GLM (OpenGL Mathematics) - Math library  
 
 ####Features + Technical Details:
-- Movement 
+- Movement  
   Keyboard and mouse events are recieved with SDL and converted into player movements.   
-- Camera
+- Camera  
   The game is played through a 3rd person follow camera. Model-View-Projection matrices are used to render the world in this perspective to bring the maze to life.
-- HUD
+- HUD  
 A 2D camera is used to show data on the HUD.  An orthographic-projection matrix is used to static graphics to the screen.  The HUD will always display in the same spot, independent of the player's location and rotation.
 - Maze generation  
 The maze is randomly generated using Dijkstra's algorithm.  The entire maze is rendered in a single draw call.
 - Collision  
   AABB bounding box structures are used for collision detection.  A quad-tree data structure is used to store the walls according to their location.  On movement, the player checks collision with a maximum of ten objects in that zone.
-- Shaders
+- Shaders  
   Shader programs our used in the graphics-pipeline to finalize data for the vertices (such as color, location, texture). Shaders are compiled and linked to be used on the GPU.
-- Object models
+- Object models  
   Object model files can be loaded with the game engine.
 
 ####Future Enhancements:
