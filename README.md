@@ -1,9 +1,8 @@
-# MazeRunner
+
+##Maze Runner
 ######by Luke Southard and Nathan Southard
-
-
-####Summary:
-
+--------------------------
+###Summary:
 
 ####Purpose: 
 The goal of this project is to gain experience in graphics development and learn the intricaces of openGL.  Game engine architecture has been an interest of ours for quite some time.  We decided to put the concepts we've learned and read about to code.
@@ -25,16 +24,16 @@ SDL v2.0.3 (Simple DirectMEdia Layer) - hardware abstraction library used for in
 GLM (OpenGL Mathematics) - Math library  
 
 ####Features + Technical Details:
-Movevement 
+- Movevement 
   - Input handling
-  - 3rd person camera
-Maze generation
-  - Djikstra's algorithm
-Collision
+  - 3rd person camera  
+- Maze generation  
+  - Djikstra's algorithm  
+- Collision  
   - Silo'd AABB detection
   - Quadtree data structure for consideration
-  - Preventative
-Object models
+  - Preventative  
+- Object models
 
 ####Future Enhancements:
 - Trail to goal
