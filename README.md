@@ -32,7 +32,7 @@ Q,ESC - exit game
 - **HUD**  
 A 2D camera is used to show data on the HUD.  An orthographic-projection matrix is used to static graphics to the screen.  The HUD will always display in the same spot, independent of the player's location and rotation.
 - **Maze generation**  
-The maze is randomly generated using Dijkstra's algorithm.  The entire maze is rendered in a single draw call.
+The maze is randomly generated using Prim's algorithm.  The entire maze is rendered in a single draw call.
 - **Collision**  
   AABB bounding box structures are used for collision detection.  A quad-tree data structure is used to store the walls according to their location.  On movement, the player checks collision with a maximum of ten objects in that zone.
 - **Shaders**  
