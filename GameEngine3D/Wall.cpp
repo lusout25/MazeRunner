@@ -125,7 +125,7 @@ namespace GameEngine3D
 		_normals[18] = -1;
 		_normals[19] = 0;
 		_normals[20] = 0;
-		_pointData.push_back(farX);
+		_pointData.push_back(nearX);
 		_pointData.push_back(farY);
 		_pointData.push_back(farZ);
 		_pointData.push_back(nearX);
@@ -184,12 +184,12 @@ namespace GameEngine3D
 		_pointData.push_back(farX);
 		_pointData.push_back(nearY);
 		_pointData.push_back(farZ);
-		_pointData.push_back(farX);
-		_pointData.push_back(nearY);
-		_pointData.push_back(nearZ);
 		_pointData.push_back(nearX);
 		_pointData.push_back(nearY);
 		_pointData.push_back(farZ);
+		_pointData.push_back(farX);
+		_pointData.push_back(nearY);
+		_pointData.push_back(nearZ);
 
 		//triangle 12 - bottom side
 		_normals[33] = 0;
@@ -200,14 +200,14 @@ namespace GameEngine3D
 		_pointData.push_back(nearZ);
 		_pointData.push_back(nearX);
 		_pointData.push_back(nearY);
-		_pointData.push_back(nearZ);
+		_pointData.push_back(farZ);
 		_pointData.push_back(nearX);
 		_pointData.push_back(nearY);
-		_pointData.push_back(farZ);
+		_pointData.push_back(nearZ);
 	}
 
 	/***********************************************************
-		Draw wall to VBO
+		Draw and render Wall to screen
 	***********************************************************/
 	void Wall::draw()
 	{
@@ -218,16 +218,27 @@ namespace GameEngine3D
 		glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 		glBufferData(GL_ARRAY_BUFFER, _pointData.size() * sizeof(float), &_pointData.front(), GL_STATIC_DRAW);
 
-		glEnableVertexAttribArray(0);	
+		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
-	}
 
-	/***********************************************************
-		Render wall to screen
-	***********************************************************/
-	void Wall::render()
-	{
 		glDrawArrays(GL_TRIANGLES, 0, NUM_VERTICES_WALL);
 	}
 
+	/***********************************************************
+	Draw and render Wall Outline to screen
+	***********************************************************/
+	void Wall::drawWallOutline()
+	{
+		if (_vbo == 0)
+		{
+			glGenBuffers(1, &_vbo);
+		}
+		glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+		glBufferData(GL_ARRAY_BUFFER, _pointData.size() * sizeof(float), &_pointData.front(), GL_STATIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+		glDrawArrays(GL_LINE_LOOP, 0, NUM_VERTICES_WALL);
+	}
 }

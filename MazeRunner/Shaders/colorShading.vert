@@ -1,7 +1,6 @@
 #version 400
 
 in vec4 vertexPosition;
-in vec4 vertexColor;
 
 out vec4 fragmentColor;
 

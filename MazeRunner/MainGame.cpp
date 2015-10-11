@@ -3,7 +3,7 @@
 
 MainGame::MainGame() : _screenWidth(SCREEN_WIDTH_PIXELS),
 _screenHeight(SCREEN_HEIGHT_PIXELS),
-	_gameState(GameState::PLAY)
+_gameState(GameState::PLAY)
 {
 
 }
@@ -13,7 +13,7 @@ MainGame::~MainGame()
 }
 
 /***********************************************************
-	Entry function to game logic.
+Entry function to game logic.
 ***********************************************************/
 void MainGame::run()
 {
@@ -22,8 +22,8 @@ void MainGame::run()
 }
 
 /***********************************************************
-	Initialize openGL variables and initial state of the game.
-	Functions here will be ran only once.
+Initialize openGL variables and initial state of the game.
+Functions here will be ran only once.
 ***********************************************************/
 void MainGame::initSystems()
 {
@@ -31,8 +31,10 @@ void MainGame::initSystems()
 	_window.create(GAME_TITLE, _screenWidth, _screenHeight);
 
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
 	glFrontFace(GL_CCW);
 	glCullFace(GL_BACK);
+	glLineWidth(3.0f);
 
 	if (SDL_SetRelativeMouseMode(SDL_TRUE))	//Trap mouse within window
 	{
@@ -57,7 +59,7 @@ void MainGame::initSystems()
 }
 
 /***********************************************************
-	Compile and link vertex and fragment shaders
+Compile and link vertex and fragment shaders
 ***********************************************************/
 void MainGame::initShaders(ShaderState ss)
 {
@@ -89,7 +91,7 @@ void MainGame::initShaders(ShaderState ss)
 		attributeList = new string[attributeCount];
 	}
 
-	_shaderProgram.compileShaders(vertFilePath, fragFilePath );
+	_shaderProgram.compileShaders(vertFilePath, fragFilePath);
 	for (i = 0; i < attributeCount; i++)
 	{
 		_shaderProgram.addAttribute(attributeList[i]);
@@ -98,8 +100,8 @@ void MainGame::initShaders(ShaderState ss)
 }
 
 /***********************************************************
-	Game loop.  This will call appropirate functions to handle
-	input, update cameras, and render a frame to screen
+Game loop.  This will call appropirate functions to handle
+input, update cameras, and render a frame to screen
 ***********************************************************/
 void MainGame::gameLoop()
 {
@@ -114,14 +116,14 @@ void MainGame::gameLoop()
 }
 
 /***********************************************************
-	Handles keyboard and mouse events
+Handles keyboard and mouse events
 ***********************************************************/
 void MainGame::processInput()
 {
 	SDL_Event input;
 
 	bool needsUpdate = false;
-	
+
 	vec3& cameraPosition = _camera.getCameraPosition();
 	vec3& lookAtDirection = _camera.getLookAtDirection();
 	vec3 temp;
@@ -130,7 +132,7 @@ void MainGame::processInput()
 	AABB wallBoundary, playerBoundary, searchBoundary;
 	vector<Data<AABB>> res;
 	uint i;
-	
+
 	//set input event state
 	while (SDL_PollEvent(&input))
 	{
@@ -151,7 +153,7 @@ void MainGame::processInput()
 
 		case SDL_MOUSEMOTION:
 			_inputManager.updateMouseCoordinates(input.motion.xrel, input.motion.yrel);
-		    break;
+			break;
 		}
 	}
 
@@ -256,7 +258,7 @@ void MainGame::processInput()
 }
 
 /***********************************************************
-	Draw and render game objects
+Draw and render game objects
 ***********************************************************/
 void MainGame::draw()
 {
@@ -283,6 +285,11 @@ void MainGame::draw()
 	glUniform4fv(colorLocation, 1, &(color[0]));
 	_maze.drawMaze();
 
+	//draw wireframe of maze
+	color = _maze.getWireFrameColor();
+	glUniform4fv(colorLocation, 1, &(color[0]));
+	_maze.drawMazeWireFrame();
+
 	//draw player
 	color = _player.getColor();
 	glUniform4fv(colorLocation, 1, &(color[0]));
@@ -293,7 +300,7 @@ void MainGame::draw()
 	mvp = projMatrix;
 	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(mvp[0][0]));
 
-	//clear setting for hud
+	//clear settings for hud
 	glDisable(GL_CULL_FACE);
 	glClear(GL_DEPTH_BUFFER_BIT);
 

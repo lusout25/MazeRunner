@@ -24,8 +24,10 @@ public:
 	void generateMaze(void);
 	void printMaze(void);
 	void drawMaze(void);
+	void drawMazeWireFrame();
 	
 	vec4 getColor() { return _color; };
+	vec4 getWireFrameColor() { return _outlineColor; };
 	QuadTree<AABB>* getQuadTree() { return _quadTree; };
 	list<Wall> getAllWalls() { return _walls; };
 
@@ -44,6 +46,7 @@ private:
 	int _mazeRows, _mazeCols, _numWalls;
 	vector<float> _points, _colors;
 	vec4 _color;
+	vec4 _outlineColor;
 
 	Node _goalNode;
 	Node **_mazeNodes;
@@ -59,5 +62,6 @@ private:
 	void markClosedNode(Node* closeNode);
 	bool validFrontierNode(Node NodeToLookat);
 	bool validNextNode(Node NodeToLookat, DIRECTION dir);
-
+	void addOutsideWalls();
+	void storeCollisionData();
 };

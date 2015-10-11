@@ -28,6 +28,7 @@ namespace GameEngine3D
 		
 		void init();
 		void draw();
+		void drawWallOutline();
 		void render();
 
 	private:

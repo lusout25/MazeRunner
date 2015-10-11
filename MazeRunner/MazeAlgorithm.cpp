@@ -9,6 +9,7 @@ MazeAlgorithm::MazeAlgorithm(int Rows, int Cols)
 
 	_numWalls = 0;
 	_color = vec4(1, 0, 1, 1);
+	_outlineColor = vec4(0, 0, 0, 1);
 	_mazeNodes = new Node*[_mazeRows];
 
 	for (j = 0; j < _mazeRows; ++j)
@@ -17,7 +18,7 @@ MazeAlgorithm::MazeAlgorithm(int Rows, int Cols)
 	}
 	srand((unsigned int)time(NULL));
 
-	_mapBoundary = new AABB(Point(Cols / 2.0f, Rows / 2.0f), Point(Cols / 2.0f, Rows / 2.0f));
+	_mapBoundary = new AABB(Point(Cols / 2.0f, Rows / 2.0f), Point(Cols / 2.0f + 2, Rows / 2.0f + 2));
 	_quadTree = new QuadTree<AABB>(*_mapBoundary);
 }
 
@@ -266,9 +267,6 @@ void MazeAlgorithm::markClosedNode(Node *closeNode)
 void MazeAlgorithm::printMaze(void)
 {
 	Wall* wallyWorld;
-	AABB tempBox;
-	Point p;
-	Data<AABB> data;
 	int i, j;
 
 	for (i = 0; i < _mazeRows; ++i)
@@ -281,13 +279,6 @@ void MazeAlgorithm::printMaze(void)
 				wallyWorld = new Wall();
 				wallyWorld->placeCube((float)i, 0, (float)j);
 				_walls.push_back(*wallyWorld);
-
-				//store collision data
-				tempBox = wallyWorld->getCollisionBox();
-				p = { tempBox.center.x, tempBox.center.y };
-
-				data = { p, wallyWorld->getCollisionBox() };
-				_quadTree->insert(data);
 
 				delete wallyWorld;
 			}
@@ -305,6 +296,129 @@ void MazeAlgorithm::printMaze(void)
 			}
 		}
 		cout << endl;
+	}
+
+	addOutsideWalls();
+	storeCollisionData();
+}
+
+/***********************************************************
+Add outside boundary to wall list
+***********************************************************/
+void MazeAlgorithm::addOutsideWalls()
+{
+	int x,y;
+	Wall* wallyWorld;
+
+	//start space
+	wallyWorld = new Wall();
+	wallyWorld->placeCube(-2, 0, 1);
+	_walls.push_back(*wallyWorld);
+	wallyWorld = new Wall();
+	wallyWorld->placeCube(-2, 1, 1);
+	_walls.push_back(*wallyWorld);
+	
+	wallyWorld = new Wall();
+	wallyWorld->placeCube(-2, 0, 0);
+	_walls.push_back(*wallyWorld);
+	wallyWorld = new Wall();
+	wallyWorld->placeCube(-2, 1, 0);
+	_walls.push_back(*wallyWorld);
+
+	wallyWorld = new Wall();
+	wallyWorld->placeCube(-2, 0, -1);
+	_walls.push_back(*wallyWorld);
+	wallyWorld = new Wall();
+	wallyWorld->placeCube(-2, 1, -1);
+	_walls.push_back(*wallyWorld);
+
+	wallyWorld = new Wall();
+	wallyWorld->placeCube(-2, 0, -2);
+	_walls.push_back(*wallyWorld);
+	wallyWorld = new Wall();
+	wallyWorld->placeCube(-2, 1, -2);
+	_walls.push_back(*wallyWorld);
+
+	wallyWorld = new Wall();
+	wallyWorld->placeCube(-1, 0, -2);
+	_walls.push_back(*wallyWorld);
+	wallyWorld = new Wall();
+	wallyWorld->placeCube(-1, 1, -2);
+	_walls.push_back(*wallyWorld);
+
+	wallyWorld = new Wall();
+	wallyWorld->placeCube(0, 0, -2);
+	_walls.push_back(*wallyWorld);
+	wallyWorld = new Wall();
+	wallyWorld->placeCube(0, 1, -2);
+	_walls.push_back(*wallyWorld);
+
+	wallyWorld = new Wall();
+	wallyWorld->placeCube(1, 0, -1);
+	_walls.push_back(*wallyWorld);
+	wallyWorld = new Wall();
+	wallyWorld->placeCube(1, 1, -1);
+	_walls.push_back(*wallyWorld);
+
+	//bottom and top sides
+	for (y = 1; y < _mazeRows+1; y++)
+	{
+		//side 1
+		wallyWorld = new Wall();
+		wallyWorld->placeCube(-1, 0, y);
+		_walls.push_back(*wallyWorld);
+		wallyWorld = new Wall();
+		wallyWorld->placeCube(-1, 1, y);
+		_walls.push_back(*wallyWorld);
+		
+		//side 2
+		wallyWorld = new Wall();
+		wallyWorld->placeCube(_mazeCols, 0, y);
+		_walls.push_back(*wallyWorld);
+		wallyWorld = new Wall();
+		wallyWorld->placeCube(_mazeCols, 1, y);
+		_walls.push_back(*wallyWorld);
+	}
+
+	//left and right sides
+	for (x = 1; x < _mazeCols + 1; x++)
+	{
+		//side 1
+		wallyWorld = new Wall();
+		wallyWorld->placeCube(x, 0, -1);
+		_walls.push_back(*wallyWorld);
+		wallyWorld = new Wall();
+		wallyWorld->placeCube(x, 1, -1);
+		_walls.push_back(*wallyWorld);
+
+		//side 2
+		wallyWorld = new Wall();
+		wallyWorld->placeCube(x, 0, _mazeRows);
+		_walls.push_back(*wallyWorld);
+		wallyWorld = new Wall();
+		wallyWorld->placeCube(x, 1, _mazeRows);
+		_walls.push_back(*wallyWorld);
+	}
+}
+
+
+/***********************************************************
+Store collision data in quadtree
+***********************************************************/
+void MazeAlgorithm::storeCollisionData()
+{
+	AABB tempBox;
+	Point p;
+	Data<AABB> data;
+
+	for (_wallIt = _walls.begin(); _wallIt != _walls.end(); ++_wallIt)
+	{
+		//store collision data
+		tempBox = _wallIt->getCollisionBox();
+		p = { tempBox.center.x, tempBox.center.y };
+
+		data = { p, _wallIt->getCollisionBox() };
+		_quadTree->insert(data);
 	}
 }
 
@@ -337,4 +451,12 @@ void MazeAlgorithm::drawMaze(void)
 	glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	glDrawArrays(GL_TRIANGLES, 0, NUM_VERTICES_WALL * _numWalls);
+}
+
+void MazeAlgorithm::drawMazeWireFrame(void)
+{
+	for (_wallIt = _walls.begin(); _wallIt != _walls.end(); ++_wallIt)
+	{
+		_wallIt->drawWallOutline();
+	}
 }

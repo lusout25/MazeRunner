@@ -1,5 +1,5 @@
 /***********************************************************
-	User-controlled player object.
+User-controlled player object.
 ***********************************************************/
 
 #pragma once

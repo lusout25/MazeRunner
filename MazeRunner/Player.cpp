@@ -13,11 +13,11 @@ Player::~Player()
 
 void Player::init()
 {
-	
+
 }
 
 /***********************************************************
-	Places player at vertex centered around xyz.
+Places player at vertex centered around xyz.
 ***********************************************************/
 void Player::placeCube(float x, float y, float z)
 {
@@ -167,7 +167,7 @@ void Player::placeCube(float x, float y, float z)
 }
 
 /***********************************************************
-	Draw player to vertex buffer object
+Draw player to vertex buffer object
 ***********************************************************/
 void Player::draw()
 {
@@ -184,7 +184,7 @@ void Player::draw()
 }
 
 /***********************************************************
-	Render player to screen
+Render player to screen
 ***********************************************************/
 void Player::render()
 {
