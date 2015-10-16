@@ -11,6 +11,7 @@
 #include <GameEngine3D\Wall.h>
 #include <GameEngine3D\Camera2D.h>
 #include <GameEngine3D\QuadTree.h>
+#include <GameEngine3D\Sprite.h>
 #include <glm\glm.hpp>
 #include <glm\gtx\rotate_vector.hpp>
 #include "MazeAlgorithm.h"
@@ -23,7 +24,8 @@ using namespace std;
 
 enum class GameState { PLAY, EXIT };
 enum class JumpState { NONE, UP, DOWN };
-enum class ShaderState { COLOR, LIGHTING };
+enum class ShaderState { COLOR, LIGHTING, TEXTURE };
+enum class ProjectionState { ORTHOGRAPHIC, PERSPECTIVE };
 
 class MainGame
 {
@@ -39,7 +41,9 @@ private:
 	void gameLoop();
 	void processInput();
 	void draw();
-	void drawHUD();
+	void switchTextureOn(bool turnOn, GLint textureFlagUniformLocation, GLint samplerUniformLocation = 0);
+	void setShaderColor(vec4& color, GLint colorUniformLocation);
+	void setShaderProjection(ProjectionState view, GLint projUniformLocation);
 
 	Window _window;
 	ShaderProgram _shaderProgram;
@@ -56,6 +60,7 @@ private:
 	ShaderState _shaderState;
 
 	Player _player;
+	Sprite _grassTexture;
 
 	MazeAlgorithm _maze = MazeAlgorithm(MAZE_ROWS, MAZE_COLUMNS);
 	QuadTree<AABB>* _quadTree; //data structure for spacial collision

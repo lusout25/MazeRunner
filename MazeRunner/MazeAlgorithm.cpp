@@ -8,7 +8,7 @@ MazeAlgorithm::MazeAlgorithm(int Rows, int Cols)
 	_mazeCols = Cols;
 
 	_numWalls = 0;
-	_color = vec4(1, 0, 1, 1);
+	_color = vec4(.297, .063, .063, 1);
 	_outlineColor = vec4(0, 0, 0, 1);
 	_mazeNodes = new Node*[_mazeRows];
 

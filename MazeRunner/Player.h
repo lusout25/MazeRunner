@@ -22,8 +22,10 @@ public:
 
 	void init();
 	void draw();
+	void drawPlayerOutline();
 	void render();
 	vec4 getColor() { return _color; };
+	vec4 getOutlineColor() { return _outlineColor; };
 
 	AABB getCollisionBoundary() { return _collisionBoundary; }
 
@@ -31,6 +33,7 @@ private:
 	float _points[NUM_3D_VERTEX * NUM_VERTICES_WALL];
 	float _colors[NUM_RGBA_COLOR * NUM_VERTICES_WALL];
 	vec4 _color;
+	vec4 _outlineColor;
 	AABB _collisionBoundary;
 
 	GLuint _vbo;

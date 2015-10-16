@@ -3,6 +3,7 @@
 Player::Player() : _vbo(0)
 {
 	_color = vec4(0, 1, 1, 1);
+	_outlineColor = vec4(0, 0, 0, 1);
 }
 
 
@@ -189,4 +190,22 @@ Render player to screen
 void Player::render()
 {
 	glDrawArrays(GL_TRIANGLES, 0, NUM_VERTICES_WALL);
+}
+
+/***********************************************************
+Draw and render Wall Outline to screen
+***********************************************************/
+void Player::drawPlayerOutline()
+{
+	if (_vbo == 0)
+	{
+		glGenBuffers(1, &_vbo);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(_points), _points, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+	glDrawArrays(GL_LINE_LOOP, 0, NUM_VERTICES_WALL);
 }

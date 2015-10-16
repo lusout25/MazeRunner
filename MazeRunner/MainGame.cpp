@@ -5,7 +5,6 @@ MainGame::MainGame() : _screenWidth(SCREEN_WIDTH_PIXELS),
 _screenHeight(SCREEN_HEIGHT_PIXELS),
 _gameState(GameState::PLAY)
 {
-
 }
 
 MainGame::~MainGame()
@@ -34,13 +33,13 @@ void MainGame::initSystems()
 	glEnable(GL_DEPTH_TEST);
 	glFrontFace(GL_CCW);
 	glCullFace(GL_BACK);
-	glLineWidth(3.0f);
 
 	if (SDL_SetRelativeMouseMode(SDL_TRUE))	//Trap mouse within window
 	{
 		_gameState = GameState::EXIT;
 	}
 
+	_grassTexture.init(vec3(-2, -.5, -2), vec3(MAZE_ROWS, -.5, -2), vec3(MAZE_ROWS, -.5, MAZE_COLUMNS), vec3(-2, -.5, MAZE_COLUMNS), "Textures/grass.png", MAZE_ROWS + 2, MAZE_COLUMNS + 2);
 	_player.placeCube(0, 0, 0);
 
 	_hud.init(_screenWidth, _screenHeight);
@@ -71,10 +70,9 @@ void MainGame::initShaders(ShaderState ss)
 	{
 		vertFilePath = "Shaders/colorShading.vert";
 		fragFilePath = "Shaders/colorShading.frag";
-		attributeCount = 2;
+		attributeCount = 1;
 		attributeList = new string[attributeCount];
 		attributeList[0] = "vertexPosition";
-		attributeList[1] = "vertexColor";
 	}
 	else if (ss == ShaderState::LIGHTING)
 	{
@@ -85,6 +83,15 @@ void MainGame::initShaders(ShaderState ss)
 		attributeList[0] = "inPosition";
 		attributeList[1] = "inColor";
 		attributeList[2] = "inNormal";
+	}
+	else if (ss == ShaderState::TEXTURE)
+	{
+		vertFilePath = "Shaders/textureShader.vert";
+		fragFilePath = "Shaders/textureShader.frag";
+		attributeCount = 2;
+		attributeList = new string[attributeCount];
+		attributeList[0] = "vertexPosition";
+		attributeList[1] = "vertexUV";
 	}
 	else
 	{
@@ -235,7 +242,7 @@ void MainGame::processInput()
 	{
 		_camera.setCameraPosition(cameraPosition);
 		_camera.setLookAtDirection(lookAtDirection);
-		_player.placeCube(cameraPosition.x, cameraPosition.y - 0.25, cameraPosition.z);
+		_player.placeCube(cameraPosition.x, cameraPosition.y - 0.25f, cameraPosition.z);
 
 		//handle collision
 		playerBoundary = _player.getCollisionBoundary();
@@ -250,7 +257,7 @@ void MainGame::processInput()
 				cameraPosition.x -= collisionX;
 				cameraPosition.z -= collisionY;
 
-				_player.placeCube(cameraPosition.x, cameraPosition.y - 0.25, cameraPosition.z);
+				_player.placeCube(cameraPosition.x, cameraPosition.y - 0.25f, cameraPosition.z);
 				_camera.setCameraPosition(cameraPosition);
 			}
 		}
@@ -262,54 +269,50 @@ Draw and render game objects
 ***********************************************************/
 void MainGame::draw()
 {
-	GLint mvpLocation, colorLocation;
-	mat4 cameraMatrix, projMatrix, mvp;
-	vec4 color;
+	GLint projLocation, colorLocation, samplerLocation,textureFlagLocation;
 
-	glClearDepth(1.0);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	initShaders(ShaderState::COLOR);
+	initShaders(ShaderState::TEXTURE);
 
 	_shaderProgram.use();
 
 	//get location for uniform variables
-	mvpLocation = _shaderProgram.getUniformLocation("MVP");
+	projLocation = _shaderProgram.getUniformLocation("MVP");
 	colorLocation = _shaderProgram.getUniformLocation("COLOR");
-
-	cameraMatrix = _camera.getMVPMatrix();
-	color = _maze.getColor();
+	samplerLocation = _shaderProgram.getUniformLocation("SAMPLER");
+	textureFlagLocation = _shaderProgram.getUniformLocation("USETEXTURE");
 
 	//draw maze
-	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
-	glUniform4fv(colorLocation, 1, &(color[0]));
+	setShaderProjection(ProjectionState::PERSPECTIVE, projLocation);
+	setShaderColor(_maze.getColor(), colorLocation);
 	_maze.drawMaze();
 
+	//draw ground texture
+	switchTextureOn(true, textureFlagLocation, samplerLocation);
+	setShaderColor(vec4(1, 1, 1, 1), colorLocation);
+	_grassTexture.draw();
+
 	//draw wireframe of maze
-	color = _maze.getWireFrameColor();
-	glUniform4fv(colorLocation, 1, &(color[0]));
+	switchTextureOn(false, textureFlagLocation);
+	glLineWidth(3.0f);
+	setShaderColor(_maze.getWireFrameColor(), colorLocation);
 	_maze.drawMazeWireFrame();
 
 	//draw player
-	color = _player.getColor();
-	glUniform4fv(colorLocation, 1, &(color[0]));
+	setShaderColor(_player.getColor(), colorLocation);
 	_player.draw();
 	_player.render();
 
-	projMatrix = _hud.getCameraMatrix();
-	mvp = projMatrix;
-	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(mvp[0][0]));
+	//draw player outline
+	glLineWidth(5.0f);
+	setShaderColor(_player.getOutlineColor(), colorLocation);
+	_player.drawPlayerOutline();
 
-	//clear settings for hud
-	glDisable(GL_CULL_FACE);
-	glClear(GL_DEPTH_BUFFER_BIT);
-
-	//draw hud
-	color = _hud.getColor();
-	glUniform4fv(colorLocation, 1, &(color[0]));
+	setShaderProjection(ProjectionState::ORTHOGRAPHIC, projLocation);
+	setShaderColor(_hud.getColor(), colorLocation);
 	_hud.draw();
 
 	_shaderProgram.unuse();
+
 
 	//***************
 	// Lighting 
@@ -333,4 +336,39 @@ void MainGame::draw()
 	_shaderProgram.unuse();*/
 
 	_window.swapBuffer();
+}
+
+void MainGame::switchTextureOn(bool turnOn, GLint textureFlagUniformLocation, GLint samplerUniformLocation)
+{
+	if (turnOn)
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glUniform1i(samplerUniformLocation, 0);
+		glUniform1i(textureFlagUniformLocation, 1);
+	}
+	else
+	{
+		glUniform1i(textureFlagUniformLocation, 0);
+	}
+}
+
+void MainGame::setShaderColor(vec4& color, GLint colorUniformLocation)
+{
+	glUniform4fv(colorUniformLocation, 1, &(color[0]));
+}
+
+void MainGame::setShaderProjection(ProjectionState view, GLint projUniformLocation)
+{
+	if (view == ProjectionState::ORTHOGRAPHIC)
+	{
+		glDisable(GL_CULL_FACE);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glUniformMatrix4fv(projUniformLocation, 1, GL_FALSE, &(_hud.getCameraMatrix()[0][0]));
+	}
+	else if (view == ProjectionState::PERSPECTIVE)
+	{
+		glClearDepth(1.0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glUniformMatrix4fv(projUniformLocation, 1, GL_FALSE, &(_camera.getMVPMatrix()[0][0]));
+	}
 }

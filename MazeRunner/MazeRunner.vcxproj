@@ -27,6 +27,8 @@
     <None Include="Shaders\colorShading.vert" />
     <None Include="Shaders\lightingShader.frag" />
     <None Include="Shaders\lightingShader.vert" />
+    <None Include="Shaders\textureShader.frag" />
+    <None Include="Shaders\textureShader.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7CA850D6-99BB-4547-8BA1-28337746A302}</ProjectGuid>

@@ -43,6 +43,8 @@
     </None>
     <None Include="Shaders\lightingShader.vert" />
     <None Include="Shaders\lightingShader.frag" />
+    <None Include="Shaders\textureShader.frag" />
+    <None Include="Shaders\textureShader.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h">
