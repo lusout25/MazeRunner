@@ -21,7 +21,7 @@ Q,ESC - exit game
 **C++11**  
 **OpenGL v4.4** - graphic rendering  APIs  
 **GLSL v4.0** (OpenGL Shading Language) - Used for writing shader programs in the modern graphics pipeline.  
-**SDL v2.0.3** (Simple DirectMEdia Layer) - hardware abstraction library used for input devices, audiot, etc.  
+**SDL v2.0.3** (Simple DirectMedia Layer) - hardware abstraction library used for input devices, audiot, etc.  
 **GLM** (OpenGL Mathematics) - Math library  
 
 ####Features + Technical Details:
