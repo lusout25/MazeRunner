@@ -22,6 +22,7 @@ public:
 
 	void generateMazeWeights(void);
 	void generateMaze(void);
+	void solveMaze(int x, int y);
 	void printMaze(void);
 	void drawMaze(void);
 	void drawMazeWireFrame();
@@ -40,10 +41,18 @@ private:
 		int x;
 		int y;
 		bool open;
+		bool isGoal;
+
+		//Maze solver
+		bool inList;
+		bool inPathToGoal;
+		int f;
+		Node *parent;
 	};
 
 	GLuint _vbo;
 	int _mazeRows, _mazeCols, _numWalls;
+	bool _goalFound;
 	vector<float> _points, _colors;
 	vec4 _color;
 	vec4 _outlineColor;
@@ -59,9 +68,15 @@ private:
 	AABB* _mapBoundary;
 
 	void findNextNodeToAdd(void);
-	void markClosedNode(Node* closeNode);
 	bool validFrontierNode(Node NodeToLookat);
 	bool validNextNode(Node NodeToLookat, DIRECTION dir);
+	void markClosedNode(Node* closeNode);
+
+	std::list<Node> openList, closdedList;
+	void addNodesToOpenList(Node n);
+	int calculateF(Node n);
+	void traceBackToGoal(Node *n);
+
 	void addOutsideWalls();
 	void storeCollisionData();
 };

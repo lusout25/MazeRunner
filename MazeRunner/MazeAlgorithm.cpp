@@ -6,6 +6,7 @@ MazeAlgorithm::MazeAlgorithm(int Rows, int Cols)
 
 	_mazeRows = Rows;
 	_mazeCols = Cols;
+	_goalFound = false;
 
 	_numWalls = 0;
 	_color = vec4(.297, .063, .063, 1);
@@ -49,6 +50,10 @@ void MazeAlgorithm::generateMazeWeights(void)
 			_mazeNodes[i][j].y = j;
 			_mazeNodes[i][j].weight = (rand() % 9) + 1;
 			_mazeNodes[i][j].open = true;
+			_mazeNodes[i][j].isGoal = false;
+			_mazeNodes[i][j].inList = false;
+			_mazeNodes[i][j].inPathToGoal = false;
+			_mazeNodes[i][j].parent = NULL;
 		}
 	}
 }
@@ -290,6 +295,10 @@ void MazeAlgorithm::printMaze(void)
 			{
 				cout << 'G';
 			}
+			else if (_mazeNodes[i][j].inPathToGoal)
+			{
+				cout << "*";
+			}
 			else
 			{
 				cout << " ";
@@ -300,6 +309,105 @@ void MazeAlgorithm::printMaze(void)
 
 	addOutsideWalls();
 	storeCollisionData();
+}
+
+void MazeAlgorithm::solveMaze(int x, int y)
+{
+	_mazeNodes[_goalNode.x][_goalNode.y].isGoal = true;
+
+	//Add starting node to closed list
+	_mazeNodes[x][y].f = calculateF(_mazeNodes[x][y]);
+	_mazeNodes[x][y].inList = true;
+	closdedList.push_back(_mazeNodes[x][y]);
+	addNodesToOpenList(_mazeNodes[x][y]);
+
+	//Loop while openList is not empty or goal not found
+	while (!openList.empty())
+	{
+		Node temp;
+
+		//Find the node in the list with the lowest cost (F)
+		openList.sort([](const Node &a, const Node &b){return a.f < b.f; });
+		temp = openList.front();
+		openList.pop_front();
+		closdedList.push_back(_mazeNodes[temp.x][temp.y]);
+
+		if (_mazeNodes[temp.x][temp.y].isGoal)
+		{
+			_goalFound = true;
+			traceBackToGoal(&_mazeNodes[temp.x][temp.y]);
+			break;
+		}
+		else
+		{
+			addNodesToOpenList(_mazeNodes[temp.x][temp.y]);
+		}
+	}
+}
+
+void MazeAlgorithm::addNodesToOpenList(Node n)
+{
+	//Right
+	if (n.x + 1 < _mazeCols)
+	{
+		if (!_mazeNodes[n.x + 1][n.y].weight && !_mazeNodes[n.x + 1][n.y].inList)
+		{
+			_mazeNodes[n.x + 1][n.y].f = calculateF(_mazeNodes[n.x + 1][n.y]);
+			_mazeNodes[n.x + 1][n.y].inList = true;
+			_mazeNodes[n.x + 1][n.y].parent = &_mazeNodes[n.x][n.y];
+			openList.push_back(_mazeNodes[n.x + 1][n.y]);
+		}
+	}
+
+	//Left
+	if (n.x - 1 >= 0)
+	{
+		if (!_mazeNodes[n.x - 1][n.y].weight && !_mazeNodes[n.x - 1][n.y].inList)
+		{
+			_mazeNodes[n.x - 1][n.y].f = calculateF(_mazeNodes[n.x - 1][n.y]);
+			_mazeNodes[n.x - 1][n.y].inList = true;
+			_mazeNodes[n.x - 1][n.y].parent = &_mazeNodes[n.x][n.y];
+			openList.push_back(_mazeNodes[n.x - 1][n.y]);
+		}
+	}
+
+	//Down
+	if (n.y + 1 < _mazeRows)
+	{
+		if (!_mazeNodes[n.x][n.y + 1].weight && !_mazeNodes[n.x][n.y + 1].inList)
+		{
+			_mazeNodes[n.x][n.y + 1].f = calculateF(_mazeNodes[n.x][n.y + 1]);
+			_mazeNodes[n.x][n.y + 1].inList = true;
+			_mazeNodes[n.x][n.y + 1].parent = &_mazeNodes[n.x][n.y];
+			openList.push_back(_mazeNodes[n.x][n.y + 1]);
+		}
+	}
+
+	//Up
+	if (n.y - 1 >= 0)
+	{
+		if (!_mazeNodes[n.x][n.y - 1].weight && !_mazeNodes[n.x][n.y - 1].inList)
+		{
+			_mazeNodes[n.x][n.y - 1].f = calculateF(_mazeNodes[n.x][n.y - 1]);
+			_mazeNodes[n.x][n.y - 1].inList = true;
+			_mazeNodes[n.x][n.y - 1].parent = &_mazeNodes[n.x][n.y];
+			openList.push_back(_mazeNodes[n.x][n.y - 1]);
+		}
+	}
+}
+
+int MazeAlgorithm::calculateF(Node n)
+{
+	return abs(n.x - _goalNode.x) + abs(n.y - _goalNode.y);
+}
+
+void MazeAlgorithm::traceBackToGoal(Node *n)
+{
+	(*n).inPathToGoal = true;
+	if ((*n).parent)
+	{
+		traceBackToGoal((*n).parent);
+	}
 }
 
 /***********************************************************

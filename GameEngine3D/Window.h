@@ -1,5 +1,5 @@
 /***********************************************************
-	Window object to display MazeRunner
+	Window object to display to screen
 ***********************************************************/
 
 #pragma once

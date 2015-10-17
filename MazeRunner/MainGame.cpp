@@ -48,6 +48,7 @@ void MainGame::initSystems()
 	//Generate maze using Prim's algorithm
 	_maze.generateMazeWeights();
 	_maze.generateMaze();
+	_maze.solveMaze(0,0);
 	_maze.printMaze();
 
 	//Load object from 3d model
