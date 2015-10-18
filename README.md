@@ -34,13 +34,13 @@ Q,ESC - exit game
 A 2D camera is used to show data on the HUD.  An orthographic-projection matrix is used to static graphics to the screen.  The HUD will always display in the same spot, independent of the player's location and rotation.
 - **Maze generation**  
 The maze is randomly generated using Prim's algorithm.  The entire maze is rendered in a single draw call.
-- **Solution Trail**
+- **Solution Trail**  
   A golden line leads the player to the goal when they are in need of help. The trail uses Dijkstra's algorithm to find the shortest path from the player to the goal.
 - **Collision**  
   AABB bounding box structures are used for collision detection.  A quad-tree data structure is used to store the walls according to their location.  On movement, the player checks collision with a maximum of ten objects in that zone.
 - **Shaders**  
   Shader programs our used in the graphics-pipeline to finalize data for the vertices (such as color, location, texture). Shaders are compiled and linked to be used on the GPU.
-- **Texture**
+- **Texture**  
   Textures are used for flooring.  They are handled within the shader.  
 - **Object models**  
   Object model files can be loaded with the game engine.
