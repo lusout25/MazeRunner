@@ -52,8 +52,8 @@ private:
 	InputManager _inputManager;
 	SimpleObjLoader _androidObj;
 
-	int _screenWidth;
-	int _screenHeight;
+	int _screenWidth, _screenHeight;
+	bool _showTrail;
 
 	GameState _gameState;
 	JumpState _jumpState;

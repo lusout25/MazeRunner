@@ -11,6 +11,7 @@ MazeAlgorithm::MazeAlgorithm(int Rows, int Cols)
 	_numWalls = 0;
 	_color = vec4(.297, .063, .063, 1);
 	_outlineColor = vec4(0, 0, 0, 1);
+	_trailColor = vec4(1, .843, 0, 1);
 	_mazeNodes = new Node*[_mazeRows];
 
 	for (j = 0; j < _mazeRows; ++j)
@@ -314,23 +315,26 @@ void MazeAlgorithm::printMaze(void)
 void MazeAlgorithm::solveMaze(int x, int y)
 {
 	_mazeNodes[_goalNode.x][_goalNode.y].isGoal = true;
+	_trail.clear();
+	_closedList.clear();
+	_openList.clear();
 
 	//Add starting node to closed list
 	_mazeNodes[x][y].f = calculateF(_mazeNodes[x][y]);
 	_mazeNodes[x][y].inList = true;
-	closdedList.push_back(_mazeNodes[x][y]);
+	_closedList.push_back(_mazeNodes[x][y]);
 	addNodesToOpenList(_mazeNodes[x][y]);
 
 	//Loop while openList is not empty or goal not found
-	while (!openList.empty())
+	while (!_openList.empty())
 	{
 		Node temp;
 
 		//Find the node in the list with the lowest cost (F)
-		openList.sort([](const Node &a, const Node &b){return a.f < b.f; });
-		temp = openList.front();
-		openList.pop_front();
-		closdedList.push_back(_mazeNodes[temp.x][temp.y]);
+		_openList.sort([](const Node &a, const Node &b){return a.f < b.f; });
+		temp = _openList.front();
+		_openList.pop_front();
+		_closedList.push_back(_mazeNodes[temp.x][temp.y]);
 
 		if (_mazeNodes[temp.x][temp.y].isGoal)
 		{
@@ -355,7 +359,7 @@ void MazeAlgorithm::addNodesToOpenList(Node n)
 			_mazeNodes[n.x + 1][n.y].f = calculateF(_mazeNodes[n.x + 1][n.y]);
 			_mazeNodes[n.x + 1][n.y].inList = true;
 			_mazeNodes[n.x + 1][n.y].parent = &_mazeNodes[n.x][n.y];
-			openList.push_back(_mazeNodes[n.x + 1][n.y]);
+			_openList.push_back(_mazeNodes[n.x + 1][n.y]);
 		}
 	}
 
@@ -367,7 +371,7 @@ void MazeAlgorithm::addNodesToOpenList(Node n)
 			_mazeNodes[n.x - 1][n.y].f = calculateF(_mazeNodes[n.x - 1][n.y]);
 			_mazeNodes[n.x - 1][n.y].inList = true;
 			_mazeNodes[n.x - 1][n.y].parent = &_mazeNodes[n.x][n.y];
-			openList.push_back(_mazeNodes[n.x - 1][n.y]);
+			_openList.push_back(_mazeNodes[n.x - 1][n.y]);
 		}
 	}
 
@@ -379,7 +383,7 @@ void MazeAlgorithm::addNodesToOpenList(Node n)
 			_mazeNodes[n.x][n.y + 1].f = calculateF(_mazeNodes[n.x][n.y + 1]);
 			_mazeNodes[n.x][n.y + 1].inList = true;
 			_mazeNodes[n.x][n.y + 1].parent = &_mazeNodes[n.x][n.y];
-			openList.push_back(_mazeNodes[n.x][n.y + 1]);
+			_openList.push_back(_mazeNodes[n.x][n.y + 1]);
 		}
 	}
 
@@ -391,7 +395,7 @@ void MazeAlgorithm::addNodesToOpenList(Node n)
 			_mazeNodes[n.x][n.y - 1].f = calculateF(_mazeNodes[n.x][n.y - 1]);
 			_mazeNodes[n.x][n.y - 1].inList = true;
 			_mazeNodes[n.x][n.y - 1].parent = &_mazeNodes[n.x][n.y];
-			openList.push_back(_mazeNodes[n.x][n.y - 1]);
+			_openList.push_back(_mazeNodes[n.x][n.y - 1]);
 		}
 	}
 }
@@ -406,6 +410,10 @@ void MazeAlgorithm::traceBackToGoal(Node *n)
 	(*n).inPathToGoal = true;
 	if ((*n).parent)
 	{
+		_trail.insert(_trail.begin(), (*n).y);
+		_trail.insert(_trail.begin(), 0);
+		_trail.insert(_trail.begin(), (*n).x);
+
 		traceBackToGoal((*n).parent);
 	}
 }
@@ -567,4 +575,24 @@ void MazeAlgorithm::drawMazeWireFrame(void)
 	{
 		_wallIt->drawWallOutline();
 	}
+}
+
+void MazeAlgorithm::drawTrail(void)
+{
+	if (_trail.size() == 0)
+	{
+		return;
+	}
+
+	if (_vbo == 0)
+	{
+		glGenBuffers(1, &_vbo);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+	glBufferData(GL_ARRAY_BUFFER, _trail.size() * sizeof(float), &_trail.front(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+	glDrawArrays(GL_LINE_STRIP, 0, NUM_VERTICES_WALL);
 }

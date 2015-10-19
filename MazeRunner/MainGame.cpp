@@ -3,7 +3,8 @@
 
 MainGame::MainGame() : _screenWidth(SCREEN_WIDTH_PIXELS),
 _screenHeight(SCREEN_HEIGHT_PIXELS),
-_gameState(GameState::PLAY)
+_gameState(GameState::PLAY),
+_showTrail(false)
 {
 }
 
@@ -48,7 +49,7 @@ void MainGame::initSystems()
 	//Generate maze using Prim's algorithm
 	_maze.generateMazeWeights();
 	_maze.generateMaze();
-	_maze.solveMaze(0,0);
+	_maze.solveMaze(0, 0);
 	_maze.printMaze();
 
 	//Load object from 3d model
@@ -209,6 +210,16 @@ void MainGame::processInput()
 		_gameState = GameState::EXIT;
 	}
 
+	if (_inputManager.isKeyPressed(SDLK_v)) //show trail to goal
+	{
+		//_maze.solveMaze((int)cameraPosition.x, (int)cameraPosition.z); //TODO_ REMOVE COMMENT
+		_showTrail = true;
+	}
+	else
+	{
+		_showTrail = false;
+	}
+
 	if (_inputManager.getMouseXCoordinates() || _inputManager.getMouseYCoordinates())  //move mouse
 	{
 		lookAtDirection = rotateY(lookAtDirection, -CAMERA_SPEED_STRAFE * ((float)_inputManager.getMouseXCoordinates()));
@@ -298,6 +309,14 @@ void MainGame::draw()
 	setShaderColor(_maze.getWireFrameColor(), colorLocation);
 	_maze.drawMazeWireFrame();
 
+	//draw trail to goal
+	//if (_showTrail) //TODO: REMOVE COMMENT
+	{
+		setShaderColor(_maze.getTrailColor(), colorLocation);
+		glLineWidth(7.0f);
+		_maze.drawTrail();
+	}
+
 	//draw player
 	setShaderColor(_player.getColor(), colorLocation);
 	_player.draw();
@@ -308,6 +327,7 @@ void MainGame::draw()
 	setShaderColor(_player.getOutlineColor(), colorLocation);
 	_player.drawPlayerOutline();
 
+	//draw hud
 	setShaderProjection(ProjectionState::ORTHOGRAPHIC, projLocation);
 	setShaderColor(_hud.getColor(), colorLocation);
 	_hud.draw();

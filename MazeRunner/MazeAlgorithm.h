@@ -26,9 +26,11 @@ public:
 	void printMaze(void);
 	void drawMaze(void);
 	void drawMazeWireFrame();
+	void drawTrail();
 	
 	vec4 getColor() { return _color; };
 	vec4 getWireFrameColor() { return _outlineColor; };
+	vec4 getTrailColor() { return _trailColor; };
 	QuadTree<AABB>* getQuadTree() { return _quadTree; };
 	list<Wall> getAllWalls() { return _walls; };
 
@@ -53,9 +55,8 @@ private:
 	GLuint _vbo;
 	int _mazeRows, _mazeCols, _numWalls;
 	bool _goalFound;
-	vector<float> _points, _colors;
-	vec4 _color;
-	vec4 _outlineColor;
+	vector<float> _points, _colors, _trail;
+	vec4 _color, _outlineColor, _trailColor;
 
 	Node _goalNode;
 	Node **_mazeNodes;
@@ -72,7 +73,7 @@ private:
 	bool validNextNode(Node NodeToLookat, DIRECTION dir);
 	void markClosedNode(Node* closeNode);
 
-	std::list<Node> openList, closdedList;
+	std::list<Node> _openList, _closedList;
 	void addNodesToOpenList(Node n);
 	int calculateF(Node n);
 	void traceBackToGoal(Node *n);
