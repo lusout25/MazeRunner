@@ -320,7 +320,6 @@ void MainGame::draw()
 	//draw player
 	setShaderColor(_player.getColor(), colorLocation);
 	_player.draw();
-	_player.render();
 
 	//draw player outline
 	glLineWidth(5.0f);

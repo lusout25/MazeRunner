@@ -130,6 +130,12 @@ namespace GameEngine3D
 		glVertexAttribPointer(2, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, (void*)(_vertices.size() * sizeof(vec3) + _colors.size() * sizeof(vec4)));
 
 		glDrawArrays(GL_TRIANGLES, 0, NUM_3D_VERTEX * _numFaces);
+
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
 }

@@ -33,9 +33,6 @@
   <ItemGroup>
     <Image Include="Textures\grass.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Object Include="ObjectModels\Jigglypuff.obj" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7CA850D6-99BB-4547-8BA1-28337746A302}</ProjectGuid>
     <RootNamespace>MazeRunner</RootNamespace>

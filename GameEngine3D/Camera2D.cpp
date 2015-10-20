@@ -59,9 +59,11 @@ namespace GameEngine3D
 		glBufferData(GL_ARRAY_BUFFER, sizeof(_points), _points, GL_STATIC_DRAW);
 
 		glEnableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
 		glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		glDisableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 }

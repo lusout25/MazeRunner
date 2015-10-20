@@ -23,7 +23,6 @@ public:
 	void init();
 	void draw();
 	void drawPlayerOutline();
-	void render();
 	vec4 getColor() { return _color; };
 	vec4 getOutlineColor() { return _outlineColor; };
 
