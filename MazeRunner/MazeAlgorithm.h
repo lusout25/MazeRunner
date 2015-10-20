@@ -23,6 +23,7 @@ public:
 	void generateMazeWeights(void);
 	void generateMaze(void);
 	void solveMaze(int x, int y);
+	void resetSolveMaze(void);
 	void printMaze(void);
 	void drawMaze(void);
 	void drawMazeWireFrame();

@@ -349,6 +349,22 @@ void MazeAlgorithm::solveMaze(int x, int y)
 	}
 }
 
+void MazeAlgorithm::resetSolveMaze(void)
+{
+	_openList.clear();
+	_closedList.clear();
+
+	for (int i = 0; i < _mazeRows; ++i)
+	{
+		for (int j = 0; j < _mazeRows; ++j)
+		{
+			_mazeNodes[i][j].inList = false;
+			_mazeNodes[i][j].inPathToGoal = false;
+			_mazeNodes[i][j].parent = NULL;
+		}
+	}
+}
+
 void MazeAlgorithm::addNodesToOpenList(Node n)
 {
 	//Right

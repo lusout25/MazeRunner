@@ -51,6 +51,7 @@ void MainGame::initSystems()
 	_maze.generateMaze();
 	_maze.solveMaze(0, 0);
 	_maze.printMaze();
+	_maze.resetSolveMaze();
 
 	//Load object from 3d model
 	//_androidObj = SimpleObjLoader();
