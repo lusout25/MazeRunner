@@ -60,4 +60,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\grass.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="ObjectModels\Jigglypuff.obj" />
+  </ItemGroup>
 </Project>

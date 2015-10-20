@@ -564,6 +564,7 @@ void MazeAlgorithm::drawMaze(void)
 	glBufferData(GL_ARRAY_BUFFER, _points.size() * sizeof(float), &_points.front(), GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 	glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	glDrawArrays(GL_TRIANGLES, 0, NUM_VERTICES_WALL * _numWalls);
@@ -592,6 +593,7 @@ void MazeAlgorithm::drawTrail(void)
 	glBufferData(GL_ARRAY_BUFFER, _trail.size() * sizeof(float), &_trail.front(), GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 	glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	glDrawArrays(GL_LINE_STRIP, 0, NUM_VERTICES_WALL);

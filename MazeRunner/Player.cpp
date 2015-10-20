@@ -181,6 +181,7 @@ void Player::draw()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(_points), _points, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 	glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
@@ -205,6 +206,7 @@ void Player::drawPlayerOutline()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(_points), _points, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 	glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	glDrawArrays(GL_LINE_LOOP, 0, NUM_VERTICES_WALL);
