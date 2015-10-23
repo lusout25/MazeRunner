@@ -260,7 +260,7 @@ bool MazeAlgorithm::validNextNode(Node NodeToLookat, DIRECTION dir)
 
 /***********************************************************
 	Close maze nodes.
-***********************************************************/
+	***********************************************************/
 void MazeAlgorithm::markClosedNode(Node *closeNode)
 {
 	(*closeNode).open = false;
@@ -269,7 +269,7 @@ void MazeAlgorithm::markClosedNode(Node *closeNode)
 
 /***********************************************************
 	Print maze.
-***********************************************************/
+	***********************************************************/
 void MazeAlgorithm::printMaze(void)
 {
 	Wall* wallyWorld;
@@ -317,6 +317,16 @@ void MazeAlgorithm::solveMaze(int x, int y)
 	if (_goalNode.x == x && _goalNode.y == y) //we're already at the goal
 	{
 		return;
+	}
+
+	//make sure we don't calculate from a position outside the maze nodes knowledge
+	if (x < 0) 
+	{
+		x = 0;
+	}
+	if (y < 0)
+	{
+		y = 0;
 	}
 
 	_mazeNodes[_goalNode.x][_goalNode.y].isGoal = true;
