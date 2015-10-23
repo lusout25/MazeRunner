@@ -49,9 +49,9 @@ void MainGame::initSystems()
 	//Generate maze using Prim's algorithm
 	_maze.generateMazeWeights();
 	_maze.generateMaze();
-	_maze.solveMaze(0, 0);
+	//_maze.solveMaze(0, 0);
 	_maze.printMaze();
-	_maze.resetSolveMaze();
+	//_maze.resetSolveMaze();
 
 	//Load object from 3d model
 	//_androidObj = SimpleObjLoader();
@@ -213,7 +213,11 @@ void MainGame::processInput()
 
 	if (_inputManager.isKeyPressed(SDLK_v)) //show trail to goal
 	{
-		//_maze.solveMaze((int)cameraPosition.x, (int)cameraPosition.z); //TODO_ REMOVE COMMENT
+		if (_player.updateLocation(round(cameraPosition.x), round(cameraPosition.z)))
+		{
+			_maze.resetSolveMaze();
+			_maze.solveMaze((int)round(cameraPosition.x), (int)round(cameraPosition.z));
+		}
 		_showTrail = true;
 	}
 	else
@@ -311,7 +315,7 @@ void MainGame::draw()
 	_maze.drawMazeWireFrame();
 
 	//draw trail to goal
-	//if (_showTrail) //TODO: REMOVE COMMENT
+	if (_showTrail)
 	{
 		setShaderColor(_maze.getTrailColor(), colorLocation);
 		glLineWidth(7.0f);

@@ -4,6 +4,7 @@ Player::Player() : _vbo(0)
 {
 	_color = vec4(0, 1, 1, 1);
 	_outlineColor = vec4(0, 0, 0, 1);
+	_lastPosition = vec2(-5, -5);
 }
 
 
@@ -213,4 +214,15 @@ void Player::drawPlayerOutline()
 	glDisableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+bool Player::updateLocation(int newX, int newY)
+{
+	if (_lastPosition.x == newX && _lastPosition.y == newY)
+	{
+		return false;
+	}
+
+	_lastPosition = vec2(newX, newY);
+	return true;
 }

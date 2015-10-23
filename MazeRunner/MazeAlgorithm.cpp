@@ -314,6 +314,11 @@ void MazeAlgorithm::printMaze(void)
 
 void MazeAlgorithm::solveMaze(int x, int y)
 {
+	if (_goalNode.x == x && _goalNode.y == y) //we're already at the goal
+	{
+		return;
+	}
+
 	_mazeNodes[_goalNode.x][_goalNode.y].isGoal = true;
 	_trail.clear();
 	_closedList.clear();
@@ -615,7 +620,7 @@ void MazeAlgorithm::drawTrail(void)
 
 	glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
 
-	glDrawArrays(GL_LINE_STRIP, 0, NUM_VERTICES_WALL);
+	glDrawArrays(GL_LINE_STRIP, 0, _trail.size() / NUM_3D_VERTEX);
 
 	glDisableVertexAttribArray(0);
 

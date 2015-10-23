@@ -26,7 +26,8 @@ public:
 	vec4 getColor() { return _color; };
 	vec4 getOutlineColor() { return _outlineColor; };
 
-	AABB getCollisionBoundary() { return _collisionBoundary; }
+	AABB getCollisionBoundary() { return _collisionBoundary; };
+	bool updateLocation(int newX, int newY);
 
 private:
 	float _points[NUM_3D_VERTEX * NUM_VERTICES_WALL];
@@ -34,6 +35,7 @@ private:
 	vec4 _color;
 	vec4 _outlineColor;
 	AABB _collisionBoundary;
+	vec2 _lastPosition;
 
 	GLuint _vbo;
 };
