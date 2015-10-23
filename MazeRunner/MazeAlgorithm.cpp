@@ -12,6 +12,7 @@ MazeAlgorithm::MazeAlgorithm(int Rows, int Cols)
 	_color = vec4(.297, .063, .063, 1);
 	_outlineColor = vec4(0, 0, 0, 1);
 	_trailColor = vec4(1, .843, 0, 1);
+	_goalColor = vec4(1, .6, 0, 1);
 	_mazeNodes = new Node*[_mazeRows];
 
 	for (j = 0; j < _mazeRows; ++j)
@@ -294,6 +295,7 @@ void MazeAlgorithm::printMaze(void)
 			}
 			else if (i == _goalNode.x && j == _goalNode.y)
 			{
+				createGoalBox();
 				cout << 'G';
 			}
 			else if (_mazeNodes[i][j].inPathToGoal)
@@ -635,4 +637,170 @@ void MazeAlgorithm::drawTrail(void)
 	glDisableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void MazeAlgorithm::drawGoal(void)
+{
+	if (_vbo == 0)
+	{
+		glGenBuffers(1, &_vbo);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+	glBufferData(GL_ARRAY_BUFFER, _goalBox.size() * sizeof(float), &_goalBox.front(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+	glDrawArrays(GL_TRIANGLES, 0, NUM_VERTICES_WALL);
+
+	glDisableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void MazeAlgorithm::createGoalBox(void)
+{
+	float farX, farY, farZ, nearX, nearY, nearZ;
+
+	farX = _goalNode.x + WALL_EDGE_LENGTH / 2;
+	farY = GOAL_CENTER_Y_COORD + GOAL_HEIGHT_EDGE_LENGTH / 2;
+	farZ = _goalNode.y + WALL_EDGE_LENGTH / 2;
+
+	nearX = _goalNode.x - WALL_EDGE_LENGTH / 2;
+	nearY = GOAL_CENTER_Y_COORD - GOAL_HEIGHT_EDGE_LENGTH / 2;
+	nearZ = _goalNode.y - WALL_EDGE_LENGTH / 2;
+
+	//triangle 1 - back face
+	_goalBox.push_back(farX);
+	_goalBox.push_back(nearY);
+	_goalBox.push_back(nearZ);
+	_goalBox.push_back(farX);
+	_goalBox.push_back(farY);
+	_goalBox.push_back(nearZ);
+	_goalBox.push_back(nearX);
+	_goalBox.push_back(farY);
+	_goalBox.push_back(nearZ);
+
+	//triangle 2 - back face
+	_goalBox.push_back(nearX);
+	_goalBox.push_back(nearY);
+	_goalBox.push_back(nearZ);
+	_goalBox.push_back(farX);
+	_goalBox.push_back(nearY);
+	_goalBox.push_back(nearZ);
+	_goalBox.push_back(nearX);
+	_goalBox.push_back(farY);
+	_goalBox.push_back(nearZ);
+
+	//triangle 3 - front face
+	_goalBox.push_back(farX);
+	_goalBox.push_back(farY);
+	_goalBox.push_back(farZ);
+	_goalBox.push_back(farX);
+	_goalBox.push_back(nearY);
+	_goalBox.push_back(farZ);
+	_goalBox.push_back(nearX);
+	_goalBox.push_back(farY);
+	_goalBox.push_back(farZ);
+
+	//triangle 4 - front face
+	_goalBox.push_back(farX);
+	_goalBox.push_back(nearY);
+	_goalBox.push_back(farZ);
+	_goalBox.push_back(nearX);
+	_goalBox.push_back(nearY);
+	_goalBox.push_back(farZ);
+	_goalBox.push_back(nearX);
+	_goalBox.push_back(farY);
+	_goalBox.push_back(farZ);
+
+	//triangle 5 - right face
+	_goalBox.push_back(farX);
+	_goalBox.push_back(nearY);
+	_goalBox.push_back(farZ);
+	_goalBox.push_back(farX);
+	_goalBox.push_back(farY);
+	_goalBox.push_back(farZ);
+	_goalBox.push_back(farX);
+	_goalBox.push_back(farY);
+	_goalBox.push_back(nearZ);
+
+	//triangle 6 - right face
+	_goalBox.push_back(farX);
+	_goalBox.push_back(nearY);
+	_goalBox.push_back(farZ);
+	_goalBox.push_back(farX);
+	_goalBox.push_back(farY);
+	_goalBox.push_back(nearZ);
+	_goalBox.push_back(farX);
+	_goalBox.push_back(nearY);
+	_goalBox.push_back(nearZ);
+
+	//triangle 7 - left side
+	_goalBox.push_back(nearX);
+	_goalBox.push_back(farY);
+	_goalBox.push_back(farZ);
+	_goalBox.push_back(nearX);
+	_goalBox.push_back(nearY);
+	_goalBox.push_back(farZ);
+	_goalBox.push_back(nearX);
+	_goalBox.push_back(farY);
+	_goalBox.push_back(nearZ);
+
+	//triangle 8 - left side
+	_goalBox.push_back(nearX);
+	_goalBox.push_back(farY);
+	_goalBox.push_back(nearZ);
+	_goalBox.push_back(nearX);
+	_goalBox.push_back(nearY);
+	_goalBox.push_back(farZ);
+	_goalBox.push_back(nearX);
+	_goalBox.push_back(nearY);
+	_goalBox.push_back(nearZ);
+
+	//triangle 9 - top side
+	_goalBox.push_back(farX);
+	_goalBox.push_back(farY);
+	_goalBox.push_back(nearZ);
+	_goalBox.push_back(farX);
+	_goalBox.push_back(farY);
+	_goalBox.push_back(farZ);
+	_goalBox.push_back(nearX);
+	_goalBox.push_back(farY);
+	_goalBox.push_back(farZ);
+
+	//triangle 10 - top side
+	_goalBox.push_back(nearX);
+	_goalBox.push_back(farY);
+	_goalBox.push_back(nearZ);
+	_goalBox.push_back(farX);
+	_goalBox.push_back(farY);
+	_goalBox.push_back(nearZ);
+	_goalBox.push_back(nearX);
+	_goalBox.push_back(farY);
+	_goalBox.push_back(farZ);
+
+	//triangle 11 - bottom side
+	_goalBox.push_back(farX);
+	_goalBox.push_back(nearY);
+	_goalBox.push_back(farZ);
+	_goalBox.push_back(nearX);
+	_goalBox.push_back(nearY);
+	_goalBox.push_back(farZ);
+	_goalBox.push_back(farX);
+	_goalBox.push_back(nearY);
+	_goalBox.push_back(nearZ);
+
+	//triangle 12 - bottom side
+	_goalBox.push_back(farX);
+	_goalBox.push_back(nearY);
+	_goalBox.push_back(nearZ);
+	_goalBox.push_back(nearX);
+	_goalBox.push_back(nearY);
+	_goalBox.push_back(farZ);
+	_goalBox.push_back(nearX);
+	_goalBox.push_back(nearY);
+	_goalBox.push_back(nearZ);
+
 }

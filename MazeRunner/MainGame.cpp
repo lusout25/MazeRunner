@@ -314,6 +314,10 @@ void MainGame::draw()
 	setShaderColor(_maze.getWireFrameColor(), colorLocation);
 	_maze.drawMazeWireFrame();
 
+	//draw goal
+	setShaderColor(_maze.getGoalColor(), colorLocation);
+	_maze.drawGoal();
+
 	//draw trail to goal
 	if (_showTrail)
 	{
@@ -330,6 +334,7 @@ void MainGame::draw()
 	glLineWidth(5.0f);
 	setShaderColor(_player.getOutlineColor(), colorLocation);
 	_player.drawPlayerOutline();
+
 
 	//draw hud
 	setShaderProjection(ProjectionState::ORTHOGRAPHIC, projLocation);

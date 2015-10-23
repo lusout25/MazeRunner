@@ -9,6 +9,7 @@
 #include <list>
 #include <GameEngine3D\Wall.h>
 #include <GameEngine3D\QuadTree.h>
+#include "Shared.h"
 
 using namespace GameEngine3D;
 using namespace glm;
@@ -28,10 +29,12 @@ public:
 	void drawMaze(void);
 	void drawMazeWireFrame();
 	void drawTrail();
+	void drawGoal();
 	
 	vec4 getColor() { return _color; };
 	vec4 getWireFrameColor() { return _outlineColor; };
 	vec4 getTrailColor() { return _trailColor; };
+	vec4 getGoalColor() { return _goalColor; };
 	QuadTree<AABB>* getQuadTree() { return _quadTree; };
 	list<Wall> getAllWalls() { return _walls; };
 
@@ -56,8 +59,8 @@ private:
 	GLuint _vbo;
 	int _mazeRows, _mazeCols, _numWalls;
 	bool _goalFound;
-	vector<float> _points, _colors, _trail;
-	vec4 _color, _outlineColor, _trailColor;
+	vector<float> _points, _colors, _trail, _goalBox;
+	vec4 _color, _outlineColor, _trailColor, _goalColor;
 
 	Node _goalNode;
 	Node **_mazeNodes;
@@ -81,4 +84,5 @@ private:
 
 	void addOutsideWalls();
 	void storeCollisionData();
+	void createGoalBox();
 };

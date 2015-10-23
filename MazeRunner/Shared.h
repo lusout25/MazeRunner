@@ -23,4 +23,7 @@ using namespace std;
 	const int MAZE_ROWS = 20;
 	const int MAZE_COLUMNS = 20;
 
+	const float GOAL_HEIGHT_EDGE_LENGTH = 0.5f;
+	const float GOAL_CENTER_Y_COORD = -0.5f;
+
 #endif
