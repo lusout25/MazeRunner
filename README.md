@@ -44,6 +44,8 @@ The maze is randomly generated using Prim's algorithm.  The entire maze is rende
   Textures are used for flooring.  They are handled within the shader.  
 - **Object models**  
   Object model files can be loaded with the game engine.
+- **Multi-Threading**  
+  CPU intensive tasks are done on seperate threads (such as solving the maze).  This smooths the rendering instead of noticable stutters.
 
 ####Future Enhancements:
 - Success animation
