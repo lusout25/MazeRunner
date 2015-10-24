@@ -312,6 +312,7 @@ void MazeAlgorithm::printMaze(void)
 
 	addOutsideWalls();
 	storeCollisionData();
+	storeWallPoints();
 }
 
 void MazeAlgorithm::solveMaze(int x, int y)
@@ -509,6 +510,22 @@ void MazeAlgorithm::addOutsideWalls()
 	wallyWorld->placeCube(1, 1, -1);
 	_walls.push_back(*wallyWorld);
 
+	//left side hole
+	wallyWorld = new Wall();
+	wallyWorld->placeCube(_mazeCols, 0, 0);
+	_walls.push_back(*wallyWorld);
+	wallyWorld = new Wall();
+	wallyWorld->placeCube(_mazeCols, 1, 0);
+	_walls.push_back(*wallyWorld);
+
+	//right side hole
+	wallyWorld = new Wall();
+	wallyWorld->placeCube(0, 0, _mazeRows);
+	_walls.push_back(*wallyWorld);
+	wallyWorld = new Wall();
+	wallyWorld->placeCube(0, 1, _mazeRows);
+	_walls.push_back(*wallyWorld);
+
 	//bottom and top sides
 	for (y = 1; y < _mazeRows+1; y++)
 	{
@@ -571,10 +588,7 @@ void MazeAlgorithm::storeCollisionData()
 	}
 }
 
-/***********************************************************
-	Render all walls in the maze.
-***********************************************************/
-void MazeAlgorithm::drawMaze(void)
+void MazeAlgorithm::storeWallPoints(void)
 {
 	vector<float> temp;
 
@@ -588,6 +602,14 @@ void MazeAlgorithm::drawMaze(void)
 			_numWalls++;
 		}
 	}
+}
+
+/***********************************************************
+	Render all walls in the maze.
+***********************************************************/
+void MazeAlgorithm::drawMaze(void)
+{
+
 
 	if (_vbo == 0)
 	{
@@ -608,10 +630,24 @@ void MazeAlgorithm::drawMaze(void)
 
 void MazeAlgorithm::drawMazeWireFrame(void)
 {
-	for (_wallIt = _walls.begin(); _wallIt != _walls.end(); ++_wallIt)
+	if (_vbo == 0)
 	{
-		_wallIt->drawWallOutline();
+		glGenBuffers(1, &_vbo);
 	}
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+	glBufferData(GL_ARRAY_BUFFER, _points.size() * sizeof(float), &_points.front(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, NUM_3D_VERTEX, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+	for (int i = 0; i < _numWalls; i++)
+	{
+		glDrawArrays(GL_LINE_LOOP, i * NUM_VERTICES_WALL, NUM_VERTICES_WALL);
+	}
+	glDisableVertexAttribArray(0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 }
 
 void MazeAlgorithm::drawTrail(void)

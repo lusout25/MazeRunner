@@ -84,5 +84,6 @@ private:
 
 	void addOutsideWalls();
 	void storeCollisionData();
+	void storeWallPoints();
 	void createGoalBox();
 };
