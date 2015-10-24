@@ -17,6 +17,9 @@ namespace GameEngine3D {
 		}
 	}
 
+	/***********************************************************
+	Initialize variables needed for the sprite
+	***********************************************************/
 	void Sprite::init(vec3 bottomleft, vec3 topLeft, vec3 topRight, vec3 bottomRight, std::string texturePath, float xMultiple, float yMultiple)
 	{
 
@@ -27,6 +30,9 @@ namespace GameEngine3D {
 
 	}
 
+	/***********************************************************
+	Draw sprite to screen
+	***********************************************************/
 	void Sprite::draw()
 	{
 		if (_vboID == 0)

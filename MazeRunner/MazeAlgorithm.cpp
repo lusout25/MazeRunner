@@ -315,8 +315,13 @@ void MazeAlgorithm::printMaze(void)
 	storeWallPoints();
 }
 
+/***********************************************************
+Solve the maze with A*
+***********************************************************/
 void MazeAlgorithm::solveMaze(int x, int y)
 {
+	resetSolveMaze();
+
 	if (_goalNode.x == x && _goalNode.y == y) //we're already at the goal
 	{
 		return;
@@ -367,6 +372,9 @@ void MazeAlgorithm::solveMaze(int x, int y)
 	}
 }
 
+/***********************************************************
+Reset variables so we can solve the maze from another starting point
+***********************************************************/
 void MazeAlgorithm::resetSolveMaze(void)
 {
 	_openList.clear();
@@ -383,6 +391,9 @@ void MazeAlgorithm::resetSolveMaze(void)
 	}
 }
 
+/***********************************************************
+Add nodes to open list
+***********************************************************/
 void MazeAlgorithm::addNodesToOpenList(Node n)
 {
 	//Right
@@ -434,11 +445,17 @@ void MazeAlgorithm::addNodesToOpenList(Node n)
 	}
 }
 
+/***********************************************************
+Calculate distance
+***********************************************************/
 int MazeAlgorithm::calculateF(Node n)
 {
 	return abs(n.x - _goalNode.x) + abs(n.y - _goalNode.y);
 }
 
+/***********************************************************
+Trace the solution trail
+***********************************************************/
 void MazeAlgorithm::traceBackToGoal(Node *n)
 {
 	(*n).inPathToGoal = true;
@@ -628,6 +645,9 @@ void MazeAlgorithm::drawMaze(void)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+/***********************************************************
+Draw edge lines to walls
+***********************************************************/
 void MazeAlgorithm::drawMazeWireFrame(void)
 {
 	if (_vbo == 0)
@@ -650,6 +670,9 @@ void MazeAlgorithm::drawMazeWireFrame(void)
 
 }
 
+/***********************************************************
+Draw trail from player location to goal
+***********************************************************/
 void MazeAlgorithm::drawTrail(void)
 {
 	if (_trail.size() == 0)
@@ -675,6 +698,9 @@ void MazeAlgorithm::drawTrail(void)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+/***********************************************************
+Draw goal space to screen
+***********************************************************/
 void MazeAlgorithm::drawGoal(void)
 {
 	if (_vbo == 0)
@@ -695,6 +721,9 @@ void MazeAlgorithm::drawGoal(void)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+/***********************************************************
+Create goal space
+***********************************************************/
 void MazeAlgorithm::createGoalBox(void)
 {
 	float farX, farY, farZ, nearX, nearY, nearZ;

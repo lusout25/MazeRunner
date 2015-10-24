@@ -15,7 +15,7 @@ MainGame::~MainGame()
 /***********************************************************
 Entry function to game logic.
 ***********************************************************/
-void MainGame::run()
+void MainGame::run(void)
 {
 	initSystems();
 	gameLoop();
@@ -25,7 +25,7 @@ void MainGame::run()
 Initialize openGL variables and initial state of the game.
 Functions here will be ran only once.
 ***********************************************************/
-void MainGame::initSystems()
+void MainGame::initSystems(void)
 {
 	init();
 	_window.create(GAME_TITLE, _screenWidth, _screenHeight);
@@ -49,9 +49,7 @@ void MainGame::initSystems()
 	//Generate maze using Prim's algorithm
 	_maze.generateMazeWeights();
 	_maze.generateMaze();
-	//_maze.solveMaze(0, 0);
 	_maze.printMaze();
-	//_maze.resetSolveMaze();
 
 	//Load object from 3d model
 	//_androidObj = SimpleObjLoader();
@@ -113,7 +111,7 @@ void MainGame::initShaders(ShaderState ss)
 Game loop.  This will call appropirate functions to handle
 input, update cameras, and render a frame to screen
 ***********************************************************/
-void MainGame::gameLoop()
+void MainGame::gameLoop(void)
 {
 	while (_gameState != GameState::EXIT)
 	{
@@ -128,7 +126,7 @@ void MainGame::gameLoop()
 /***********************************************************
 Handles keyboard and mouse events
 ***********************************************************/
-void MainGame::processInput()
+void MainGame::processInput(void)
 {
 	SDL_Event input;
 
@@ -213,10 +211,9 @@ void MainGame::processInput()
 
 	if (_inputManager.isKeyPressed(SDLK_v)) //show trail to goal
 	{
-		if (_player.updateLocation(round(cameraPosition.x), round(cameraPosition.z)))
+		if (_player.updateLocation((int) round(cameraPosition.x), (int)round(cameraPosition.z)))
 		{
-			_maze.resetSolveMaze();
-			_maze.solveMaze((int)round(cameraPosition.x), (int)round(cameraPosition.z));
+			_threads.push_back(thread(&MainGame::solveMazeHandler, &_maze, (int)round(cameraPosition.x), (int)round(cameraPosition.z)));
 		}
 		_showTrail = true;
 	}
@@ -284,7 +281,7 @@ void MainGame::processInput()
 /***********************************************************
 Draw and render game objects
 ***********************************************************/
-void MainGame::draw()
+void MainGame::draw(void)
 {
 	GLint projLocation, colorLocation, samplerLocation,textureFlagLocation;
 
@@ -318,14 +315,6 @@ void MainGame::draw()
 	setShaderColor(_maze.getGoalColor(), colorLocation);
 	_maze.drawGoal();
 
-	//draw trail to goal
-	if (_showTrail)
-	{
-		setShaderColor(_maze.getTrailColor(), colorLocation);
-		glLineWidth(7.0f);
-		_maze.drawTrail();
-	}
-
 	//draw player
 	setShaderColor(_player.getColor(), colorLocation);
 	_player.draw();
@@ -335,7 +324,15 @@ void MainGame::draw()
 	setShaderColor(_player.getOutlineColor(), colorLocation);
 	_player.drawPlayerOutline();
 
+	joinThreads();
 
+	//draw trail to goal
+	if (_showTrail)
+	{
+		setShaderColor(_maze.getTrailColor(), colorLocation);
+		glLineWidth(7.0f);
+		_maze.drawTrail();
+	}
 	//draw hud
 	setShaderProjection(ProjectionState::ORTHOGRAPHIC, projLocation);
 	setShaderColor(_hud.getColor(), colorLocation);
@@ -343,31 +340,12 @@ void MainGame::draw()
 
 	_shaderProgram.unuse();
 
-
-	//***************
-	// Lighting 
-	//***************
-	/*initShaders(ShaderState::LIGHTING);
-	_shaderProgram.use();
-
-	//locate the location of "MVP" in the shader
-	mvpLocation = _shaderProgram.getUniformLocation("MVP");
-
-	//pass the camera matrix to the shader
-	cameraMatrix = _camera.getMVPMatrix();
-	glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
-
-	GLuint normalMatLoc = _shaderProgram.getUniformLocation("normalMatrix");
-
-	mat4 normalMatrix = transpose(inverse(_camera.getModelView()));
-	glUniformMatrix4fv(normalMatLoc, 1, GL_FALSE, &(normalMatrix[0][0]));
-
-	_androidObj.render();
-	_shaderProgram.unuse();*/
-
 	_window.swapBuffer();
 }
 
+/***********************************************************
+Let the shader know to use/not use the texture that is loaded
+***********************************************************/
 void MainGame::switchTextureOn(bool turnOn, GLint textureFlagUniformLocation, GLint samplerUniformLocation)
 {
 	if (turnOn)
@@ -382,11 +360,17 @@ void MainGame::switchTextureOn(bool turnOn, GLint textureFlagUniformLocation, GL
 	}
 }
 
+/***********************************************************
+Set the color to be used in the subsequent draw calls
+***********************************************************/
 void MainGame::setShaderColor(vec4& color, GLint colorUniformLocation)
 {
 	glUniform4fv(colorUniformLocation, 1, &(color[0]));
 }
 
+/***********************************************************
+Set the projection state for the shader.
+***********************************************************/
 void MainGame::setShaderProjection(ProjectionState view, GLint projUniformLocation)
 {
 	if (view == ProjectionState::ORTHOGRAPHIC)
@@ -400,5 +384,27 @@ void MainGame::setShaderProjection(ProjectionState view, GLint projUniformLocati
 		glClearDepth(1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUniformMatrix4fv(projUniformLocation, 1, GL_FALSE, &(_camera.getMVPMatrix()[0][0]));
+	}
+}
+
+/***********************************************************
+Handler to solve maze in a seperate thread
+***********************************************************/
+void MainGame::solveMazeHandler(MazeAlgorithm *maze, int x, int y)
+{
+	maze->solveMaze(x, y);
+}
+
+/***********************************************************
+Wait for all threads to complete
+***********************************************************/
+void MainGame::joinThreads(void)
+{
+	for (auto &t : _threads)
+	{
+		if (t.joinable())
+		{
+			t.join();
+		}
 	}
 }

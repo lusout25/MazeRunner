@@ -5,6 +5,9 @@
 
 namespace GameEngine3D {
 
+	/***********************************************************
+	Load png file
+	***********************************************************/
 	Texture ImageLoader::loadPNG(std::string filePath)
 	{
 		Texture texture = {};

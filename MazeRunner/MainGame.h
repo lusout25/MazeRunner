@@ -14,6 +14,7 @@
 #include <GameEngine3D\Sprite.h>
 #include <glm\glm.hpp>
 #include <glm\gtx\rotate_vector.hpp>
+#include <thread>
 #include "MazeAlgorithm.h"
 #include "Player.h"
 #include "Shared.h"
@@ -33,14 +34,14 @@ public:
 	MainGame();
 	~MainGame();
 
-	void run();
+	void run(void);
 
 private:
-	void initSystems();
+	void initSystems(void);
 	void initShaders(ShaderState ss);
-	void gameLoop();
-	void processInput();
-	void draw();
+	void gameLoop(void);
+	void processInput(void);
+	void draw(void);
 	void switchTextureOn(bool turnOn, GLint textureFlagUniformLocation, GLint samplerUniformLocation = 0);
 	void setShaderColor(vec4& color, GLint colorUniformLocation);
 	void setShaderProjection(ProjectionState view, GLint projUniformLocation);
@@ -64,5 +65,10 @@ private:
 
 	MazeAlgorithm _maze = MazeAlgorithm(MAZE_ROWS, MAZE_COLUMNS);
 	QuadTree<AABB>* _quadTree; //data structure for spacial collision
+
+	vector<thread> _threads;
+
+	static void solveMazeHandler(MazeAlgorithm *maze, int x, int y);
+	void joinThreads(void);
 };
 

@@ -3,6 +3,9 @@
 
 namespace GameEngine3D {
 
+	/***********************************************************
+	Load a file
+	***********************************************************/
 	bool IOManager::readFileToBuffer(std::string filePath, std::vector<unsigned char> &buffer)
 	{
 		std::ifstream file(filePath, std::ios::binary);

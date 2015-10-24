@@ -216,6 +216,9 @@ void Player::drawPlayerOutline()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+/***********************************************************
+Determine if the player has changed spaces
+***********************************************************/
 bool Player::updateLocation(int newX, int newY)
 {
 	if (_lastPosition.x == newX && _lastPosition.y == newY)
