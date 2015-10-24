@@ -48,12 +48,10 @@ The maze is randomly generated using Prim's algorithm.  The entire maze is rende
   CPU intensive tasks are done on seperate threads (such as solving the maze).  This smooths the rendering instead of noticable stutters.
 
 ####Future Enhancements:
-- Success animation
 - New levels
 - Use object for player
 - Lighting
 - Camera collision with walls
-- Continuous collision
 - HUD update (show more interesting information such as life bar, speed, etc).
 
 ####Resources:
