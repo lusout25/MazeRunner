@@ -41,19 +41,22 @@ void MainGame::initSystems(void)
 	}
 
 	_grassTexture.init(vec3(-2, -.5, -2), vec3(MAZE_ROWS, -.5, -2), vec3(MAZE_ROWS, -.5, MAZE_COLUMNS), vec3(-2, -.5, MAZE_COLUMNS), "Textures/grass.png", MAZE_ROWS + 2, MAZE_COLUMNS + 2);
-	_player.placeCube(0, 0, 0);
+	
 
 	_hud.init(_screenWidth, _screenHeight);
 	_hud.setPosition(vec2(_screenWidth / 2, _screenHeight / 2));
 
+	newLevel();
+}
+
+void MainGame::newLevel(void)
+{
 	//Generate maze using Prim's algorithm
 	_maze.generateMazeWeights();
 	_maze.generateMaze();
 	_maze.printMaze();
 
-	//Load object from 3d model
-	//_androidObj = SimpleObjLoader();
-	//_androidObj.loadObject("..\\MazeRunner\\ObjectModels\\Jigglypuff.obj");
+	_player.placeCube(0, 0, 0);
 
 	_quadTree = _maze.getQuadTree();
 }

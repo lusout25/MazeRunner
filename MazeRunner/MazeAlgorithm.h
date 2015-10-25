@@ -18,6 +18,7 @@ using namespace std;
 class MazeAlgorithm
 {
 public:
+	MazeAlgorithm(void);
 	MazeAlgorithm(int Rows, int Cols);
 	~MazeAlgorithm(void);
 

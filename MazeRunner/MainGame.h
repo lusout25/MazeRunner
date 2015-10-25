@@ -37,6 +37,7 @@ public:
 	void run(void);
 
 private:
+	void newLevel(void);
 	void initSystems(void);
 	void initShaders(ShaderState ss);
 	void gameLoop(void);
