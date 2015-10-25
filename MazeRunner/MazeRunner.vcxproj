@@ -31,6 +31,7 @@
     <None Include="Shaders\textureShader.vert" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Photos\MazeRunner.png" />
     <Image Include="Textures\grass.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
