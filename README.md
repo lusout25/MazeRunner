@@ -5,7 +5,7 @@
 ###Summary:
 Standard maze game. Can you reach the end?
 
-[![Maze Runner Video](http://postimg.org/image/nmwutnkgl/)](https://www.youtube.com/watch?v=l0enmIs7cO0)
+[![Maze Runner Video](file:///C:/Users/Luke/Pictures/MazeRunner.png)](https://www.youtube.com/watch?v=l0enmIs7cO0)
 
 ####Purpose: 
 The goal of this project is to gain experience in graphics development and learn the intricacies of OpenGL.  Game engine architecture has been an interest of ours for quite some time.  We implemented a game engine from scratch to learn about the foundation of games.  We also sought out to implement a couple advanced algorithms and data structures. 
