@@ -5,6 +5,8 @@
 ###Summary:
 Standard maze game. Can you reach the end?
 
+[![Maze Runner Video](file:///C:/Users/Luke/Pictures/MazeRunner.png)](https://www.youtube.com/watch?v=l0enmIs7cO0)
+
 ####Purpose: 
 The goal of this project is to gain experience in graphics development and learn the intricacies of OpenGL.  Game engine architecture has been an interest of ours for quite some time.  We implemented a game engine from scratch to learn about the foundation of games.  We also sought out to implement a couple advanced algorithms and data structures. 
 
@@ -44,14 +46,14 @@ The maze is randomly generated using Prim's algorithm.  The entire maze is rende
   Textures are used for flooring.  They are handled within the shader.  
 - **Object models**  
   Object model files can be loaded with the game engine.
+- **Multi-Threading**  
+  CPU intensive tasks are done on seperate threads (such as solving the maze).  This smooths the rendering instead of noticable stutters.
 
 ####Future Enhancements:
-- Success animation
 - New levels
 - Use object for player
 - Lighting
 - Camera collision with walls
-- Continuous collision
 - HUD update (show more interesting information such as life bar, speed, etc).
 
 ####Resources:
