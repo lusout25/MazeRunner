@@ -14,7 +14,7 @@ The goal of this project is to gain experience in graphics development and learn
 W - move forward  
 S - move backward  
 A - strafe left  
-D - strafe right
+D - strafe right  
 V - show solution trail
 SPACE - jump  
 MOUSE - look around  
