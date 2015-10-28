@@ -15,7 +15,7 @@ W - move forward
 S - move backward  
 A - strafe left  
 D - strafe right  
-V - show solution trail
+V - show solution trail  
 SPACE - jump  
 MOUSE - look around  
 Q,ESC - exit game  
